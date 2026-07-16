@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "slug": "solar-archive",
+  "version": "1.0.0",
+  "name": "Solar Archive",
+  "description": "A midnight reading room illuminated by amber index marks and orbiting archival forms.",
+  "author": { "name": "Awesome Codex Themes" },
+  "license": { "code": "MIT", "artwork": "CC0-1.0" },
+  "categories": ["dark", "editorial"],
+  "tags": ["amber", "archive", "warm", "reading"],
+  "compatibility": {
+    "platforms": ["macos"],
+    "status": "experimental",
+    "appVersions": ["26.707.*"]
+  },
+  "mode": "dark",
+  "palette": {
+    "background": "#15130E",
+    "surface": "#292419D9",
+    "text": "#FFF4D6",
+    "accent": "#F5B942"
+  },
+  "files": { "css": "theme.css", "artwork": "background.svg", "preview": "preview.svg" }
+}

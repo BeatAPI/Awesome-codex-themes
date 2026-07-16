@@ -5,6 +5,9 @@
   "type": "module",
   "description": "A safe, open theme engine and gallery for the official Codex Desktop app.",
   "license": "MIT",
+  "bin": {
+    "awesome-codex-themes": "bin/awesome-codex-themes"
+  },
   "engines": {
     "node": ">=22"
   },

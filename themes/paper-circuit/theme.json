@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "slug": "paper-circuit",
+  "version": "1.0.0",
+  "name": "Paper Circuit",
+  "description": "A bright drafting-table theme with graphite type, cobalt traces, and warm paper grain.",
+  "author": { "name": "Awesome Codex Themes" },
+  "license": { "code": "MIT", "artwork": "CC0-1.0" },
+  "categories": ["light", "editorial"],
+  "tags": ["paper", "cobalt", "diagram", "low-glare"],
+  "compatibility": {
+    "platforms": ["macos"],
+    "status": "experimental",
+    "appVersions": ["26.707.*"]
+  },
+  "mode": "light",
+  "palette": {
+    "background": "#F3EEDC",
+    "surface": "#FFFDF5DD",
+    "text": "#242621",
+    "accent": "#2455D6"
+  },
+  "files": { "css": "theme.css", "artwork": "background.svg", "preview": "preview.svg" }
+}

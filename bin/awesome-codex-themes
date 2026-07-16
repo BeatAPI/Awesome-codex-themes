@@ -1,0 +1,19 @@
+#!/bin/sh
+set -eu
+
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+
+for APP_PATH in \
+  "/Applications/ChatGPT.app" \
+  "/Applications/Codex.app" \
+  "$HOME/Applications/ChatGPT.app" \
+  "$HOME/Applications/Codex.app"
+do
+  NODE_PATH="$APP_PATH/Contents/Resources/cua_node/bin/node"
+  if [ -x "$NODE_PATH" ]; then
+    exec "$NODE_PATH" "$SCRIPT_DIR/../src/cli/main.mjs" "$@"
+  fi
+done
+
+echo "[APP_NOT_FOUND] No official Codex Desktop bundled Node runtime was found." >&2
+exit 1

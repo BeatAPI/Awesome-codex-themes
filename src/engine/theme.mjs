@@ -7,6 +7,7 @@ export const DEFAULT_MAX_CSS_BYTES = 256 * 1024;
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
+const APP_VERSION_RANGE_PATTERN = /^\d+(?:\.\d+)+(?:\.\*)?$/;
 const HEX_COLOR_PATTERN = /^#[0-9A-Fa-f]{6}(?:[0-9A-Fa-f]{2})?$/;
 const SUPPORTED_PLATFORMS = new Set(['macos']);
 const SUPPORTED_STATUS = new Set(['experimental', 'verified']);
@@ -115,6 +116,11 @@ function validateManifestObject(input) {
     fail('THEME_MODE_INVALID', 'mode must be dark, light, or system.');
   }
 
+  const appVersions = requireStringArray(compatibility.appVersions, 'compatibility.appVersions');
+  if (appVersions.some((range) => !APP_VERSION_RANGE_PATTERN.test(range))) {
+    fail('THEME_COMPATIBILITY_INVALID', 'compatibility.appVersions must contain exact versions or a trailing wildcard.');
+  }
+
   return {
     schemaVersion: THEME_SCHEMA_VERSION,
     slug,
@@ -134,7 +140,7 @@ function validateManifestObject(input) {
     compatibility: {
       platforms,
       status: compatibility.status,
-      appVersions: requireStringArray(compatibility.appVersions, 'compatibility.appVersions'),
+      appVersions,
     },
     mode,
     palette: {
@@ -153,6 +159,33 @@ function validateManifestObject(input) {
 
 export function validateThemeManifest(input) {
   return validateManifestObject(input);
+}
+
+function versionMatchesRange(appVersion, range) {
+  const versionParts = appVersion.split('.');
+  const rangeParts = range.split('.');
+  const wildcard = rangeParts.at(-1) === '*';
+  const comparable = wildcard ? rangeParts.slice(0, -1) : rangeParts;
+  if (!wildcard && comparable.length !== versionParts.length) return false;
+  if (wildcard && versionParts.length < comparable.length) return false;
+  return comparable.every((part, index) => versionParts[index] === part);
+}
+
+export function assertThemeCompatibility(input, { platform, appVersion } = {}) {
+  const manifest = validateThemeManifest(input);
+  if (typeof platform !== 'string' || !manifest.compatibility.platforms.includes(platform)) {
+    fail('THEME_PLATFORM_UNSUPPORTED', `Theme ${manifest.slug} does not support this platform.`);
+  }
+  if (typeof appVersion !== 'string' || !/^\d+(?:\.\d+)+$/.test(appVersion)) {
+    fail('THEME_APP_VERSION_INVALID', 'A numeric Codex app version is required.');
+  }
+  if (!manifest.compatibility.appVersions.some((range) => versionMatchesRange(appVersion, range))) {
+    fail(
+      'THEME_APP_VERSION_UNSUPPORTED',
+      `Theme ${manifest.slug} does not declare support for Codex ${appVersion}; official UI was left unchanged.`,
+    );
+  }
+  return { platform, appVersion, status: manifest.compatibility.status };
 }
 
 async function resolveThemeFile(root, relativePath) {

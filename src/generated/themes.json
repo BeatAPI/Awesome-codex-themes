@@ -1,0 +1,166 @@
+[
+  {
+    "slug": "arctic-signal",
+    "version": "1.0.0",
+    "name": "Arctic Signal",
+    "description": "A polar-night workspace cut by electric cyan telemetry and quiet aurora bands.",
+    "author": {
+      "name": "Awesome Codex Themes"
+    },
+    "license": {
+      "code": "MIT",
+      "artwork": "CC0-1.0"
+    },
+    "categories": [
+      "dark",
+      "technical"
+    ],
+    "tags": [
+      "cyan",
+      "aurora",
+      "terminal",
+      "high-contrast"
+    ],
+    "compatibility": {
+      "platforms": [
+        "macos"
+      ],
+      "status": "experimental",
+      "appVersions": [
+        "26.707.*"
+      ]
+    },
+    "mode": "dark",
+    "palette": {
+      "background": "#071219",
+      "surface": "#0D202BCC",
+      "text": "#E6FAFF",
+      "accent": "#50E6FF"
+    },
+    "preview": "/theme-assets/arctic-signal/preview.svg",
+    "command": "awesome-codex-themes start arctic-signal"
+  },
+  {
+    "slug": "obsidian-bloom",
+    "version": "1.0.0",
+    "name": "Obsidian Bloom",
+    "description": "A charcoal garden with ember-orange petals and softly layered glass surfaces.",
+    "author": {
+      "name": "Awesome Codex Themes"
+    },
+    "license": {
+      "code": "MIT",
+      "artwork": "CC0-1.0"
+    },
+    "categories": [
+      "dark",
+      "organic"
+    ],
+    "tags": [
+      "charcoal",
+      "orange",
+      "botanical",
+      "glass"
+    ],
+    "compatibility": {
+      "platforms": [
+        "macos"
+      ],
+      "status": "experimental",
+      "appVersions": [
+        "26.707.*"
+      ]
+    },
+    "mode": "dark",
+    "palette": {
+      "background": "#100F0E",
+      "surface": "#201D1ACC",
+      "text": "#F5EDE3",
+      "accent": "#FF7849"
+    },
+    "preview": "/theme-assets/obsidian-bloom/preview.svg",
+    "command": "awesome-codex-themes start obsidian-bloom"
+  },
+  {
+    "slug": "paper-circuit",
+    "version": "1.0.0",
+    "name": "Paper Circuit",
+    "description": "A bright drafting-table theme with graphite type, cobalt traces, and warm paper grain.",
+    "author": {
+      "name": "Awesome Codex Themes"
+    },
+    "license": {
+      "code": "MIT",
+      "artwork": "CC0-1.0"
+    },
+    "categories": [
+      "light",
+      "editorial"
+    ],
+    "tags": [
+      "paper",
+      "cobalt",
+      "diagram",
+      "low-glare"
+    ],
+    "compatibility": {
+      "platforms": [
+        "macos"
+      ],
+      "status": "experimental",
+      "appVersions": [
+        "26.707.*"
+      ]
+    },
+    "mode": "light",
+    "palette": {
+      "background": "#F3EEDC",
+      "surface": "#FFFDF5DD",
+      "text": "#242621",
+      "accent": "#2455D6"
+    },
+    "preview": "/theme-assets/paper-circuit/preview.svg",
+    "command": "awesome-codex-themes start paper-circuit"
+  },
+  {
+    "slug": "solar-archive",
+    "version": "1.0.0",
+    "name": "Solar Archive",
+    "description": "A midnight reading room illuminated by amber index marks and orbiting archival forms.",
+    "author": {
+      "name": "Awesome Codex Themes"
+    },
+    "license": {
+      "code": "MIT",
+      "artwork": "CC0-1.0"
+    },
+    "categories": [
+      "dark",
+      "editorial"
+    ],
+    "tags": [
+      "amber",
+      "archive",
+      "warm",
+      "reading"
+    ],
+    "compatibility": {
+      "platforms": [
+        "macos"
+      ],
+      "status": "experimental",
+      "appVersions": [
+        "26.707.*"
+      ]
+    },
+    "mode": "dark",
+    "palette": {
+      "background": "#15130E",
+      "surface": "#292419D9",
+      "text": "#FFF4D6",
+      "accent": "#F5B942"
+    },
+    "preview": "/theme-assets/solar-archive/preview.svg",
+    "command": "awesome-codex-themes start solar-archive"
+  }
+]

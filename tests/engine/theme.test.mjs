@@ -5,6 +5,7 @@ import { afterEach, describe, expect, test } from 'vitest';
 
 import {
   ThemeValidationError,
+  assertThemeCompatibility,
   loadThemePackage,
   validateThemeManifest,
 } from '../../src/engine/theme.mjs';
@@ -74,6 +75,23 @@ describe('validateThemeManifest', () => {
     [{ files: { ...validManifest().files, artwork: 'https://example.com/art.svg' } }, 'THEME_PATH_UNSAFE'],
   ])('rejects unsafe or unsupported metadata with a stable code', (overrides, code) => {
     expect(() => validateThemeManifest(validManifest(overrides))).toThrowError(
+      expect.objectContaining({ code }),
+    );
+  });
+});
+
+describe('assertThemeCompatibility', () => {
+  test('accepts an app version covered by a declared wildcard range', () => {
+    expect(
+      assertThemeCompatibility(validManifest(), { platform: 'macos', appVersion: '26.707.72221' }),
+    ).toEqual({ platform: 'macos', appVersion: '26.707.72221', status: 'experimental' });
+  });
+
+  test.each([
+    [{ platform: 'macos', appVersion: '26.708.1' }, 'THEME_APP_VERSION_UNSUPPORTED'],
+    [{ platform: 'windows', appVersion: '26.707.72221' }, 'THEME_PLATFORM_UNSUPPORTED'],
+  ])('fails closed outside the declared compatibility boundary', (runtime, code) => {
+    expect(() => assertThemeCompatibility(validManifest(), runtime)).toThrowError(
       expect.objectContaining({ code }),
     );
   });

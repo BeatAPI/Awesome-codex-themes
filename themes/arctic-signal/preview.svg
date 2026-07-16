@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750">
+  <defs><linearGradient id="g" x2="1" y2="1"><stop stop-color="#071219"/><stop offset="1" stop-color="#12404A"/></linearGradient></defs>
+  <rect width="1200" height="750" rx="28" fill="url(#g)"/><path d="M0 610 240 410 425 560 660 300 875 555 1040 410 1200 555V750H0Z" fill="#091A24"/>
+  <rect x="46" y="42" width="1108" height="666" rx="22" fill="#071219" fill-opacity=".8" stroke="#50E6FF" stroke-opacity=".3"/>
+  <rect x="46" y="42" width="250" height="666" rx="22" fill="#0D202B" fill-opacity=".92"/><circle cx="82" cy="82" r="7" fill="#50E6FF"/><text x="104" y="89" fill="#E6FAFF" font-family="monospace" font-size="20">ARCTIC SIGNAL</text>
+  <g fill="#7BA1AD"><rect x="78" y="145" width="142" height="10" rx="5"/><rect x="78" y="185" width="176" height="10" rx="5"/><rect x="78" y="225" width="120" height="10" rx="5"/></g>
+  <text x="354" y="125" fill="#50E6FF" font-family="monospace" font-size="16">LIVE CHANNEL / 07</text><text x="354" y="183" fill="#E6FAFF" font-family="sans-serif" font-size="40">Design a safer local theme engine.</text>
+  <rect x="354" y="236" width="715" height="250" rx="18" fill="#0D202B" fill-opacity=".78" stroke="#50E6FF" stroke-opacity=".25"/>
+  <g fill="#B6DCE4"><rect x="390" y="276" width="540" height="12" rx="6"/><rect x="390" y="310" width="610" height="12" rx="6"/><rect x="390" y="344" width="470" height="12" rx="6"/></g><rect x="390" y="405" width="178" height="42" rx="9" fill="#50E6FF"/><text x="420" y="432" fill="#071219" font-family="monospace" font-size="15">RUN DIAGNOSTIC</text>
+  <rect x="354" y="548" width="715" height="96" rx="18" fill="#071219" stroke="#50E6FF" stroke-opacity=".35"/><text x="390" y="604" fill="#8CB4BE" font-family="monospace" font-size="17">Ask Codex to build, explain, or repair...</text>
+</svg>

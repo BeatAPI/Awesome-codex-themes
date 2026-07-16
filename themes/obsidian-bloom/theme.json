@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "slug": "obsidian-bloom",
+  "version": "1.0.0",
+  "name": "Obsidian Bloom",
+  "description": "A charcoal garden with ember-orange petals and softly layered glass surfaces.",
+  "author": { "name": "Awesome Codex Themes" },
+  "license": { "code": "MIT", "artwork": "CC0-1.0" },
+  "categories": ["dark", "organic"],
+  "tags": ["charcoal", "orange", "botanical", "glass"],
+  "compatibility": {
+    "platforms": ["macos"],
+    "status": "experimental",
+    "appVersions": ["26.707.*"]
+  },
+  "mode": "dark",
+  "palette": {
+    "background": "#100F0E",
+    "surface": "#201D1ACC",
+    "text": "#F5EDE3",
+    "accent": "#FF7849"
+  },
+  "files": { "css": "theme.css", "artwork": "background.svg", "preview": "preview.svg" }
+}

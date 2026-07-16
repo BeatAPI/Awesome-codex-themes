@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <defs><radialGradient id="sun"><stop stop-color="#F5B942" stop-opacity=".82"/><stop offset=".35" stop-color="#F5B942" stop-opacity=".18"/><stop offset="1" stop-color="#F5B942" stop-opacity="0"/></radialGradient><linearGradient id="night" x2="1" y2="1"><stop stop-color="#11100C"/><stop offset="1" stop-color="#302716"/></linearGradient></defs>
+  <rect width="1600" height="1000" fill="url(#night)"/><circle cx="1240" cy="340" r="390" fill="url(#sun)"/>
+  <g fill="none" stroke="#F5B942" stroke-opacity=".28"><circle cx="1240" cy="340" r="170"/><ellipse cx="1240" cy="340" rx="360" ry="130" transform="rotate(-18 1240 340)"/><ellipse cx="1240" cy="340" rx="520" ry="210" transform="rotate(22 1240 340)"/></g>
+  <g fill="#F5B942"><circle cx="865" cy="290" r="7"/><circle cx="1410" cy="505" r="5"/><circle cx="1080" cy="695" r="6"/></g>
+  <g stroke="#FFF4D6" stroke-opacity=".08"><path d="M120 120h560M120 160h420M120 760h510M120 800h360"/></g>
+</svg>
