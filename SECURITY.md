@@ -25,7 +25,7 @@ Changes are not accepted if they weaken these invariants:
 2. CDP endpoints use literal `127.0.0.1`; the listening port is owned by an inspected official app process.
 3. Renderer selection is allowlisted. The engine never broadcasts an expression to arbitrary targets.
 4. Theme paths remain below the theme root, including through symlinks.
-5. Theme CSS cannot load remote resources or executable URLs. Arbitrary theme JavaScript is unsupported.
+5. Theme CSS and SVG cannot load remote resources, execute scripts, or obscure executable tokens. Arbitrary theme JavaScript is unsupported.
 6. Injection uses project-owned IDs, classes, data attributes, and CSS variables and is reversible.
 7. Runtime state is atomically written with owner-only permissions.
 8. A watcher is terminated only when PID, start time, executable, and script identity all match.

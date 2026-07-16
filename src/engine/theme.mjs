@@ -227,11 +227,38 @@ function mimeForArtwork(path) {
 }
 
 function validateCss(css) {
-  if (/\@import\s/i.test(css) || /url\(\s*["']?(?:https?:|\/\/)/i.test(css)) {
+  if (css.includes('\\')) {
+    fail('THEME_CSS_UNSAFE_ESCAPE', 'Theme CSS cannot contain escape sequences that obscure executable or remote tokens.');
+  }
+  if (/\@import\s/i.test(css) || /https?:|\/\//i.test(css)) {
     fail('THEME_CSS_REMOTE_IMPORT', 'Theme CSS cannot load remote resources.');
   }
-  if (/url\(\s*["']?javascript:/i.test(css) || /expression\s*\(/i.test(css)) {
+  if (/url\s*\(/i.test(css) || /javascript\s*:|expression\s*\(/i.test(css)) {
     fail('THEME_CSS_UNSAFE_URL', 'Theme CSS contains an unsafe executable URL.');
+  }
+}
+
+function validateSvg(buffer, path) {
+  if (extname(path).toLowerCase() !== '.svg') return;
+  const svg = buffer.toString('utf8');
+  if (!/<svg(?:\s|>)/i.test(svg)) fail('THEME_SVG_INVALID', 'SVG assets must contain an svg root element.');
+  const activeMarkup = /<(?:script|foreignObject|iframe|object|embed|link|style|animate|set)(?:\s|>)/i;
+  const eventHandler = /\son[a-z][\w:-]*\s*=/i;
+  const obscuredToken = /<!DOCTYPE|<!ENTITY|javascript\s*:|\@import\s|\\|&#/i;
+  const withoutNamespaces = svg.replace(/\sxmlns(?::[\w-]+)?\s*=\s*(["']).*?\1/gi, '');
+  const remoteToken = /https?:|\/\/|data\s*:\s*text/i;
+  if (activeMarkup.test(svg) || eventHandler.test(svg) || obscuredToken.test(svg) || remoteToken.test(withoutNamespaces)) {
+    fail('THEME_SVG_UNSAFE', 'SVG assets cannot contain active markup, event handlers, remote CSS, or obscured tokens.');
+  }
+  for (const match of svg.matchAll(/(?:href|src)\s*=\s*(["'])(.*?)\1/gi)) {
+    if (!match[2].startsWith('#')) {
+      fail('THEME_SVG_UNSAFE', 'SVG href and src attributes must be local fragment references.');
+    }
+  }
+  for (const match of svg.matchAll(/url\s*\(\s*(["']?)(.*?)\1\s*\)/gi)) {
+    if (!match[2].startsWith('#')) {
+      fail('THEME_SVG_UNSAFE', 'SVG url functions must be local fragment references.');
+    }
   }
 }
 
@@ -239,7 +266,12 @@ export async function loadThemePackage(
   root,
   { maxAssetBytes = DEFAULT_MAX_ASSET_BYTES, maxCssBytes = DEFAULT_MAX_CSS_BYTES } = {},
 ) {
-  const canonicalRoot = await realpath(root);
+  let canonicalRoot;
+  try {
+    canonicalRoot = await realpath(root);
+  } catch (error) {
+    fail('THEME_NOT_FOUND', 'The requested theme directory does not exist or cannot be read.', { cause: error });
+  }
   const manifestPath = resolve(canonicalRoot, 'theme.json');
   let manifestInput;
   try {
@@ -265,9 +297,16 @@ export async function loadThemePackage(
     fail('THEME_ASSET_TOO_LARGE', `Theme artwork exceeds ${maxAssetBytes} bytes.`);
   }
 
-  const [css, artworkBuffer] = await Promise.all([readFile(cssPath, 'utf8'), readFile(artworkPath)]);
+  const [css, artworkBuffer, previewBuffer] = await Promise.all([
+    readFile(cssPath, 'utf8'),
+    readFile(artworkPath),
+    readFile(previewPath),
+  ]);
   validateCss(css);
   const mime = mimeForArtwork(artworkPath);
+  mimeForArtwork(previewPath);
+  validateSvg(artworkBuffer, artworkPath);
+  validateSvg(previewBuffer, previewPath);
 
   return {
     root: canonicalRoot,

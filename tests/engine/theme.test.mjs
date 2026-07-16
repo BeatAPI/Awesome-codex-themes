@@ -50,7 +50,7 @@ async function createTheme(manifest = validManifest(), options = {}) {
   await writeFile(join(root, 'theme.json'), JSON.stringify(manifest, null, 2));
   await writeFile(join(root, 'theme.css'), options.css ?? ':root.awesome-codex-theme { color: var(--act-text); }');
   await writeFile(join(root, 'background.svg'), options.artwork ?? '<svg xmlns="http://www.w3.org/2000/svg"/>');
-  await writeFile(join(root, 'preview.svg'), '<svg xmlns="http://www.w3.org/2000/svg"/>');
+  await writeFile(join(root, 'preview.svg'), options.preview ?? '<svg xmlns="http://www.w3.org/2000/svg"/>');
   return root;
 }
 
@@ -98,6 +98,12 @@ describe('assertThemeCompatibility', () => {
 });
 
 describe('loadThemePackage', () => {
+  test('uses a stable error when the requested theme directory does not exist', async () => {
+    await expect(loadThemePackage(join(tmpdir(), 'awesome-codex-missing-theme'))).rejects.toEqual(
+      expect.objectContaining({ code: 'THEME_NOT_FOUND' }),
+    );
+  });
+
   test('loads local CSS and artwork into a runtime-safe payload', async () => {
     const root = await createTheme();
 
@@ -133,10 +139,23 @@ describe('loadThemePackage', () => {
     ['@import url("https://example.com/theme.css");', 'THEME_CSS_REMOTE_IMPORT'],
     [':root { background: url(//example.com/track.png); }', 'THEME_CSS_REMOTE_IMPORT'],
     [':root { background: url(javascript:alert(1)); }', 'THEME_CSS_UNSAFE_URL'],
+    [':root { background: image-set("https://example.com/track.png" 1x); }', 'THEME_CSS_REMOTE_IMPORT'],
+    [':root { background: u\\72l("https://example.com/track.png"); }', 'THEME_CSS_UNSAFE_ESCAPE'],
   ])('rejects CSS that can execute or load remote content', async (css, code) => {
     const root = await createTheme(validManifest(), { css });
 
     await expect(loadThemePackage(root)).rejects.toEqual(expect.objectContaining({ code }));
+  });
+
+  test.each([
+    [{ artwork: '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>' }, 'background.svg'],
+    [{ preview: '<svg xmlns="http://www.w3.org/2000/svg"><image href="https://example.com/pixel"/></svg>' }, 'preview.svg'],
+    [{ preview: '<svg xmlns="http://www.w3.org/2000/svg"><rect onclick="alert(1)"/></svg>' }, 'preview.svg'],
+    [{ preview: '<svg xmlns="http://www.w3.org/2000/svg"><animate attributeName="href" values="https://example.com/pixel"/></svg>' }, 'preview.svg'],
+  ])('rejects active or remote SVG content in %s', async (options) => {
+    const root = await createTheme(validManifest(), options);
+
+    await expect(loadThemePackage(root)).rejects.toEqual(expect.objectContaining({ code: 'THEME_SVG_UNSAFE' }));
   });
 
   test('uses a typed error for malformed JSON', async () => {

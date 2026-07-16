@@ -41,8 +41,9 @@ export async function writeThemeCatalog({ themesRoot, jsonPath, publicRoot }) {
   for (const theme of catalog) {
     const previewName = theme.preview.split('/').at(-1);
     const destination = join(publicRoot, 'theme-assets', theme.slug, previewName);
+    const loaded = await loadThemePackage(join(themesRoot, theme.slug));
     await mkdir(dirname(destination), { recursive: true });
-    await copyFile(join(themesRoot, theme.slug, previewName), destination);
+    await copyFile(loaded.previewPath, destination);
   }
 
   return catalog;

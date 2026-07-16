@@ -1,4 +1,4 @@
-import { access, mkdtemp, readFile, rm } from 'node:fs/promises';
+import { access, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { afterEach, describe, expect, test } from 'vitest';
@@ -42,5 +42,40 @@ describe('theme catalog', () => {
       await expect(access(join(publicRoot, theme.preview))).resolves.toBeUndefined();
       expect(theme.preview).not.toMatch(/\.\.|https?:/);
     }
+  });
+
+  test('copies a declared preview from a nested safe package path', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'awesome-codex-nested-preview-'));
+    tempDirs.push(root);
+    const customThemes = join(root, 'themes');
+    const themeRoot = join(customThemes, 'nested-preview');
+    await mkdir(join(themeRoot, 'assets'), { recursive: true });
+    await writeFile(join(themeRoot, 'theme.json'), JSON.stringify({
+      schemaVersion: 1,
+      slug: 'nested-preview',
+      version: '1.0.0',
+      name: 'Nested Preview',
+      description: 'Tests a nested preview path.',
+      author: { name: 'Tests' },
+      license: { code: 'MIT', artwork: 'CC0-1.0' },
+      categories: ['test'],
+      tags: ['nested'],
+      compatibility: { platforms: ['macos'], status: 'experimental', appVersions: ['26.707.*'] },
+      palette: { background: '#111111', surface: '#222222CC', text: '#FFFFFF', accent: '#00AAFF' },
+      files: { css: 'theme.css', artwork: 'background.svg', preview: 'assets/preview.svg' },
+    }));
+    await writeFile(join(themeRoot, 'theme.css'), 'html.awesome-codex-theme { color: var(--act-text); }');
+    await writeFile(join(themeRoot, 'background.svg'), '<svg xmlns="http://www.w3.org/2000/svg"/>');
+    await writeFile(join(themeRoot, 'assets/preview.svg'), '<svg xmlns="http://www.w3.org/2000/svg"><rect width="1" height="1"/></svg>');
+
+    const outputRoot = join(root, 'output');
+    const catalog = await writeThemeCatalog({
+      themesRoot: customThemes,
+      jsonPath: join(outputRoot, 'themes.json'),
+      publicRoot: join(outputRoot, 'public'),
+    });
+
+    expect(catalog[0].preview).toBe('/theme-assets/nested-preview/preview.svg');
+    await expect(readFile(join(outputRoot, 'public/theme-assets/nested-preview/preview.svg'), 'utf8')).resolves.toContain('<rect');
   });
 });

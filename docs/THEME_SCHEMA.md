@@ -104,7 +104,8 @@ Prefer semantic elements and ARIA roles over hashed application classes. Decorat
 - Artwork formats: SVG, PNG, JPEG, WebP, or AVIF.
 - Default maximum artwork/preview size: 10 MiB each.
 - Default maximum CSS size: 256 KiB.
-- Remote `@import`, HTTP(S) and protocol-relative `url(...)`, JavaScript URLs, and CSS `expression(...)` are rejected.
+- CSS `url(...)`, remote/protocol-relative strings, `@import`, executable URLs, `expression(...)`, and escape sequences that could obscure those tokens are rejected. Runtime artwork is available only through `var(--act-artwork)`.
+- SVG artwork and previews cannot contain scripts, active embedded markup, event handlers, document/entity declarations, obscured tokens, or non-fragment `href`, `src`, and `url(...)` values.
 - Arbitrary JavaScript, remote fonts, analytics beacons, data collection, and content scripts are not part of the schema.
 - Artwork must be original or commercially redistributable. Do not submit character, celebrity, game, anime, brand, or logo artwork without documented rights.
 
