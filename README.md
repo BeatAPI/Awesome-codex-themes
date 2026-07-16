@@ -40,6 +40,8 @@ The shared `26.707` adapter maps a theme's semantic palette onto Codex and VS Co
 
 “Full-theme” means high coverage on a declared Codex version family. It does not mean future Codex versions are permanently pixel-compatible. Themes remain `experimental` until the relevant page matrix has recorded runtime evidence.
 
+Run one theme injector at a time. A third-party injector can win the CSS cascade with its own high-specificity rules; Awesome Codex Themes deliberately does not remove or rewrite unrelated style elements.
+
 ## Safety model
 
 - Validates bundle identifier `com.openai.codex`, intact code signature, and OpenAI Team ID `2DC432GLL2`.

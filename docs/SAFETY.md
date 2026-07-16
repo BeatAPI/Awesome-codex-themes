@@ -26,9 +26,10 @@ It does not trust:
 5. Verify the listener address and confirm its PID belongs to the inspected official app.
 6. Query `/json/list` only on literal loopback and accept only the expected main `app://-/index.html` renderer.
 7. Load a local theme, validate its manifest, paths, sizes, CSS, and declared Codex version range.
-8. Inject one style element plus five CSS variables and a namespaced root marker.
-9. Require the renderer to return the expected theme marker before reporting success.
-10. Start an idempotent watcher and persist exact process identity in a mode-`0600` state file.
+8. Select the trusted built-in adapter for the exact supported Codex version family.
+9. Inject one owned style element, one artwork variable, 33 semantic palette variables, and namespaced theme/adapter root markers.
+10. Require the renderer to return the expected theme and adapter markers before reporting success.
+11. Start an idempotent watcher and persist exact process identity in a mode-`0600` state file.
 
 ## Restore sequence
 
@@ -49,6 +50,7 @@ One-shot `apply --port` does not create a watcher or state file. Use `restore --
 - Invalid themes fail before CDP access.
 - Partial renderer confirmation is treated as failure.
 - Malformed state is reported and not silently discarded.
+- Concurrent third-party theme injectors are unsupported because their high-specificity rules can override either theme. Restore or disable the other theme before evaluating Awesome Codex Themes; this engine never deletes unrelated style elements.
 
 ## Non-goals
 
