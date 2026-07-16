@@ -1,7 +1,43 @@
 import { readFile, realpath, stat } from 'node:fs/promises';
 import { extname, isAbsolute, resolve, sep } from 'node:path';
 
-export const THEME_SCHEMA_VERSION = 1;
+export const THEME_SCHEMA_VERSION = 2;
+export const SUPPORTED_THEME_SCHEMA_VERSIONS = Object.freeze([1, 2]);
+export const SEMANTIC_COLOR_ROLES = Object.freeze([
+  'background',
+  'scrim',
+  'surface',
+  'surfaceElevated',
+  'surfaceOverlay',
+  'input',
+  'text',
+  'textSecondary',
+  'textMuted',
+  'textDisabled',
+  'icon',
+  'iconSecondary',
+  'iconMuted',
+  'border',
+  'borderSubtle',
+  'borderStrong',
+  'accent',
+  'accentHover',
+  'selection',
+  'focus',
+  'link',
+  'hover',
+  'active',
+  'code',
+  'terminal',
+  'diffAdded',
+  'diffRemoved',
+  'success',
+  'warning',
+  'danger',
+  'scrollbar',
+  'scrollbarHover',
+  'composer',
+]);
 export const DEFAULT_MAX_ASSET_BYTES = 10 * 1024 * 1024;
 export const DEFAULT_MAX_CSS_BYTES = 256 * 1024;
 
@@ -60,13 +96,68 @@ function validateColor(value, field) {
   return value.toUpperCase();
 }
 
+function withAlpha(value, alpha) {
+  return `${value.slice(0, 7)}${alpha}`;
+}
+
+function normalizePalette(palette, schemaVersion) {
+  if (schemaVersion === 2) {
+    return Object.fromEntries(
+      SEMANTIC_COLOR_ROLES.map((role) => [role, validateColor(palette[role], `palette.${role}`)]),
+    );
+  }
+
+  const background = validateColor(palette.background, 'palette.background');
+  const surface = validateColor(palette.surface, 'palette.surface');
+  const text = validateColor(palette.text, 'palette.text');
+  const accent = validateColor(palette.accent, 'palette.accent');
+  return {
+    background,
+    scrim: withAlpha(background, 'D9'),
+    surface,
+    surfaceElevated: withAlpha(surface, 'F2'),
+    surfaceOverlay: withAlpha(background, 'F2'),
+    input: surface,
+    text,
+    textSecondary: withAlpha(text, 'BF'),
+    textMuted: withAlpha(text, '8F'),
+    textDisabled: withAlpha(text, '66'),
+    icon: text,
+    iconSecondary: withAlpha(text, 'BF'),
+    iconMuted: withAlpha(text, '8F'),
+    border: withAlpha(accent, '38'),
+    borderSubtle: withAlpha(accent, '1F'),
+    borderStrong: withAlpha(accent, '70'),
+    accent,
+    accentHover: accent,
+    selection: withAlpha(accent, '4D'),
+    focus: accent,
+    link: accent,
+    hover: withAlpha(accent, '1F'),
+    active: withAlpha(accent, '38'),
+    code: withAlpha(background, 'F2'),
+    terminal: withAlpha(background, 'F2'),
+    diffAdded: '#2DAA6A42',
+    diffRemoved: '#FF5F5242',
+    success: '#40C977',
+    warning: '#F6C85F',
+    danger: '#FF6764',
+    scrollbar: withAlpha(accent, '45'),
+    scrollbarHover: withAlpha(accent, '78'),
+    composer: surface,
+  };
+}
+
 function validateManifestObject(input) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) {
     fail('THEME_JSON_INVALID', 'theme.json must contain an object.');
   }
 
-  if (input.schemaVersion !== THEME_SCHEMA_VERSION) {
-    fail('THEME_SCHEMA_UNSUPPORTED', `schemaVersion must be ${THEME_SCHEMA_VERSION}.`);
+  if (!SUPPORTED_THEME_SCHEMA_VERSIONS.includes(input.schemaVersion)) {
+    fail(
+      'THEME_SCHEMA_UNSUPPORTED',
+      `schemaVersion must be one of ${SUPPORTED_THEME_SCHEMA_VERSIONS.join(', ')}.`,
+    );
   }
 
   const slug = requireString(input.slug, 'slug');
@@ -122,7 +213,7 @@ function validateManifestObject(input) {
   }
 
   return {
-    schemaVersion: THEME_SCHEMA_VERSION,
+    schemaVersion: input.schemaVersion,
     slug,
     version,
     name: requireString(input.name, 'name'),
@@ -143,12 +234,7 @@ function validateManifestObject(input) {
       appVersions,
     },
     mode,
-    palette: {
-      background: validateColor(palette.background, 'palette.background'),
-      surface: validateColor(palette.surface, 'palette.surface'),
-      text: validateColor(palette.text, 'palette.text'),
-      accent: validateColor(palette.accent, 'palette.accent'),
-    },
+    palette: normalizePalette(palette, input.schemaVersion),
     files: {
       css: validateLocalPath(files.css, 'files.css'),
       artwork: validateLocalPath(files.artwork, 'files.artwork'),

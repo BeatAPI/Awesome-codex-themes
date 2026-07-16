@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { afterEach, describe, expect, test } from 'vitest';
 
 import {
+  SEMANTIC_COLOR_ROLES,
   ThemeValidationError,
   assertThemeCompatibility,
   loadThemePackage,
@@ -43,6 +44,45 @@ function validManifest(overrides = {}) {
   };
 }
 
+function semanticPalette(overrides = {}) {
+  return {
+    background: '#100F0E',
+    scrim: '#100F0ECC',
+    surface: '#201D1ACC',
+    surfaceElevated: '#29241FEE',
+    surfaceOverlay: '#171411F2',
+    input: '#24201CE6',
+    text: '#F5EDE3',
+    textSecondary: '#D8CFC4',
+    textMuted: '#A79D91',
+    textDisabled: '#756D64',
+    icon: '#F5EDE3',
+    iconSecondary: '#C6BCAF',
+    iconMuted: '#8F867C',
+    border: '#FFB18A38',
+    borderSubtle: '#FFB18A1F',
+    borderStrong: '#FFB18A70',
+    accent: '#FF7849',
+    accentHover: '#FF936C',
+    selection: '#FF78494D',
+    focus: '#FFB18A',
+    link: '#FF9B75',
+    hover: '#FFB18A1F',
+    active: '#FF784938',
+    code: '#0C0B0AF2',
+    terminal: '#080706F2',
+    diffAdded: '#2DAA6A42',
+    diffRemoved: '#FF5F5242',
+    success: '#58D68D',
+    warning: '#F6C85F',
+    danger: '#FF6B64',
+    scrollbar: '#FFB18A45',
+    scrollbarHover: '#FFB18A78',
+    composer: '#191613F2',
+    ...overrides,
+  };
+}
+
 async function createTheme(manifest = validManifest(), options = {}) {
   const root = await mkdtemp(join(tmpdir(), 'awesome-codex-theme-'));
   tempDirs.push(root);
@@ -77,6 +117,36 @@ describe('validateThemeManifest', () => {
     expect(() => validateThemeManifest(validManifest(overrides))).toThrowError(
       expect.objectContaining({ code }),
     );
+  });
+
+  test('normalizes every schema v2 semantic color role', () => {
+    const manifest = validateThemeManifest(
+      validManifest({ schemaVersion: 2, palette: semanticPalette() }),
+    );
+
+    expect(manifest.schemaVersion).toBe(2);
+    expect(Object.keys(manifest.palette)).toEqual(SEMANTIC_COLOR_ROLES);
+    expect(manifest.palette.surfaceOverlay).toBe('#171411F2');
+    expect(manifest.palette.scrollbarHover).toBe('#FFB18A78');
+  });
+
+  test('rejects a schema v2 palette missing a required semantic role', () => {
+    const palette = semanticPalette();
+    delete palette.composer;
+
+    expect(() =>
+      validateThemeManifest(validManifest({ schemaVersion: 2, palette })),
+    ).toThrowError(expect.objectContaining({ code: 'THEME_COLOR_INVALID' }));
+  });
+
+  test('expands a schema v1 palette into the complete runtime semantic palette', () => {
+    const manifest = validateThemeManifest(validManifest());
+
+    expect(manifest.schemaVersion).toBe(1);
+    expect(Object.keys(manifest.palette)).toEqual(SEMANTIC_COLOR_ROLES);
+    expect(manifest.palette.background).toBe('#07111F');
+    expect(manifest.palette.textSecondary).toMatch(/^#[0-9A-F]{8}$/);
+    expect(manifest.palette.composer).toBe('#142033CC');
   });
 });
 
