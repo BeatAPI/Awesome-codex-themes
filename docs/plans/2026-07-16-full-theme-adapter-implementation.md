@@ -1,10 +1,8 @@
 # Full Theme Adapter Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
-
 **Goal:** Add a versioned Codex `26.707` full-theme adapter and one complete semantic theme system that covers every requested visual surface while preserving safe restore.
 
-**Architecture:** Load a trusted shared adapter from `src/engine/adapters/`, validate semantic theme palettes in schema v2, and compose adapter CSS with per-theme CSS in the existing owned style element. Keep schema v1 readable through deterministic palette expansion, migrate repository themes to v2, and fail closed when no adapter supports the app version.
+**Architecture:** Load a trusted shared adapter from `src/engine/adapters/`, validate semantic theme palettes in schema v2, and compose adapter CSS with per-theme CSS in the existing owned style element. Keep schema v1 readable through deterministic palette expansion, migrate Obsidian Bloom to v2, and fail closed when no adapter supports the app version.
 
 **Tech Stack:** Node.js 22 ESM, Vitest, JSDOM, CSS custom properties, Chromium DevTools Protocol, Vite/React gallery.
 
@@ -91,27 +89,27 @@ Run: `pnpm vitest run tests/engine/injection.test.mjs tests/engine/session.test.
 
 Expected: PASS.
 
-### Task 4: Migrate and tune repository themes
+### Task 4: Migrate and tune one repository theme
 
 **Files:**
-- Modify: `themes/*/theme.json`
-- Modify: `themes/*/theme.css`
+- Modify: `themes/obsidian-bloom/theme.json`
+- Modify: `themes/obsidian-bloom/theme.css`
 - Modify: `tests/themes/catalog.test.mjs`
 - Regenerate: `src/generated/themes.json`
 
 **Step 1: Write failing catalog assertions**
 
-Require all repository themes to use schema v2 and expose the full semantic palette. Require Obsidian Bloom to be marked as the primary full-coverage experimental theme in catalog metadata.
+Require Obsidian Bloom to use schema v2, expose the full semantic palette, and be marked as the primary full-coverage experimental theme. Require the other launch themes to remain explicit schema-v1 legacy packages.
 
 **Step 2: Run and verify RED**
 
 Run: `pnpm vitest run tests/themes/catalog.test.mjs`
 
-Expected: FAIL because repository themes remain schema v1.
+Expected: FAIL because Obsidian Bloom remains schema v1.
 
-**Step 3: Migrate themes**
+**Step 3: Migrate Obsidian Bloom**
 
-Provide accessible dark palettes for Arctic Signal, Obsidian Bloom, and Solar Archive plus a complete light palette for Paper Circuit. Keep package CSS limited to artwork composition and small theme-specific refinements; bump theme versions to `1.1.0`.
+Provide a complete accessible dark palette for Obsidian Bloom. Keep package CSS limited to artwork composition and small theme-specific refinements; bump its version to `1.1.0`. Leave Arctic Signal, Paper Circuit, and Solar Archive on schema v1 until separate tuning work is approved.
 
 **Step 4: Generate and verify GREEN**
 

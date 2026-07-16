@@ -24,9 +24,8 @@ Schema version 2 expands the four launch colors into a complete visual contract:
 - code, terminal, diff-added, and diff-removed surfaces;
 - success, warning, and danger colors;
 - scrollbar and composer colors;
-- glass blur and corner radius values.
 
-All color fields remain six- or eight-digit hex. Numeric effects use bounded typed fields. Version 1 theme manifests remain readable through deterministic palette derivation so third-party themes do not break immediately, while repository themes migrate to version 2.
+All color fields remain six- or eight-digit hex. Version 1 theme manifests remain readable through deterministic palette derivation so existing themes do not break immediately. Obsidian Bloom is the first repository theme migrated and tuned to version 2; the other three launch themes stay on version 1 until they receive their own visual pass.
 
 ## Runtime and recovery
 
@@ -36,6 +35,6 @@ The existing signature, Team ID, renderer allowlist, loopback, port-owner, and v
 
 ## Coverage contract
 
-Automated tests will require representative token groups and selectors for every requested surface. Runtime verification will report an adapter marker in addition to the theme slug. Live verification on `26.707.72221` will inspect computed values for background, panel, text, icon, border, input, code, hover, selection, scrollbar, and composer categories. Screenshots will cover the currently visible real conversation surface; missing pages remain explicitly experimental until separately exercised.
+Automated tests will require representative token groups and selectors for every requested surface. Runtime verification will report an adapter marker in addition to the theme slug. Live verification on `26.707.91948` will inspect computed values for background, panel, text, icon, border, input, code, hover, selection, scrollbar, and composer categories. Screenshots will cover the currently visible real conversation surface; missing pages remain explicitly experimental until separately exercised.
 
 The project will describe this as high-coverage theming for a supported renderer version, not permanent pixel-perfect coverage across future Codex releases.
