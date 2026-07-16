@@ -4,6 +4,7 @@ import { join, resolve } from 'node:path';
 import { afterEach, describe, expect, test } from 'vitest';
 
 import { buildThemeCatalog, writeThemeCatalog } from '../../scripts/catalog.mjs';
+import { SEMANTIC_COLOR_ROLES } from '../../src/engine/theme.mjs';
 
 const repoRoot = resolve(import.meta.dirname, '../..');
 const themesRoot = join(repoRoot, 'themes');
@@ -26,6 +27,23 @@ describe('theme catalog', () => {
     expect(catalog.every((theme) => theme.compatibility.status === 'experimental')).toBe(true);
     expect(catalog.every((theme) => theme.command.startsWith('awesome-codex-themes start '))).toBe(true);
     expect(catalog.every((theme) => theme.preview.startsWith('/theme-assets/'))).toBe(true);
+  });
+
+  test('ships every repository theme on schema v2 with the full semantic palette', async () => {
+    for (const slug of ['arctic-signal', 'obsidian-bloom', 'paper-circuit', 'solar-archive']) {
+      const manifest = JSON.parse(await readFile(join(themesRoot, slug, 'theme.json'), 'utf8'));
+      expect(manifest.schemaVersion, slug).toBe(2);
+      expect(Object.keys(manifest.palette), slug).toEqual(SEMANTIC_COLOR_ROLES);
+      expect(manifest.version, slug).toBe('1.1.0');
+    }
+  });
+
+  test('identifies Obsidian Bloom as a full-workspace theme for the first live check', async () => {
+    const catalog = await buildThemeCatalog(themesRoot);
+    const theme = catalog.find((item) => item.slug === 'obsidian-bloom');
+
+    expect(theme?.tags).toContain('full-workspace');
+    expect(theme?.compatibility.status).toBe('experimental');
   });
 
   test('writes gallery metadata and only the declared local preview assets', async () => {
