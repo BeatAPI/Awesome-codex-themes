@@ -1,0 +1,350 @@
+/*
+ * Awesome Codex Themes — Codex Desktop 26.707 adapter
+ * Original MIT-licensed compatibility layer. Rules are scoped to the project marker.
+ */
+
+html.awesome-codex-theme {
+  color-scheme: dark !important;
+  background-color: var(--act-background) !important;
+  background-image:
+    linear-gradient(115deg, var(--act-scrim), color-mix(in srgb, var(--act-scrim) 58%, transparent)),
+    var(--act-artwork) !important;
+  background-position: center !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+
+  --codex-base-surface: var(--act-surface) !important;
+  --codex-base-ink: var(--act-text) !important;
+  --codex-base-accent: var(--act-accent) !important;
+
+  --color-token-main-surface-primary: transparent !important;
+  --color-token-side-bar-background: var(--act-surface) !important;
+  --color-token-editor-background: transparent !important;
+  --color-token-terminal-background: var(--act-terminal) !important;
+  --color-token-bg-primary: var(--act-surface) !important;
+  --color-token-bg-secondary: var(--act-surface-elevated) !important;
+  --color-token-bg-tertiary: var(--act-surface-overlay) !important;
+  --color-token-bg-fog: var(--act-surface-overlay) !important;
+  --color-token-bg-appshot: var(--act-surface) !important;
+  --color-token-dropdown-background: var(--act-surface-overlay) !important;
+  --color-token-menu-background: var(--act-surface-overlay) !important;
+  --color-token-editor-widget-background: var(--act-surface-overlay) !important;
+  --color-token-input-background: var(--act-input) !important;
+  --color-token-text-code-block-background: var(--act-code) !important;
+  --color-token-text-preformat-background: var(--act-code) !important;
+  --color-token-diff-surface: var(--act-code) !important;
+
+  --color-background-surface: var(--act-surface) !important;
+  --color-background-surface-under: transparent !important;
+  --color-background-panel: var(--act-surface-elevated) !important;
+  --color-background-elevated-primary: var(--act-surface-overlay) !important;
+  --color-background-elevated-primary-opaque: var(--act-surface-overlay) !important;
+  --color-background-elevated-secondary: var(--act-surface-elevated) !important;
+  --color-background-elevated-secondary-opaque: var(--act-surface-elevated) !important;
+  --color-background-editor-opaque: var(--act-code) !important;
+  --color-background-control: var(--act-input) !important;
+  --color-background-control-opaque: var(--act-input) !important;
+
+  --color-token-foreground: var(--act-text) !important;
+  --color-token-text-primary: var(--act-text) !important;
+  --color-token-text-secondary: var(--act-text-secondary) !important;
+  --color-token-text-tertiary: var(--act-text-muted) !important;
+  --color-token-description-foreground: var(--act-text-muted) !important;
+  --color-token-disabled-foreground: var(--act-text-disabled) !important;
+  --color-token-input-foreground: var(--act-text) !important;
+  --color-token-input-placeholder-foreground: var(--act-text-muted) !important;
+  --color-token-dropdown-foreground: var(--act-text) !important;
+  --color-token-text-preformat-foreground: var(--act-text) !important;
+  --color-token-editor-foreground: var(--act-text) !important;
+  --color-token-terminal-foreground: var(--act-text) !important;
+  --color-token-conversation-header: var(--act-text-muted) !important;
+  --color-token-conversation-body: var(--act-text-secondary) !important;
+  --color-token-conversation-summary-leading: var(--act-text-muted) !important;
+  --color-token-conversation-summary-trailing: var(--act-text-disabled) !important;
+  --color-token-non-assistant-body-descendant: var(--act-text-secondary) !important;
+
+  --color-text-foreground: var(--act-text) !important;
+  --color-text-foreground-secondary: var(--act-text-secondary) !important;
+  --color-text-foreground-tertiary: var(--act-text-muted) !important;
+  --color-text-button-secondary: var(--act-text) !important;
+  --color-text-button-tertiary: var(--act-text-muted) !important;
+  --color-text-accent: var(--act-accent) !important;
+
+  --color-token-icon-foreground: var(--act-icon-secondary) !important;
+  --color-icon-primary: var(--act-icon) !important;
+  --color-icon-secondary: var(--act-icon-secondary) !important;
+  --color-icon-tertiary: var(--act-icon-muted) !important;
+  --color-icon-accent: var(--act-accent) !important;
+
+  --color-token-border: var(--act-border) !important;
+  --color-token-border-default: var(--act-border) !important;
+  --color-token-border-light: var(--act-border-subtle) !important;
+  --color-token-border-heavy: var(--act-border-strong) !important;
+  --color-token-input-border: var(--act-border) !important;
+  --color-token-button-border: var(--act-border) !important;
+  --color-token-menu-border: var(--act-border) !important;
+  --color-token-terminal-border: var(--act-border) !important;
+  --color-border: var(--act-border) !important;
+  --color-border-light: var(--act-border-subtle) !important;
+  --color-border-heavy: var(--act-border-strong) !important;
+  --color-border-focus: var(--act-focus) !important;
+  --color-token-focus-border: var(--act-focus) !important;
+  --color-token-list-focus-outline: var(--act-focus) !important;
+
+  --color-token-primary: var(--act-accent) !important;
+  --color-token-link: var(--act-link) !important;
+  --color-token-text-link-foreground: var(--act-link) !important;
+  --color-token-text-link-active-foreground: var(--act-accent-hover) !important;
+  --color-accent-blue: var(--act-accent) !important;
+  --color-accent-purple: var(--act-accent-hover) !important;
+  --color-background-accent: var(--act-active) !important;
+  --color-background-accent-hover: var(--act-hover) !important;
+  --color-background-accent-active: var(--act-active) !important;
+  --color-token-editor-find-match-background: var(--act-hover) !important;
+  --color-token-editor-find-match-highlight-background: var(--act-active) !important;
+  --color-token-editor-selection-background: var(--act-selection) !important;
+  --color-token-list-hover-background: var(--act-hover) !important;
+  --color-token-list-active-selection-background: var(--act-selection) !important;
+  --color-token-list-active-selection-foreground: var(--act-text) !important;
+  --color-token-list-active-selection-icon-foreground: var(--act-icon) !important;
+  --color-token-toolbar-hover-background: var(--act-hover) !important;
+  --color-background-button-primary-hover: var(--act-hover) !important;
+  --color-background-button-primary-active: var(--act-active) !important;
+  --color-background-button-secondary-hover: var(--act-hover) !important;
+  --color-background-button-secondary-active: var(--act-active) !important;
+  --color-background-button-tertiary-hover: var(--act-hover) !important;
+  --color-background-button-tertiary-active: var(--act-active) !important;
+
+  --color-token-scrollbar-slider-background: var(--act-scrollbar) !important;
+  --color-token-scrollbar-slider-hover-background: var(--act-scrollbar-hover) !important;
+  --color-token-scrollbar-slider-active-background: var(--act-scrollbar-hover) !important;
+
+  --color-token-text-preformat-background: var(--act-code) !important;
+  --color-token-diff-editor-inserted-line-background: var(--act-diff-added) !important;
+  --color-token-diff-editor-inserted-text-background: var(--act-diff-added) !important;
+  --color-token-diff-editor-removed-line-background: var(--act-diff-removed) !important;
+  --color-token-diff-editor-removed-text-background: var(--act-diff-removed) !important;
+  --color-editor-added: var(--act-diff-added) !important;
+  --color-editor-deleted: var(--act-diff-removed) !important;
+  --color-decoration-added: var(--act-success) !important;
+  --color-decoration-deleted: var(--act-danger) !important;
+  --color-decoration-modified: var(--act-warning) !important;
+
+  --color-token-error-foreground: var(--act-danger) !important;
+  --color-token-editor-error-foreground: var(--act-danger) !important;
+  --color-token-editor-warning-foreground: var(--act-warning) !important;
+  --color-icon-error: var(--act-danger) !important;
+  --color-icon-warning: var(--act-warning) !important;
+  --color-icon-success: var(--act-success) !important;
+  --color-background-status-error: color-mix(in srgb, var(--act-danger) 18%, var(--act-surface-overlay)) !important;
+  --color-background-status-warning: color-mix(in srgb, var(--act-warning) 18%, var(--act-surface-overlay)) !important;
+  --color-background-status-success: color-mix(in srgb, var(--act-success) 18%, var(--act-surface-overlay)) !important;
+
+  --vscode-foreground: var(--act-text) !important;
+  --vscode-descriptionForeground: var(--act-text-muted) !important;
+  --vscode-icon-foreground: var(--act-icon-secondary) !important;
+  --vscode-sideBar-background: var(--act-surface) !important;
+  --vscode-editor-background: transparent !important;
+  --vscode-terminal-background: var(--act-terminal) !important;
+  --vscode-input-background: var(--act-input) !important;
+  --vscode-dropdown-background: var(--act-surface-overlay) !important;
+  --vscode-menu-background: var(--act-surface-overlay) !important;
+  --vscode-textCodeBlock-background: var(--act-code) !important;
+  --vscode-textLink-foreground: var(--act-link) !important;
+  --vscode-list-hoverBackground: var(--act-hover) !important;
+  --vscode-list-activeSelectionBackground: var(--act-selection) !important;
+  --vscode-toolbar-hoverBackground: var(--act-hover) !important;
+  --vscode-scrollbarSlider-background: var(--act-scrollbar) !important;
+  --vscode-scrollbarSlider-hoverBackground: var(--act-scrollbar-hover) !important;
+}
+
+html.awesome-codex-theme body {
+  color: var(--act-text) !important;
+  background: transparent !important;
+}
+
+html.awesome-codex-theme #root {
+  min-height: 100vh;
+  color: var(--act-text) !important;
+  background:
+    radial-gradient(circle at 72% 18%, color-mix(in srgb, var(--act-accent) 9%, transparent), transparent 38%),
+    linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--act-scrim) 58%, transparent) 100%) !important;
+}
+
+html.awesome-codex-theme :is(
+  .app-shell,
+  .app-shell-main,
+  .main-surface,
+  .app-shell-main-content-viewport,
+  .app-shell-main-content-frame,
+  .thread-root,
+  .thread-scroll-container,
+  [class~="electron:bg-token-main-surface-primary"]
+) {
+  background-color: transparent !important;
+}
+
+html.awesome-codex-theme .app-shell-left-panel {
+  color: var(--act-text) !important;
+  background: var(--act-surface) !important;
+  border-color: var(--act-border-subtle) !important;
+  box-shadow: 12px 0 40px color-mix(in srgb, var(--act-background) 52%, transparent) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(118%);
+  backdrop-filter: blur(22px) saturate(118%);
+}
+
+html.awesome-codex-theme :is(.app-header-tint, .app-shell-main-content-top-fade) {
+  background: linear-gradient(180deg, var(--act-surface-elevated), transparent) !important;
+  border-color: var(--act-border-subtle) !important;
+}
+
+html.awesome-codex-theme :is(
+  [role="dialog"],
+  [role="menu"],
+  [role="listbox"],
+  [role="tooltip"],
+  [data-radix-menu-content],
+  .dialog-layout,
+  .bg-token-dropdown-background,
+  [data-browser-comment-editor-surface]
+) {
+  color: var(--act-text) !important;
+  background-color: var(--act-surface-overlay) !important;
+  border-color: var(--act-border) !important;
+  box-shadow: 0 18px 54px color-mix(in srgb, var(--act-background) 65%, transparent) !important;
+  -webkit-backdrop-filter: blur(26px) saturate(122%);
+  backdrop-filter: blur(26px) saturate(122%);
+}
+
+html.awesome-codex-theme :is(
+  input,
+  textarea,
+  select,
+  [contenteditable="true"],
+  .ProseMirror,
+  [class*="input-background"]
+) {
+  color: var(--act-text) !important;
+  caret-color: var(--act-accent) !important;
+  background-color: var(--act-input) !important;
+  border-color: var(--act-border) !important;
+}
+
+html.awesome-codex-theme :is(input, textarea)::placeholder {
+  color: var(--act-text-muted) !important;
+  opacity: 1 !important;
+}
+
+html.awesome-codex-theme :is(button, [role="button"], a) {
+  border-color: var(--act-border-subtle);
+}
+
+html.awesome-codex-theme :is(button, [role="button"], a):hover {
+  border-color: var(--act-border) !important;
+}
+
+html.awesome-codex-theme :is(button, [role="button"], a, input, textarea, select, [contenteditable="true"]):focus-visible {
+  outline: 2px solid var(--act-focus) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--act-focus) 20%, transparent) !important;
+}
+
+html.awesome-codex-theme :is(pre, code, kbd, samp, .vscode-markdown pre, .vscode-markdown code) {
+  color: var(--act-text) !important;
+  background-color: var(--act-code) !important;
+  border-color: var(--act-border-subtle) !important;
+}
+
+html.awesome-codex-theme :is(.monaco-editor, .monaco-editor-background, .margin, .terminal, .xterm-viewport) {
+  color: var(--act-text) !important;
+  background-color: var(--act-terminal) !important;
+}
+
+html.awesome-codex-theme :is(.composer-root, .composer-surface-chrome) {
+  color: var(--act-text) !important;
+  background: var(--act-composer) !important;
+  border: 1px solid var(--act-border-strong) !important;
+  box-shadow:
+    0 18px 44px color-mix(in srgb, var(--act-background) 55%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--act-text) 8%, transparent) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(120%);
+  backdrop-filter: blur(24px) saturate(120%);
+}
+
+html.awesome-codex-theme :is(button[data-testid="composer-send-button"], .composer-send-button) {
+  color: var(--act-background) !important;
+  background: var(--act-accent) !important;
+  border-color: var(--act-accent-hover) !important;
+}
+
+html.awesome-codex-theme :is(button[data-testid="composer-send-button"], .composer-send-button):not(:disabled):hover {
+  background: var(--act-accent-hover) !important;
+}
+
+html.awesome-codex-theme :is(article, [data-message-author-role], [role="listitem"]) {
+  border-color: var(--act-border-subtle) !important;
+}
+
+html.awesome-codex-theme :is(svg, [data-icon]) {
+  color: currentColor;
+}
+
+html.awesome-codex-theme ::selection {
+  color: var(--act-text) !important;
+  background: var(--act-selection) !important;
+}
+
+html.awesome-codex-theme * {
+  scrollbar-color: var(--act-scrollbar) transparent;
+}
+
+html.awesome-codex-theme *::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html.awesome-codex-theme *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html.awesome-codex-theme *::-webkit-scrollbar-thumb {
+  background-color: var(--act-scrollbar) !important;
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+}
+
+html.awesome-codex-theme *::-webkit-scrollbar-thumb:hover {
+  background-color: var(--act-scrollbar-hover) !important;
+}
+
+html.awesome-codex-theme :is(
+  .app-shell-left-panel,
+  .app-shell-main,
+  .main-surface,
+  .thread-root,
+  .composer-root,
+  .editor-container
+)::before,
+html.awesome-codex-theme :is(
+  .app-shell-left-panel,
+  .app-shell-main,
+  .main-surface,
+  .thread-root,
+  .composer-root,
+  .editor-container
+)::after {
+  border-color: var(--act-border-subtle) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.awesome-codex-theme *,
+  html.awesome-codex-theme *::before,
+  html.awesome-codex-theme *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
