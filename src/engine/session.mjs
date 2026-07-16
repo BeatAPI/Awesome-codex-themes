@@ -1,5 +1,6 @@
 import { join } from 'node:path';
 
+import { loadCodexAdapter } from './adapter.mjs';
 import { evaluateOnRendererTargets } from './cdp.mjs';
 import {
   buildApplyExpression,
@@ -32,15 +33,18 @@ export async function applyThemeAtPort({
     sessionFail('THEME_SLUG_MISMATCH', 'Theme directory and manifest slug must match.');
   }
   assertThemeCompatibility(theme.manifest, { platform: 'macos', appVersion });
-  const results = await evaluate({ port, expression: buildApplyExpression(theme) });
+  const adapter = await loadCodexAdapter(appVersion);
+  const results = await evaluate({ port, expression: buildApplyExpression(theme, adapter) });
   if (
     !Array.isArray(results) ||
     results.length === 0 ||
-    results.some((result) => !result?.pass || result.theme !== themeSlug)
+    results.some(
+      (result) => !result?.pass || result.theme !== themeSlug || result.adapter !== adapter.id,
+    )
   ) {
     sessionFail('THEME_APPLY_UNVERIFIED', 'The renderer did not confirm the requested theme marker.');
   }
-  return { theme: themeSlug, renderers: results.length };
+  return { theme: themeSlug, adapter: adapter.id, renderers: results.length };
 }
 
 export async function removeThemeAtPort({ port, evaluate = evaluateOnRendererTargets }) {

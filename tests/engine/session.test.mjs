@@ -81,11 +81,12 @@ describe('applyThemeAtPort', () => {
     const themesRoot = await createThemeRoot();
     const evaluate = vi.fn(async ({ port, expression }) => {
       expect(expression).toContain('awesome-codex-theme-style');
-      return [{ pass: true, theme: 'test-theme' }];
+      expect(expression).toContain('--color-token-main-surface-primary');
+      return [{ pass: true, theme: 'test-theme', adapter: 'codex-26.707' }];
     });
 
     await expect(applyThemeAtPort({ themesRoot, themeSlug: 'test-theme', port: 9341, appVersion: '26.707.72221', evaluate })).resolves.toEqual(
-      expect.objectContaining({ theme: 'test-theme', renderers: 1 }),
+      expect.objectContaining({ theme: 'test-theme', adapter: 'codex-26.707', renderers: 1 }),
     );
     expect(evaluate).toHaveBeenCalledWith(expect.objectContaining({ port: 9341 }));
   });
