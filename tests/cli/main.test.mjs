@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 
-import { CliError, runCli } from '../../src/cli/main.mjs';
+import { CliError, runCli, terminateProcess } from '../../src/cli/main.mjs';
 
 function createIo() {
   const stdout = [];
@@ -95,6 +95,16 @@ describe('runCli', () => {
     expect(stdout).toEqual(['inactive — official UI is not managed by Awesome Codex Themes']);
   });
 
+  test('does not call a stale state file active', async () => {
+    const { io, stdout } = createIo();
+
+    await expect(
+      runCli(['status'], dependencies({ status: async () => ({ active: false, stale: true, theme: 'arctic-signal' }) }), io),
+    ).resolves.toBe(0);
+    expect(stdout.join('\n')).toContain('stale state');
+    expect(stdout.join('\n')).toContain('run restore');
+  });
+
   test('runs restore without accepting a theme argument', async () => {
     const { io, stdout } = createIo();
     const restore = vi.fn(dependencies().restore);
@@ -102,5 +112,37 @@ describe('runCli', () => {
     await expect(runCli(['restore'], dependencies({ restore }), io)).resolves.toBe(0);
     expect(restore).toHaveBeenCalledOnce();
     expect(stdout.join('\n')).toContain('restored official UI');
+  });
+
+  test('restores a one-shot apply using the same validated explicit port', async () => {
+    const { io, stdout } = createIo();
+    const restore = vi.fn(dependencies().restore);
+
+    await expect(runCli(['restore', '--port', '9341'], dependencies({ restore }), io)).resolves.toBe(0);
+    expect(restore).toHaveBeenCalledWith(9341);
+    expect(stdout.join('\n')).toContain('restored official UI');
+  });
+});
+
+describe('terminateProcess', () => {
+  test('signals the watcher and waits until that exact PID has exited', async () => {
+    const signal = vi.fn();
+    const exists = vi.fn().mockReturnValueOnce(true).mockReturnValueOnce(false);
+    const delay = vi.fn(async () => {});
+
+    await expect(terminateProcess(456, { signal, exists, delay, attempts: 3 })).resolves.toBeUndefined();
+    expect(signal).toHaveBeenCalledWith(456, 'SIGTERM');
+    expect(delay).toHaveBeenCalledOnce();
+  });
+
+  test('fails instead of claiming restore while the watcher remains alive', async () => {
+    await expect(
+      terminateProcess(456, {
+        signal: vi.fn(),
+        exists: () => true,
+        delay: async () => {},
+        attempts: 2,
+      }),
+    ).rejects.toEqual(expect.objectContaining({ code: 'INJECTOR_STOP_TIMEOUT' }));
   });
 });

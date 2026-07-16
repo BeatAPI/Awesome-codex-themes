@@ -1,6 +1,7 @@
 {
   "name": "awesome-codex-themes",
   "version": "0.1.0",
+  "packageManager": "pnpm@10.32.1",
   "private": false,
   "type": "module",
   "description": "A safe, open theme engine and gallery for the official Codex Desktop app.",

@@ -1,0 +1,55 @@
+name: Bug report
+description: Report a reproducible engine, CLI, theme, or Gallery defect.
+title: "[Bug]: "
+labels: [bug, needs-triage]
+body:
+  - type: markdown
+    attributes:
+      value: Do not include conversations, tokens, API keys, or account data. Report security vulnerabilities privately through GitHub Security Advisories.
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Surface
+      options:
+        - CLI / diagnostics
+        - Apply / watcher / restore
+        - Theme package
+        - Static Gallery
+        - Documentation
+    validations:
+      required: true
+  - type: input
+    id: commit
+    attributes:
+      label: Commit or version
+      placeholder: git rev-parse HEAD
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: macOS version, architecture, and Codex Desktop version. Omit account details.
+      placeholder: macOS 15.x, arm64, Codex 26.707.72221
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction
+      description: Smallest exact command sequence and stable error code.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      options:
+        - label: I removed conversations, personal data, credentials, tokens, and API keys.
+          required: true

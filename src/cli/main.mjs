@@ -20,7 +20,7 @@ import {
   restoreThemeSession,
   startThemeSession,
 } from '../engine/session.mjs';
-import { readRuntimeState, writeRuntimeState } from '../engine/state.mjs';
+import { matchesProcessIdentity, readRuntimeState, writeRuntimeState } from '../engine/state.mjs';
 import { loadThemePackage } from '../engine/theme.mjs';
 
 const execFileAsync = promisify(execFile);
@@ -38,7 +38,7 @@ Usage:
   awesome-codex-themes start <theme>
   awesome-codex-themes apply <theme> --port <port>
   awesome-codex-themes status
-  awesome-codex-themes restore
+  awesome-codex-themes restore [--port <port>]
 
 The engine only connects to CDP on 127.0.0.1 and never terminates the official app.`;
 
@@ -129,7 +129,9 @@ export async function runCli(argv, dependencies, io = { out: console.log, error:
     if (command === 'status') {
       rejectExtraArgs(args, 0, 'status');
       const result = await dependencies.status();
-      if (!result.active) {
+      if (result.stale) {
+        io.out(`inactive — stale state for ${result.theme}; run restore to clean project-owned state`);
+      } else if (!result.active) {
         io.out('inactive — official UI is not managed by Awesome Codex Themes');
       } else {
         io.out(`active — ${result.theme} on 127.0.0.1:${result.port}`);
@@ -138,8 +140,14 @@ export async function runCli(argv, dependencies, io = { out: console.log, error:
     }
 
     if (command === 'restore') {
-      rejectExtraArgs(args, 0, 'restore');
-      const result = await dependencies.restore();
+      let port;
+      if (args.length > 0) {
+        if (args[0] !== '--port' || args.length !== 2) {
+          cliFail('CLI_ARGUMENT_INVALID', 'restore accepts only an optional explicit local CDP port.');
+        }
+        port = parsePort(args[1]);
+      }
+      const result = await dependencies.restore(port);
       io.out(`restored official UI${result.theme ? ` from ${result.theme}` : ''}`);
       return 0;
     }
@@ -234,6 +242,24 @@ function processExists(pid) {
   }
 }
 
+export async function terminateProcess(
+  pid,
+  {
+    signal = (processId, name) => process.kill(processId, name),
+    exists = processExists,
+    delay = (milliseconds) => new Promise((resolveDelay) => setTimeout(resolveDelay, milliseconds)),
+    attempts = 40,
+  } = {},
+) {
+  if (!Number.isInteger(pid) || pid < 1) cliFail('CLI_PID_INVALID', 'Watcher PID must be a positive integer.');
+  signal(pid, 'SIGTERM');
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    if (!exists(pid)) return;
+    await delay(50);
+  }
+  cliFail('INJECTOR_STOP_TIMEOUT', `Watcher ${pid} did not exit after SIGTERM; live theme removal was not claimed.`);
+}
+
 export function createDefaultDependencies() {
   return {
     async listThemes() {
@@ -283,6 +309,11 @@ export function createDefaultDependencies() {
           },
           spawnWatcher,
           writeState: writeRuntimeState,
+          removeTheme: async (port, app) => {
+            await assertOfficialPortOwner(app, port);
+            return removeThemeAtPort({ port });
+          },
+          stopWatcher: terminateProcess,
         },
       );
     },
@@ -296,14 +327,37 @@ export function createDefaultDependencies() {
     async status() {
       try {
         const state = await readRuntimeState(statePath);
-        return { active: true, theme: state.themeSlug, port: state.port };
+        try {
+          const app = await discoverOfficialApp();
+          const [appPids, appStartedAt, injector] = await Promise.all([
+            listOfficialAppPids(app),
+            processStartedAt(state.appPid),
+            observeInjector(state.injectorPid, state),
+          ]);
+          const active =
+            app.appPath === state.appPath &&
+            app.version === state.appVersion &&
+            appPids.includes(state.appPid) &&
+            appStartedAt === state.appStartedAt &&
+            matchesProcessIdentity(state, injector);
+          return active
+            ? { active: true, theme: state.themeSlug, port: state.port }
+            : { active: false, stale: true, theme: state.themeSlug, port: state.port };
+        } catch {
+          return { active: false, stale: true, theme: state.themeSlug, port: state.port };
+        }
       } catch (error) {
         if (error?.code === 'STATE_READ_FAILED' && error?.cause?.code === 'ENOENT') return { active: false };
         throw error;
       }
     },
 
-    async restore() {
+    async restore(port) {
+      if (port !== undefined) {
+        const app = await discoverOfficialApp();
+        await assertOfficialPortOwner(app, port);
+        return removeThemeAtPort({ port });
+      }
       let expected;
       return restoreThemeSession(
         { statePath },
@@ -320,7 +374,7 @@ export function createDefaultDependencies() {
               if (!RETRYABLE_CDP_ERRORS.has(error?.code)) throw error;
             }
           },
-          killInjector: async (pid) => process.kill(pid, 'SIGTERM'),
+          killInjector: terminateProcess,
           removeState: (path) => rm(path, { force: true }),
         },
       );

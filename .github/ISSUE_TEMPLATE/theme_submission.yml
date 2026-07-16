@@ -1,0 +1,46 @@
+name: Theme proposal
+description: Propose an original or properly licensed theme package.
+title: "[Theme]: "
+labels: [theme, needs-review]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Theme name and slug
+      placeholder: My Theme / my-theme
+    validations:
+      required: true
+  - type: textarea
+    id: concept
+    attributes:
+      label: Visual concept
+      description: Describe the mood, palette, and how it differs from existing themes.
+    validations:
+      required: true
+  - type: dropdown
+    id: provenance
+    attributes:
+      label: Artwork provenance
+      options:
+        - Original work created by me
+        - Commercially redistributable work with documented license
+    validations:
+      required: true
+  - type: input
+    id: compatibility
+    attributes:
+      label: Codex version tested
+      placeholder: 26.707.72221
+    validations:
+      required: true
+  - type: checkboxes
+    id: boundaries
+    attributes:
+      label: Submission checks
+      options:
+        - label: The package contains no unlicensed character, celebrity, game, anime, logo, or brand artwork.
+          required: true
+        - label: The CSS preserves native controls, focus, pointer, and keyboard interaction.
+          required: true
+        - label: I will include an ASSET_LICENSE.md and start with experimental status.
+          required: true

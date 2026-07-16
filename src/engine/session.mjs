@@ -63,6 +63,8 @@ export async function startThemeSession(
     applyTheme,
     spawnWatcher,
     writeState,
+    removeTheme,
+    stopWatcher,
   },
 ) {
   const app = await discoverApp();
@@ -81,28 +83,59 @@ export async function startThemeSession(
   const appStartedAt = await processStartedAt(appPid);
 
   await waitForRenderer(port);
-  await applyTheme({ themeSlug, port, app });
-  const watcher = await spawnWatcher({ themeSlug, port, appPid, app });
-  if (!Number.isInteger(watcher?.pid) || watcher.pid < 1) {
-    sessionFail('INJECTOR_LAUNCH_FAILED', 'The theme watcher did not return a valid PID.');
+  let watcher;
+  try {
+    await applyTheme({ themeSlug, port, app });
+    watcher = await spawnWatcher({ themeSlug, port, appPid, app });
+    if (!Number.isInteger(watcher?.pid) || watcher.pid < 1) {
+      sessionFail('INJECTOR_LAUNCH_FAILED', 'The theme watcher did not return a valid PID.');
+    }
+    const watcherStartedAt = await processStartedAt(watcher.pid);
+
+    await writeState(statePath, {
+      schemaVersion: 1,
+      appPath: app.appPath,
+      appVersion: app.version,
+      appPid,
+      appStartedAt,
+      port,
+      themeSlug,
+      injectorPid: watcher.pid,
+      injectorStartedAt: watcherStartedAt,
+      injectorExecutable: watcher.executable,
+      injectorScript: watcher.script,
+    });
+
+    return { theme: themeSlug, port, appPid, watcherPid: watcher.pid };
+  } catch (error) {
+    const cleanupErrors = [];
+    if (Number.isInteger(watcher?.pid) && watcher.pid > 0 && typeof stopWatcher === 'function') {
+      try {
+        await stopWatcher(watcher.pid);
+      } catch (cleanupError) {
+        cleanupErrors.push(cleanupError);
+      }
+    }
+    if (typeof removeTheme === 'function') {
+      try {
+        await removeTheme(port, app);
+      } catch (cleanupError) {
+        cleanupErrors.push(cleanupError);
+      }
+    }
+    if (cleanupErrors.length > 0) {
+      sessionFail(
+        'SESSION_START_ROLLBACK_INCOMPLETE',
+        'The themed session did not start and owned cleanup was incomplete; the official app was not terminated.',
+        { cause: new AggregateError([error, ...cleanupErrors], 'Session startup and rollback failed.') },
+      );
+    }
+    sessionFail(
+      'SESSION_START_ROLLED_BACK',
+      'The themed session did not start; owned theme and watcher state were rolled back without terminating the official app.',
+      { cause: error },
+    );
   }
-  const watcherStartedAt = await processStartedAt(watcher.pid);
-
-  await writeState(statePath, {
-    schemaVersion: 1,
-    appPath: app.appPath,
-    appVersion: app.version,
-    appPid,
-    appStartedAt,
-    port,
-    themeSlug,
-    injectorPid: watcher.pid,
-    injectorStartedAt: watcherStartedAt,
-    injectorExecutable: watcher.executable,
-    injectorScript: watcher.script,
-  });
-
-  return { theme: themeSlug, port, appPid, watcherPid: watcher.pid };
 }
 
 export async function restoreThemeSession(
@@ -110,14 +143,14 @@ export async function restoreThemeSession(
   { readState, observeInjector, removeTheme, killInjector, removeState },
 ) {
   const state = await readState(statePath);
-  await removeTheme(state.port);
-
   const observed = await observeInjector(state.injectorPid);
   if (observed === null) {
+    await removeTheme(state.port);
     await removeState(statePath);
     return { restored: true, theme: state.themeSlug };
   }
   if (!matchesProcessIdentity(state, observed)) {
+    await removeTheme(state.port);
     sessionFail(
       'INJECTOR_IDENTITY_MISMATCH',
       'Live theme CSS was removed, but the recorded watcher PID changed identity and was not terminated.',
@@ -125,6 +158,7 @@ export async function restoreThemeSession(
   }
 
   await killInjector(state.injectorPid);
+  await removeTheme(state.port);
   await removeState(statePath);
   return { restored: true, theme: state.themeSlug };
 }

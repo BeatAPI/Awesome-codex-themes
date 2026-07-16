@@ -126,6 +126,19 @@ describe('assertOfficialPortOwner', () => {
     ]);
   });
 
+  test('allows an inherited listener descriptor held by a current official-app descendant', async () => {
+    await expect(
+      assertOfficialPortOwner(validInspection(), 9341, {
+        listPids: async () => [101],
+        getParentMap: async () => new Map([[202, 101], [101, 1]]),
+        runCommand: async () => ({
+          stdout: 'p101\nn127.0.0.1:9341\np202\nn127.0.0.1:9341\n',
+          stderr: '',
+        }),
+      }),
+    ).resolves.toEqual({ port: 9341, ownerPids: [101, 202] });
+  });
+
   test.each([
     ['p202\nn127.0.0.1:9341\n', 'CDP_PORT_OWNER_INVALID'],
     ['p101\nn*:9341\n', 'CDP_LISTENER_UNSAFE'],
@@ -134,6 +147,7 @@ describe('assertOfficialPortOwner', () => {
     await expect(
       assertOfficialPortOwner(validInspection(), 9341, {
         listPids: async () => [101],
+        getParentMap: async () => new Map([[202, 1], [101, 1]]),
         runCommand: async () => ({ stdout, stderr: '' }),
       }),
     ).rejects.toEqual(expect.objectContaining({ code }));

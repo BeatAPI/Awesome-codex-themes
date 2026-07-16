@@ -162,10 +162,31 @@ export async function processStartedAt(pid, { runCommand = defaultRunCommand } =
   return requiredString(result.stdout, 'PROCESS_NOT_FOUND', `Process ${pid} is not running.`);
 }
 
+async function readProcessParentMap(runCommand) {
+  const result = await runCommand('/bin/ps', ['-axo', 'pid=,ppid=']);
+  const parents = new Map();
+  for (const line of result.stdout.split('\n')) {
+    const match = line.trim().match(/^(\d+)\s+(\d+)$/);
+    if (match) parents.set(Number(match[1]), Number(match[2]));
+  }
+  return parents;
+}
+
+function isDescendantOf(pid, ancestors, parentMap) {
+  const seen = new Set();
+  let current = pid;
+  while (parentMap.has(current) && !seen.has(current)) {
+    seen.add(current);
+    current = parentMap.get(current);
+    if (ancestors.has(current)) return true;
+  }
+  return false;
+}
+
 export async function assertOfficialPortOwner(
   inspection,
   port,
-  { runCommand = defaultRunCommand, listPids = listOfficialAppPids } = {},
+  { runCommand = defaultRunCommand, listPids = listOfficialAppPids, getParentMap } = {},
 ) {
   const trusted = validateMacAppInspection(inspection);
   if (!Number.isInteger(port) || port < 1024 || port > 65_535) {
@@ -194,9 +215,17 @@ export async function assertOfficialPortOwner(
   if (listeners.some((listener) => listener.endpoint !== `127.0.0.1:${port}`)) {
     macFail('CDP_LISTENER_UNSAFE', 'The CDP listener must bind only to the literal 127.0.0.1 address.');
   }
-  if (listeners.some((listener) => !officialPids.has(listener.pid))) {
+  const ownerPids = [...new Set(listeners.map((listener) => listener.pid))];
+  if (!ownerPids.some((pid) => officialPids.has(pid))) {
     macFail('CDP_PORT_OWNER_INVALID', 'The CDP listener is not owned by the inspected official Codex process.');
   }
+  const extraOwners = ownerPids.filter((pid) => !officialPids.has(pid));
+  if (extraOwners.length > 0) {
+    const parentMap = await (getParentMap ? getParentMap() : readProcessParentMap(runCommand));
+    if (extraOwners.some((pid) => !isDescendantOf(pid, officialPids, parentMap))) {
+      macFail('CDP_PORT_OWNER_INVALID', 'The CDP listener is also held by a process outside the official app tree.');
+    }
+  }
 
-  return { port, ownerPids: [...new Set(listeners.map((listener) => listener.pid))] };
+  return { port, ownerPids };
 }

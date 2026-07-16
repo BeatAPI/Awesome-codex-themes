@@ -143,25 +143,64 @@ describe('startThemeSession', () => {
     expect(writeState).toHaveBeenCalledWith('/tmp/state.json', runtimeState());
     expect(result).toEqual(expect.objectContaining({ port: 9341, theme: 'test-theme', appPid: 123 }));
   });
+
+  test('rolls back only owned theme and watcher state when persistence fails', async () => {
+    let watcherStopped = false;
+    const removeTheme = vi.fn(async () => {
+      if (!watcherStopped) throw new Error('watcher can still reapply');
+    });
+    const stopWatcher = vi.fn(async () => {
+      await Promise.resolve();
+      watcherStopped = true;
+    });
+
+    await expect(
+      startThemeSession(
+        { themeSlug: 'test-theme', statePath: '/tmp/state.json' },
+        {
+          discoverApp: async () => appInspection(),
+          listPids: async () => [],
+          selectPort: async () => 9341,
+          launchApp: async () => ({ pid: 123 }),
+          processStartedAt: async (pid) => (pid === 123 ? 'app-start' : 'watcher-start'),
+          waitForRenderer: async () => {},
+          applyTheme: async () => {},
+          spawnWatcher: async () => ({ pid: 456, executable: '/trusted/node', script: '/trusted/main.mjs' }),
+          writeState: async () => {
+            throw new Error('disk full');
+          },
+          removeTheme,
+          stopWatcher,
+        },
+      ),
+    ).rejects.toEqual(expect.objectContaining({ code: 'SESSION_START_ROLLED_BACK' }));
+
+    expect(stopWatcher).toHaveBeenCalledWith(456);
+    expect(removeTheme).toHaveBeenCalledWith(9341, appInspection());
+  });
 });
 
 describe('restoreThemeSession', () => {
   test('removes the theme and stops only the exact recorded watcher', async () => {
-    const removeTheme = vi.fn(async () => {});
-    const killInjector = vi.fn(async () => {});
-    const removeState = vi.fn(async () => {});
+    const calls = [];
+    const removeTheme = vi.fn(async () => calls.push('remove-theme'));
+    const killInjector = vi.fn(async () => calls.push('stop-watcher'));
+    const removeState = vi.fn(async () => calls.push('remove-state'));
 
     await expect(
       restoreThemeSession(
         { statePath: '/tmp/state.json' },
         {
           readState: async () => runtimeState(),
-          observeInjector: async () => ({
-            pid: 456,
-            startedAt: 'watcher-start',
-            executable: '/trusted/node',
-            script: '/trusted/main.mjs',
-          }),
+          observeInjector: async () => {
+            calls.push('observe-watcher');
+            return {
+              pid: 456,
+              startedAt: 'watcher-start',
+              executable: '/trusted/node',
+              script: '/trusted/main.mjs',
+            };
+          },
           removeTheme,
           killInjector,
           removeState,
@@ -172,6 +211,7 @@ describe('restoreThemeSession', () => {
     expect(removeTheme).toHaveBeenCalledWith(9341);
     expect(killInjector).toHaveBeenCalledWith(456);
     expect(removeState).toHaveBeenCalledWith('/tmp/state.json');
+    expect(calls).toEqual(['observe-watcher', 'stop-watcher', 'remove-theme', 'remove-state']);
   });
 
   test('still removes live CSS but refuses to terminate a PID with changed identity', async () => {
