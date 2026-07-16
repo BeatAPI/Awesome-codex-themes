@@ -11,7 +11,11 @@ export const PALETTE_VARIABLES = Object.freeze(
   Object.fromEntries(SEMANTIC_COLOR_ROLES.map((role) => [role, roleToVariable(role)])),
 );
 
-const OWNED_VARIABLES = Object.freeze(['--act-artwork', ...Object.values(PALETTE_VARIABLES)]);
+const OWNED_VARIABLES = Object.freeze([
+  '--act-artwork',
+  '--act-color-scheme',
+  ...Object.values(PALETTE_VARIABLES),
+]);
 
 function serializeForExpression(value) {
   return JSON.stringify(value)
@@ -40,6 +44,9 @@ function runtimePayload(theme, adapter) {
   ) {
     throw new TypeError('A fully loaded Codex adapter is required.');
   }
+  if (!['dark', 'light', 'system'].includes(manifest.mode)) {
+    throw new TypeError('A validated theme mode is required.');
+  }
   const variables = Object.fromEntries(
     Object.entries(PALETTE_VARIABLES).map(([role, variable]) => {
       const value = manifest.palette[role];
@@ -51,6 +58,7 @@ function runtimePayload(theme, adapter) {
   );
   return {
     slug: manifest.slug,
+    colorScheme: manifest.mode === 'system' ? 'light dark' : manifest.mode,
     css,
     adapterId: adapter.id,
     adapterCss: adapter.css,
@@ -80,6 +88,7 @@ export function buildApplyExpression(theme, adapter) {
     root.dataset.awesomeCodexTheme = payload.slug;
     root.dataset.awesomeCodexAdapter = payload.adapterId;
     root.style.setProperty('--act-artwork', 'url("' + payload.artworkDataUrl + '")');
+    root.style.setProperty('--act-color-scheme', payload.colorScheme);
     for (const [variable, value] of Object.entries(payload.variables)) {
       root.style.setProperty(variable, value);
     }

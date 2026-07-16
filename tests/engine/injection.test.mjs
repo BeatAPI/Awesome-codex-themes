@@ -14,6 +14,7 @@ function runtimeTheme(overrides = {}) {
     manifest: {
       slug: 'test-theme',
       name: 'Test Theme',
+      mode: 'dark',
       palette: {
         background: '#07111F',
         scrim: '#07111FD9',
@@ -118,6 +119,22 @@ describe('theme injection expressions', () => {
     expect(dom.window.document.querySelectorAll(`#${STYLE_ID}`)).toHaveLength(1);
     expect(dom.window.document.getElementById(STYLE_ID)?.textContent).toContain('hotpink');
     expect(dom.window.document.documentElement.dataset.awesomeCodexTheme).toBe('second-theme');
+  });
+
+  test('drives the renderer color scheme from the theme mode', () => {
+    const dom = createDom();
+    const lightTheme = runtimeTheme({
+      manifest: {
+        ...runtimeTheme().manifest,
+        mode: 'light',
+      },
+    });
+
+    dom.window.eval(buildApplyExpression(lightTheme, runtimeAdapter()));
+
+    expect(dom.window.document.documentElement.style.getPropertyValue('--act-color-scheme')).toBe('light');
+    dom.window.eval(buildRemoveExpression());
+    expect(dom.window.document.documentElement.style.getPropertyValue('--act-color-scheme')).toBe('');
   });
 
   test('serializes hostile-looking text as inert style text', () => {

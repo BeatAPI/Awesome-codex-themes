@@ -110,6 +110,7 @@ The engine exposes the validated palette as namespaced variables on the document
 
 ```css
 --act-artwork
+--act-color-scheme
 --act-background
 --act-scrim
 --act-surface

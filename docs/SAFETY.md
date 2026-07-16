@@ -27,7 +27,7 @@ It does not trust:
 6. Query `/json/list` only on literal loopback and accept only the expected main `app://-/index.html` renderer.
 7. Load a local theme, validate its manifest, paths, sizes, CSS, and declared Codex version range.
 8. Select the trusted built-in adapter for the exact supported Codex version family.
-9. Inject one owned style element, one artwork variable, 33 semantic palette variables, and namespaced theme/adapter root markers.
+9. Inject one owned style element, one artwork variable, one color-scheme variable, 33 semantic palette variables, and namespaced theme/adapter root markers.
 10. Require the renderer to return the expected theme and adapter markers before reporting success.
 11. Start an idempotent watcher and persist exact process identity in a mode-`0600` state file.
 
