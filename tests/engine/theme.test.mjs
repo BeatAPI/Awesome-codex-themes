@@ -83,6 +83,19 @@ function semanticPalette(overrides = {}) {
   };
 }
 
+function experience(overrides = {}) {
+  return {
+    brand: 'LIMITLESS',
+    eyebrow: 'SIX EYES',
+    headline: 'LIMITLESS WORKSPACE',
+    tagline: 'Plan beyond the visible.',
+    status: 'LIMITLESS ONLINE',
+    signature: 'SATORU GOJO',
+    chrome: true,
+    ...overrides,
+  };
+}
+
 async function createTheme(manifest = validManifest(), options = {}) {
   const root = await mkdtemp(join(tmpdir(), 'awesome-codex-theme-'));
   tempDirs.push(root);
@@ -121,13 +134,18 @@ describe('validateThemeManifest', () => {
 
   test('normalizes every schema v2 semantic color role', () => {
     const manifest = validateThemeManifest(
-      validManifest({ schemaVersion: 2, palette: semanticPalette() }),
+      validManifest({
+        schemaVersion: 2,
+        palette: semanticPalette(),
+        experience: experience({ brand: '  LIMITLESS  ' }),
+      }),
     );
 
     expect(manifest.schemaVersion).toBe(2);
     expect(Object.keys(manifest.palette)).toEqual(SEMANTIC_COLOR_ROLES);
     expect(manifest.palette.surfaceOverlay).toBe('#171411F2');
     expect(manifest.palette.scrollbarHover).toBe('#FFB18A78');
+    expect(manifest.experience).toEqual(experience());
   });
 
   test('rejects a schema v2 palette missing a required semantic role', () => {
@@ -147,6 +165,38 @@ describe('validateThemeManifest', () => {
     expect(manifest.palette.background).toBe('#07111F');
     expect(manifest.palette.textSecondary).toMatch(/^#[0-9A-F]{8}$/);
     expect(manifest.palette.composer).toBe('#142033CC');
+  });
+
+  test.each([
+    [validManifest({ experience: experience() }), 'THEME_EXPERIENCE_UNSUPPORTED'],
+    [
+      validManifest({
+        schemaVersion: 2,
+        palette: semanticPalette(),
+        experience: experience({ headline: '' }),
+      }),
+      'THEME_FIELD_REQUIRED',
+    ],
+    [
+      validManifest({
+        schemaVersion: 2,
+        palette: semanticPalette(),
+        experience: experience({ tagline: 'x'.repeat(161) }),
+      }),
+      'THEME_FIELD_TOO_LONG',
+    ],
+    [
+      validManifest({
+        schemaVersion: 2,
+        palette: semanticPalette(),
+        experience: experience({ chrome: 'yes' }),
+      }),
+      'THEME_FIELD_INVALID',
+    ],
+  ])('rejects unsafe or unsupported experience metadata', (manifest, code) => {
+    expect(() => validateThemeManifest(manifest)).toThrowError(
+      expect.objectContaining({ code }),
+    );
   });
 });
 
@@ -202,6 +252,14 @@ describe('loadThemePackage', () => {
 
     await expect(loadThemePackage(root, { maxAssetBytes: 16 })).rejects.toEqual(
       expect.objectContaining({ code: 'THEME_ASSET_TOO_LARGE' }),
+    );
+  });
+
+  test('rejects runtime artwork whose base64 payload would exceed the renderer declaration budget', async () => {
+    const root = await createTheme(validManifest(), { artwork: Buffer.alloc(701 * 1024, 1) });
+
+    await expect(loadThemePackage(root)).rejects.toEqual(
+      expect.objectContaining({ code: 'THEME_RUNTIME_ARTWORK_TOO_LARGE' }),
     );
   });
 

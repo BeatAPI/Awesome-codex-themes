@@ -6,9 +6,11 @@ An unofficial, Mac-first open-source theme engine and visual gallery for the off
 [![License: MIT](https://img.shields.io/badge/License-MIT-171815.svg)](LICENSE)
 [![Platform: macOS](https://img.shields.io/badge/platform-macOS-171815.svg)](#compatibility)
 
-![Four original Awesome Codex Themes previews](themes/obsidian-bloom/preview.svg)
+![Limitless Six Eyes full Codex workspace concept](themes/limitless-six-eyes/preview.png)
 
 Awesome Codex Themes gives technical users a small, inspectable way to apply full-workspace visuals to Codex: local artwork, glass surfaces, theme tokens, diagnostics, an idempotent watcher, and an explicit restore path. It does not patch or redistribute the official application.
+
+> **Prototype artwork boundary:** the Limitless Six Eyes images are included only for evaluation in this private repository. They are not covered by MIT and must be replaced before public or commercial release. The engine, theme schema, and original CSS remain open source.
 
 ## Current status
 
@@ -21,6 +23,7 @@ This repository is an experimental `0.2.0` implementation, not a commercial desk
 | Literal `127.0.0.1` CDP target and port-owner validation | Implemented and tested |
 | Apply, watcher, status, and restore engine | Implemented and tested |
 | Versioned full-workspace adapter for Codex `26.707.*` | Implemented and tested |
+| Limitless Six Eyes flagship theme | Complete semantic palette and declarative experience layer; compatibility remains experimental |
 | Obsidian Bloom schema-v2 full theme | Complete semantic palette; compatibility remains experimental |
 | Three original legacy themes | Included for compatibility; not yet tuned for full-workspace coverage |
 | Searchable static gallery | Implemented and production-build verified |
@@ -30,13 +33,14 @@ Every included theme currently declares Codex `26.707.*`. Unknown versions fail 
 
 ### Full-theme coverage
 
-The shared `26.707` adapter maps a theme's semantic palette onto Codex and VS Code renderer tokens plus narrowly scoped component rules. Obsidian Bloom is the first package tuned against the complete palette. It covers:
+The shared `26.707` adapter maps a theme's semantic palette onto Codex and VS Code renderer tokens plus narrowly scoped component rules. Limitless Six Eyes and Obsidian Bloom use the complete palette. The flagship adds a declarative, non-interactive experience layer for branding, status, particles, and optical geometry. Together the system covers:
 
 - canvas artwork, scrims, main surfaces, sidebars, headers, cards, dialogs, menus, listboxes, and tooltips;
 - primary, secondary, muted, and disabled text plus icon tiers;
 - normal, subtle, strong, focus, input, menu, and terminal borders;
 - inputs, placeholders, Composer, send button, links, hover, active, focus, and selection states;
 - code blocks, preformatted text, Monaco/terminal surfaces, added/removed diff colors, status colors, and scrollbars.
+- optional theme-owned ambient chrome whose text is inserted with `textContent`, ignores pointer events, reapplies idempotently, and is removed by restore.
 
 “Full-theme” means high coverage on a declared Codex version family. It does not mean future Codex versions are permanently pixel-compatible. Themes remain `experimental` until the relevant page matrix has recorded runtime evidence.
 
@@ -48,7 +52,7 @@ Run one theme injector at a time. A third-party injector can win the CSS cascade
 - Uses the Node runtime bundled with the signed official app; end users do not need a global Node installation.
 - Binds CDP to a dynamically selected port on literal `127.0.0.1` and verifies the listener belongs to the official app process.
 - Selects only the expected main `app://-/index.html` renderer.
-- Injects one namespaced style element and owned CSS variables; applying twice replaces the same state.
+- Injects one namespaced style element, owned CSS variables, and—only when declared—one inert decorative chrome node; applying twice replaces the same state.
 - Never reads conversations, account tokens, API keys, model settings, or unrelated user data.
 - Never patches `app.asar`, modifies the signed app bundle, or silently terminates an active Codex session.
 - Records exact watcher process identity before it will send `SIGTERM`; it never terminates the official app.
@@ -75,7 +79,7 @@ cd Awesome-codex-themes
 For a managed themed session, first quit Codex yourself, then run:
 
 ```bash
-./bin/awesome-codex-themes start obsidian-bloom
+./bin/awesome-codex-themes start limitless-six-eyes
 ./bin/awesome-codex-themes status
 ```
 
@@ -92,7 +96,7 @@ Return to the official UI:
 If you intentionally started the official app with a loopback CDP port, you can apply and restore against that explicit port:
 
 ```bash
-./bin/awesome-codex-themes apply obsidian-bloom --port 9341
+./bin/awesome-codex-themes apply limitless-six-eyes --port 9341
 ./bin/awesome-codex-themes restore --port 9341
 ```
 
@@ -113,12 +117,13 @@ All errors use stable codes such as `APP_SIGNATURE_INVALID`, `CDP_PORT_OWNER_INV
 
 ## Launch collection
 
+- **Limitless Six Eyes** — a porcelain-white editorial flagship with iris-violet telemetry and a midnight code cockpit. Its current character artwork is private-prototype-only.
 - **Arctic Signal** — polar night, cyan telemetry, high contrast.
 - **Obsidian Bloom** — charcoal glass and ember-orange botanical forms.
 - **Paper Circuit** — warm paper, graphite type, cobalt drafting traces.
 - **Solar Archive** — a midnight reading room with amber orbital marks.
 
-Artwork is original, stored locally, and released under CC0 1.0. Theme CSS and engine code are MIT licensed. Each package carries its own `ASSET_LICENSE.md`.
+The four original study themes use local CC0 1.0 artwork. Limitless Six Eyes uses local private-prototype artwork that is explicitly excluded from the repository license. Theme CSS and engine code are MIT licensed. Each package carries its own `ASSET_LICENSE.md`.
 
 Run the gallery locally:
 
@@ -173,6 +178,6 @@ The gallery uses familiar information-architecture patterns from open prompt lib
 
 ## License and trademark notice
 
-Code is available under the [MIT License](LICENSE). Original launch artwork is CC0 1.0 as documented per theme.
+Code is available under the [MIT License](LICENSE). Artwork licensing is package-specific: the four original study themes are CC0 1.0, while the Limitless Six Eyes prototype images are not licensed for public or commercial redistribution.
 
 Awesome Codex Themes is unofficial and is not affiliated with, endorsed by, or sponsored by OpenAI. “OpenAI” and “Codex” are trademarks of their respective owner. This project does not ship OpenAI logos or the official app.

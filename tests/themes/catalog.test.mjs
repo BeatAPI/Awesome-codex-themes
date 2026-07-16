@@ -15,11 +15,12 @@ afterEach(async () => {
 });
 
 describe('theme catalog', () => {
-  test('loads the four original launch themes in deterministic order', async () => {
+  test('loads the five themes in deterministic package order', async () => {
     const catalog = await buildThemeCatalog(themesRoot);
 
     expect(catalog.map((theme) => theme.slug)).toEqual([
       'arctic-signal',
+      'limitless-six-eyes',
       'obsidian-bloom',
       'paper-circuit',
       'solar-archive',
@@ -29,13 +30,29 @@ describe('theme catalog', () => {
     expect(catalog.every((theme) => theme.preview.startsWith('/theme-assets/'))).toBe(true);
   });
 
-  test('ships Obsidian Bloom as the single schema-v2 full semantic theme', async () => {
+  test('ships Obsidian Bloom as a schema-v2 full semantic theme', async () => {
     const manifest = JSON.parse(await readFile(join(themesRoot, 'obsidian-bloom', 'theme.json'), 'utf8'));
 
     expect(manifest.schemaVersion).toBe(2);
     expect(Object.keys(manifest.palette)).toEqual(SEMANTIC_COLOR_ROLES);
     expect(manifest.version).toBe('1.1.0');
     expect(manifest.tags).toContain('full-workspace');
+  });
+
+  test('publishes Limitless Six Eyes metadata for a flagship experience', async () => {
+    const catalog = await buildThemeCatalog(themesRoot);
+    const theme = catalog.find((item) => item.slug === 'limitless-six-eyes');
+
+    expect(theme?.tags).toContain('featured');
+    expect(theme?.tags).toContain('full-workspace');
+    expect(theme?.license.artwork).toBe('PROTOTYPE-REFERENCE-ONLY');
+    expect(theme?.experience).toEqual(
+      expect.objectContaining({
+        brand: 'LIMITLESS',
+        status: 'LIMITLESS ONLINE',
+        chrome: true,
+      }),
+    );
   });
 
   test('keeps the other launch themes on the legacy schema until they are tuned', async () => {

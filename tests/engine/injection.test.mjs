@@ -3,6 +3,8 @@ import { describe, expect, test } from 'vitest';
 
 import {
   APPLY_MARKER,
+  CHROME_ID,
+  EXPERIENCE_MARKER,
   STYLE_ID,
   buildApplyExpression,
   buildRemoveExpression,
@@ -50,6 +52,15 @@ function runtimeTheme(overrides = {}) {
         scrollbarHover: '#73E2FF78',
         composer: '#101B2AEF',
       },
+      experience: {
+        brand: 'LIMITLESS',
+        eyebrow: 'SIX EYES',
+        headline: 'LIMITLESS WORKSPACE',
+        tagline: 'Plan beyond the visible.',
+        status: 'LIMITLESS ONLINE',
+        signature: 'SATORU GOJO',
+        chrome: true,
+      },
     },
     css: '.awesome-codex-theme body { color: var(--act-text); }',
     artwork: {
@@ -84,8 +95,10 @@ describe('theme injection expressions', () => {
     const style = dom.window.document.getElementById(STYLE_ID);
     expect(result).toEqual({ pass: true, action: 'applied', theme: 'test-theme', adapter: 'codex-26.707' });
     expect(root.classList.contains(APPLY_MARKER)).toBe(true);
+    expect(root.classList.contains(EXPERIENCE_MARKER)).toBe(true);
     expect(root.dataset.awesomeCodexTheme).toBe('test-theme');
     expect(root.dataset.awesomeCodexAdapter).toBe('codex-26.707');
+    expect(root.dataset.awesomeCodexSurface).toBe('workspace');
     expect(root.style.getPropertyValue('--act-artwork')).toContain('data:image/svg+xml');
     expect(root.style.getPropertyValue('--act-surface-overlay')).toBe('#0B1220F2');
     expect(root.style.getPropertyValue('--act-text-secondary')).toBe('#F4F7FBBF');
@@ -95,7 +108,47 @@ describe('theme injection expressions', () => {
       style?.textContent.indexOf('var(--act-text)') ?? -1,
     );
     expect(style?.textContent).toContain('var(--act-text)');
+    const chrome = dom.window.document.getElementById(CHROME_ID);
+    expect(chrome?.dataset.owner).toBe('awesome-codex-themes');
+    expect(chrome?.getAttribute('aria-hidden')).toBe('true');
+    expect(chrome?.querySelector('[data-act-copy="brand"]')?.textContent).toBe('LIMITLESS');
+    expect(chrome?.querySelector('[data-act-copy="headline"]')?.textContent).toBe('LIMITLESS WORKSPACE');
+    expect(chrome?.querySelector('[data-act-copy="status"]')?.textContent).toBe('LIMITLESS ONLINE');
+    expect(chrome?.querySelectorAll('.act-experience__particle')).toHaveLength(6);
     expect(dom.window.document.getElementById('keep-style')).not.toBeNull();
+  });
+
+  test('classifies only a visibly confirmed home composition as home', async () => {
+    const dom = createDom();
+    dom.window.eval(buildApplyExpression(runtimeTheme(), runtimeAdapter()));
+    const hiddenSignal = dom.window.document.createElement('div');
+    hiddenSignal.dataset.testid = 'home-icon';
+    hiddenSignal.style.display = 'none';
+    dom.window.document.body.appendChild(hiddenSignal);
+    await new Promise((resolve) => dom.window.setTimeout(resolve, 0));
+    expect(dom.window.document.documentElement.dataset.awesomeCodexSurface).toBe('workspace');
+
+    const home = dom.window.document.createElement('main');
+    home.setAttribute('role', 'main');
+    const icon = dom.window.document.createElement('div');
+    icon.dataset.testid = 'home-icon';
+    const source = dom.window.document.createElement('div');
+    source.dataset.feature = 'game-source';
+    Object.defineProperty(icon, 'getBoundingClientRect', {
+      value: () => ({ width: 24, height: 24, top: 80, left: 80, right: 104, bottom: 104 }),
+    });
+    Object.defineProperty(source, 'getBoundingClientRect', {
+      value: () => ({ width: 600, height: 120, top: 120, left: 300, right: 900, bottom: 240 }),
+    });
+    Object.defineProperty(home, 'getBoundingClientRect', {
+      value: () => ({ width: 900, height: 700, top: 60, left: 240, right: 1140, bottom: 760 }),
+    });
+    home.append(icon, source);
+    dom.window.document.body.appendChild(home);
+    await new Promise((resolve) => dom.window.setTimeout(resolve, 0));
+
+    expect(dom.window.document.documentElement.dataset.awesomeCodexSurface).toBe('home');
+    expect(home.dataset.awesomeCodexHome).toBe('true');
   });
 
   test('is idempotent and replaces the prior payload', () => {
@@ -117,8 +170,48 @@ describe('theme injection expressions', () => {
     );
 
     expect(dom.window.document.querySelectorAll(`#${STYLE_ID}`)).toHaveLength(1);
+    expect(dom.window.document.querySelectorAll(`#${CHROME_ID}`)).toHaveLength(1);
     expect(dom.window.document.getElementById(STYLE_ID)?.textContent).toContain('hotpink');
     expect(dom.window.document.documentElement.dataset.awesomeCodexTheme).toBe('second-theme');
+  });
+
+  test('removes the experience layer when a plain theme replaces it', () => {
+    const dom = createDom();
+    dom.window.eval(buildApplyExpression(runtimeTheme(), runtimeAdapter()));
+    const plainTheme = runtimeTheme({
+      manifest: {
+        ...runtimeTheme().manifest,
+        slug: 'plain-theme',
+        experience: undefined,
+      },
+    });
+
+    dom.window.eval(buildApplyExpression(plainTheme, runtimeAdapter()));
+
+    expect(dom.window.document.getElementById(CHROME_ID)).toBeNull();
+    expect(dom.window.document.documentElement.classList.contains(EXPERIENCE_MARKER)).toBe(false);
+  });
+
+  test('fails without partial mutation when another owner already uses the chrome id', () => {
+    const dom = createDom();
+    const unrelated = dom.window.document.createElement('div');
+    unrelated.id = CHROME_ID;
+    unrelated.dataset.owner = 'another-project';
+    unrelated.textContent = 'keep me';
+    dom.window.document.body.appendChild(unrelated);
+
+    const result = dom.window.eval(buildApplyExpression(runtimeTheme(), runtimeAdapter()));
+
+    expect(result).toEqual({
+      pass: false,
+      action: 'conflict',
+      theme: 'test-theme',
+      adapter: 'codex-26.707',
+    });
+    expect(dom.window.document.getElementById(CHROME_ID)?.textContent).toBe('keep me');
+    expect(dom.window.document.getElementById(STYLE_ID)).toBeNull();
+    expect(dom.window.document.documentElement.classList.contains(APPLY_MARKER)).toBe(false);
+    expect(dom.window.document.documentElement.dataset.awesomeCodexTheme).toBeUndefined();
   });
 
   test('drives the renderer color scheme from the theme mode', () => {
@@ -153,7 +246,13 @@ describe('theme injection expressions', () => {
 
     const result = dom.window.eval(buildVerificationExpression('test-theme', 'codex-26.707'));
 
-    expect(result).toEqual({ pass: true, theme: 'test-theme', adapter: 'codex-26.707', stylePresent: true });
+    expect(result).toEqual({
+      pass: true,
+      theme: 'test-theme',
+      adapter: 'codex-26.707',
+      stylePresent: true,
+      chromePresent: true,
+    });
   });
 
   test('removes only project-owned state', () => {
@@ -165,13 +264,16 @@ describe('theme injection expressions', () => {
     const root = dom.window.document.documentElement;
     expect(result).toEqual({ pass: true, action: 'removed' });
     expect(root.classList.contains(APPLY_MARKER)).toBe(false);
+    expect(root.classList.contains(EXPERIENCE_MARKER)).toBe(false);
     expect(root.classList.contains('keep-root')).toBe(true);
     expect(root.dataset.awesomeCodexTheme).toBeUndefined();
     expect(root.dataset.awesomeCodexAdapter).toBeUndefined();
+    expect(root.dataset.awesomeCodexSurface).toBeUndefined();
     expect(root.style.getPropertyValue('--act-artwork')).toBe('');
     expect(root.style.getPropertyValue('--act-surface-overlay')).toBe('');
     expect(root.style.getPropertyValue('--act-composer')).toBe('');
     expect(dom.window.document.getElementById(STYLE_ID)).toBeNull();
+    expect(dom.window.document.getElementById(CHROME_ID)).toBeNull();
     expect(dom.window.document.getElementById('keep-style')).not.toBeNull();
   });
 

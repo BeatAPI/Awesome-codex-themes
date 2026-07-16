@@ -24,7 +24,7 @@ bin/awesome-codex-themes
 - `src/engine/state.mjs` validates and atomically stores exact app/watcher identity with owner-only permissions.
 - `src/engine/session.mjs` composes apply/start/restore state transitions without terminating the official app.
 
-Theme packages do not carry their own copy of the Codex compatibility layer. At apply time the engine loads the matching trusted adapter, appends the validated theme CSS, and injects both as one namespaced style element. This keeps selector maintenance centralized while allowing themes to remain small and portable.
+Theme packages do not carry their own copy of the Codex compatibility layer. At apply time the engine loads the matching trusted adapter, appends the validated theme CSS, and injects both as one namespaced style element. Schema-v2 packages may also declare bounded experience copy; the engine converts that data into one inert, owned decorative node without accepting theme JavaScript or HTML. This keeps selector maintenance centralized while allowing themes to remain small and portable.
 
 The public CLI keeps `_watch` internal. The shell entrypoint finds the official app's bundled Node runtime, while every mutating operation independently validates the application and endpoint.
 

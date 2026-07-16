@@ -75,6 +75,15 @@ All file references must be relative, use forward slashes, and resolve below the
     "scrollbarHover": "#F5B94278",
     "composer": "#211C12F2"
   },
+  "experience": {
+    "brand": "LIMITLESS",
+    "eyebrow": "SIX EYES",
+    "headline": "LIMITLESS WORKSPACE",
+    "tagline": "Plan beyond the visible.",
+    "status": "LIMITLESS ONLINE",
+    "signature": "SATORU GOJO",
+    "chrome": true
+  },
   "files": {
     "css": "theme.css",
     "artwork": "background.svg",
@@ -102,6 +111,7 @@ All file references must be relative, use forward slashes, and resolve below the
 | `compatibility.appVersions` | Exact dotted versions or trailing-wildcard ranges such as `26.707.*`. |
 | `mode` | `dark`, `light`, or `system`; defaults to `dark`. |
 | `palette` | Every schema-v2 semantic role is required. Values are six- or eight-digit hex colors; alpha belongs at the end (`#RRGGBBAA`). |
+| `experience` | Optional schema-v2 declarative brand layer. When present, all six copy fields are required and bounded; `chrome` defaults to `true`. It cannot contain selectors, markup, or JavaScript. |
 | `files` | Local paths to CSS, artwork, and preview. |
 
 ## Runtime tokens
@@ -158,15 +168,19 @@ html.awesome-codex-theme body {
 
 Theme CSS is appended after the trusted adapter and should contain only artwork composition or narrowly scoped refinements. Prefer semantic elements and ARIA roles over hashed application classes. Decorative layers must not capture pointer events or obscure keyboard focus. Avoid structural DOM assumptions and do not hide native controls.
 
+When `experience.chrome` is enabled, the engine creates one `#awesome-codex-theme-chrome` node with `aria-hidden="true"`. Copy is assigned with `textContent`; packages cannot provide markup or executable behavior. The node is reused on reapply and removed by restore.
+
 ## Asset and CSS rules
 
 - Artwork formats: SVG, PNG, JPEG, WebP, or AVIF.
-- Default maximum artwork/preview size: 10 MiB each.
+- Default maximum runtime artwork size: 700 KiB so its base64 CSS variable remains below the renderer declaration budget.
+- Default maximum preview size: 10 MiB.
 - Default maximum CSS size: 256 KiB.
 - CSS `url(...)`, remote/protocol-relative strings, `@import`, executable URLs, `expression(...)`, and escape sequences that could obscure those tokens are rejected. Runtime artwork is available only through `var(--act-artwork)`.
 - SVG artwork and previews cannot contain scripts, active embedded markup, event handlers, document/entity declarations, obscured tokens, or non-fragment `href`, `src`, and `url(...)` values.
 - Arbitrary JavaScript, remote fonts, analytics beacons, data collection, and content scripts are not part of the schema.
 - Artwork must be original or commercially redistributable. Do not submit character, celebrity, game, anime, brand, or logo artwork without documented rights.
+- A private prototype may use a restrictive artwork identifier only while the repository remains private. It cannot be accepted into a public release until the assets and naming are replaced or fully licensed.
 
 ## Validation
 

@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 2,
+  "slug": "limitless-six-eyes",
+  "version": "0.1.0",
+  "name": "Limitless Six Eyes",
+  "description": "A porcelain-white editorial workspace with iris-violet telemetry, technical geometry, and a midnight code cockpit.",
+  "author": {
+    "name": "Awesome Codex Themes"
+  },
+  "license": {
+    "code": "MIT",
+    "artwork": "PROTOTYPE-REFERENCE-ONLY"
+  },
+  "categories": [
+    "light",
+    "editorial"
+  ],
+  "tags": [
+    "featured",
+    "full-workspace",
+    "composer",
+    "editorial",
+    "lavender",
+    "glass",
+    "anime-prototype"
+  ],
+  "compatibility": {
+    "platforms": [
+      "macos"
+    ],
+    "status": "experimental",
+    "appVersions": [
+      "26.707.*"
+    ]
+  },
+  "mode": "light",
+  "palette": {
+    "background": "#F2F1F8",
+    "scrim": "#F2F1F8E8",
+    "surface": "#F8F7FCDD",
+    "surfaceElevated": "#FFFFFFF2",
+    "surfaceOverlay": "#FCFBFFF7",
+    "input": "#F4F2FAF2",
+    "text": "#1C1930",
+    "textSecondary": "#494260",
+    "textMuted": "#77708E",
+    "textDisabled": "#AAA4B9",
+    "icon": "#2C2648",
+    "iconSecondary": "#675F81",
+    "iconMuted": "#958EA8",
+    "border": "#7567B83D",
+    "borderSubtle": "#7567B824",
+    "borderStrong": "#6654C47A",
+    "accent": "#5E4BD8",
+    "accentHover": "#7461EC",
+    "selection": "#9D8EFF52",
+    "focus": "#6E5AE6",
+    "link": "#5544C8",
+    "hover": "#7567B81C",
+    "active": "#7567B833",
+    "code": "#17152BFA",
+    "terminal": "#100F20FA",
+    "diffAdded": "#1E7E5740",
+    "diffRemoved": "#D94F7040",
+    "success": "#1E9A65",
+    "warning": "#B97B13",
+    "danger": "#D44761",
+    "scrollbar": "#7166A83D",
+    "scrollbarHover": "#6559AD75",
+    "composer": "#FFFFFFF2"
+  },
+  "experience": {
+    "brand": "LIMITLESS",
+    "eyebrow": "SIX EYES",
+    "headline": "LIMITLESS WORKSPACE",
+    "tagline": "Plan beyond the visible.",
+    "status": "LIMITLESS ONLINE",
+    "signature": "SATORU GOJO",
+    "chrome": true
+  },
+  "files": {
+    "css": "theme.css",
+    "artwork": "background.jpg",
+    "preview": "preview.png"
+  }
+}

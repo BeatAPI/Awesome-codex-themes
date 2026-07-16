@@ -2,6 +2,10 @@ import { SEMANTIC_COLOR_ROLES } from './theme.mjs';
 
 export const STYLE_ID = 'awesome-codex-theme-style';
 export const APPLY_MARKER = 'awesome-codex-theme';
+export const CHROME_ID = 'awesome-codex-theme-chrome';
+export const EXPERIENCE_MARKER = 'awesome-codex-theme-experience';
+const OWNER = 'awesome-codex-themes';
+const SURFACE_OBSERVER_KEY = '__awesomeCodexThemeSurfaceObserver';
 
 function roleToVariable(role) {
   return `--act-${role.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)}`;
@@ -64,6 +68,16 @@ function runtimePayload(theme, adapter) {
     adapterCss: adapter.css,
     artworkDataUrl: artwork.dataUrl,
     variables,
+    experience: manifest.experience?.chrome
+      ? {
+          brand: manifest.experience.brand,
+          eyebrow: manifest.experience.eyebrow,
+          headline: manifest.experience.headline,
+          tagline: manifest.experience.tagline,
+          status: manifest.experience.status,
+          signature: manifest.experience.signature,
+        }
+      : null,
   };
 }
 
@@ -73,12 +87,16 @@ export function buildApplyExpression(theme, adapter) {
     const payload = ${payload};
     const root = document.documentElement;
     if (!root || !document.head) return { pass: false, action: 'applied', theme: payload.slug, adapter: payload.adapterId };
+    const currentChrome = document.getElementById(${serializeForExpression(CHROME_ID)});
+    if (payload.experience && currentChrome && currentChrome.dataset.owner !== ${serializeForExpression(OWNER)}) {
+      return { pass: false, action: 'conflict', theme: payload.slug, adapter: payload.adapterId };
+    }
 
     let style = document.getElementById(${serializeForExpression(STYLE_ID)});
     if (!style) {
       style = document.createElement('style');
       style.id = ${serializeForExpression(STYLE_ID)};
-      style.dataset.owner = 'awesome-codex-themes';
+      style.dataset.owner = ${serializeForExpression(OWNER)};
       document.head.appendChild(style);
     }
     style.dataset.adapter = payload.adapterId;
@@ -93,6 +111,99 @@ export function buildApplyExpression(theme, adapter) {
       root.style.setProperty(variable, value);
     }
 
+    if (payload.experience && document.body) {
+      const chrome = currentChrome ?? document.createElement('div');
+      chrome.id = ${serializeForExpression(CHROME_ID)};
+      chrome.className = 'act-experience';
+      chrome.dataset.owner = ${serializeForExpression(OWNER)};
+      chrome.setAttribute('aria-hidden', 'true');
+      chrome.replaceChildren();
+
+      const makeCopy = (className, key, value) => {
+        const node = document.createElement('span');
+        node.className = className;
+        node.dataset.actCopy = key;
+        node.textContent = value;
+        return node;
+      };
+
+      const identity = document.createElement('div');
+      identity.className = 'act-experience__identity';
+      identity.append(
+        makeCopy('act-experience__eyebrow', 'eyebrow', payload.experience.eyebrow),
+        makeCopy('act-experience__brand', 'brand', payload.experience.brand),
+        makeCopy('act-experience__headline', 'headline', payload.experience.headline),
+        makeCopy('act-experience__tagline', 'tagline', payload.experience.tagline),
+        makeCopy('act-experience__signature', 'signature', payload.experience.signature),
+      );
+
+      const status = document.createElement('div');
+      status.className = 'act-experience__status';
+      const statusDot = document.createElement('i');
+      statusDot.className = 'act-experience__status-dot';
+      status.append(statusDot, makeCopy('act-experience__status-copy', 'status', payload.experience.status));
+
+      const orbit = document.createElement('div');
+      orbit.className = 'act-experience__orbit';
+      const particles = document.createElement('div');
+      particles.className = 'act-experience__particles';
+      for (let index = 0; index < 6; index += 1) {
+        const particle = document.createElement('i');
+        particle.className = 'act-experience__particle';
+        particle.style.setProperty('--act-particle-index', String(index));
+        particles.appendChild(particle);
+      }
+
+      chrome.append(identity, status, orbit, particles);
+      if (!currentChrome) document.body.appendChild(chrome);
+      root.classList.add(${serializeForExpression(EXPERIENCE_MARKER)});
+    } else {
+      if (currentChrome?.dataset.owner === ${serializeForExpression(OWNER)}) currentChrome.remove();
+      root.classList.remove(${serializeForExpression(EXPERIENCE_MARKER)});
+    }
+
+    const isVisible = (node) => {
+      if (!(node instanceof Element)) return false;
+      const rect = node.getBoundingClientRect();
+      const computed = getComputedStyle(node);
+      return rect.width > 1 && rect.height > 1 && computed.display !== 'none' && computed.visibility !== 'hidden' && computed.opacity !== '0';
+    };
+    const updateSurface = () => {
+      let home = null;
+      for (const candidate of document.querySelectorAll('[role="main"]')) {
+        const icon = candidate.querySelector('[data-testid="home-icon"]');
+        const source = candidate.querySelector('[data-feature="game-source"]');
+        const suggestions = candidate.querySelector('[class~="group/home-suggestions"]');
+        const hasIdentity = isVisible(icon) && isVisible(source);
+        const hasActions = isVisible(source) && isVisible(suggestions);
+        if (isVisible(candidate) && (hasIdentity || hasActions)) {
+          home = candidate;
+          break;
+        }
+      }
+      for (const candidate of document.querySelectorAll('[data-awesome-codex-home]')) {
+        if (candidate !== home) delete candidate.dataset.awesomeCodexHome;
+      }
+      if (home) home.dataset.awesomeCodexHome = 'true';
+      root.dataset.awesomeCodexSurface = home ? 'home' : 'workspace';
+    };
+    updateSurface();
+    const previousObserver = window[${serializeForExpression(SURFACE_OBSERVER_KEY)}];
+    previousObserver?.disconnect?.();
+    if (typeof MutationObserver === 'function' && document.body) {
+      let updateQueued = false;
+      const observer = new MutationObserver(() => {
+        if (updateQueued) return;
+        updateQueued = true;
+        queueMicrotask(() => {
+          updateQueued = false;
+          updateSurface();
+        });
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+      window[${serializeForExpression(SURFACE_OBSERVER_KEY)}] = observer;
+    }
+
     return { pass: true, action: 'applied', theme: payload.slug, adapter: payload.adapterId };
   })()`;
 }
@@ -103,6 +214,7 @@ export function buildVerificationExpression(expectedSlug, expectedAdapterId) {
   return `(() => {
     const root = document.documentElement;
     const stylePresent = Boolean(document.getElementById(${serializeForExpression(STYLE_ID)}));
+    const chromePresent = document.getElementById(${serializeForExpression(CHROME_ID)})?.dataset?.owner === ${serializeForExpression(OWNER)};
     const theme = root?.dataset?.awesomeCodexTheme ?? null;
     const adapter = root?.dataset?.awesomeCodexAdapter ?? null;
     return {
@@ -110,6 +222,7 @@ export function buildVerificationExpression(expectedSlug, expectedAdapterId) {
       theme,
       adapter,
       stylePresent,
+      chromePresent,
     };
   })()`;
 }
@@ -118,15 +231,25 @@ export function buildRemoveExpression() {
   const variables = serializeForExpression(OWNED_VARIABLES);
   return `(() => {
     const root = document.documentElement;
+    const observer = window[${serializeForExpression(SURFACE_OBSERVER_KEY)}];
+    observer?.disconnect?.();
+    delete window[${serializeForExpression(SURFACE_OBSERVER_KEY)}];
     document.getElementById(${serializeForExpression(STYLE_ID)})?.remove();
+    const chrome = document.getElementById(${serializeForExpression(CHROME_ID)});
+    if (chrome?.dataset.owner === ${serializeForExpression(OWNER)}) chrome.remove();
     if (root) {
       root.classList.remove(${serializeForExpression(APPLY_MARKER)});
+      root.classList.remove(${serializeForExpression(EXPERIENCE_MARKER)});
       delete root.dataset.awesomeCodexTheme;
       delete root.dataset.awesomeCodexAdapter;
+      delete root.dataset.awesomeCodexSurface;
       for (const variable of ${variables}) root.style.removeProperty(variable);
     }
+    for (const candidate of document.querySelectorAll('[data-awesome-codex-home]')) {
+      delete candidate.dataset.awesomeCodexHome;
+    }
     return {
-      pass: !document.getElementById(${serializeForExpression(STYLE_ID)}) && !root?.classList?.contains(${serializeForExpression(APPLY_MARKER)}),
+      pass: !document.getElementById(${serializeForExpression(STYLE_ID)}) && !document.getElementById(${serializeForExpression(CHROME_ID)}) && !root?.classList?.contains(${serializeForExpression(APPLY_MARKER)}),
       action: 'removed',
     };
   })()`;

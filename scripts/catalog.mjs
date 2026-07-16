@@ -25,6 +25,7 @@ export async function buildThemeCatalog(themesRoot) {
       compatibility: manifest.compatibility,
       mode: manifest.mode,
       palette: manifest.palette,
+      ...(manifest.experience ? { experience: manifest.experience } : {}),
       preview: `/theme-assets/${manifest.slug}/${basename(manifest.files.preview)}`,
       command: `awesome-codex-themes start ${manifest.slug}`,
     });

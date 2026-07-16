@@ -4,7 +4,10 @@ import catalog from '../generated/themes.json';
 
 type Theme = (typeof catalog)[number];
 
-const themes = catalog as Theme[];
+const themes = [...(catalog as Theme[])].sort((left, right) => {
+  const featuredDifference = Number(right.tags.includes('featured')) - Number(left.tags.includes('featured'));
+  return featuredDifference || left.name.localeCompare(right.name);
+});
 const categories = [...new Set(themes.flatMap((theme) => theme.categories))].sort();
 const previewPaletteRoles = ['background', 'surface', 'text', 'accent', 'success'] as const;
 
@@ -17,11 +20,13 @@ function previewUrl(theme: Theme) {
 }
 
 function ThemeCard({ theme, onOpen }: { theme: Theme; onOpen: (theme: Theme) => void }) {
+  const featured = theme.tags.includes('featured');
   return (
-    <article className="theme-card" style={{ '--theme-accent': theme.palette.accent } as React.CSSProperties}>
+    <article className={`theme-card${featured ? ' theme-card--featured' : ''}`} style={{ '--theme-accent': theme.palette.accent } as React.CSSProperties}>
       <button className="theme-preview" type="button" onClick={() => onOpen(theme)} aria-label={`View ${theme.name}`}>
         <img src={previewUrl(theme)} alt={`${theme.name} Codex workspace preview`} />
         <span className="theme-preview__index" aria-hidden="true">{String(themes.indexOf(theme) + 1).padStart(2, '0')}</span>
+        {featured ? <span className="theme-preview__flag" aria-hidden="true">Flagship / 01</span> : null}
         <span className="theme-preview__action" aria-hidden="true">Open specimen ↗</span>
       </button>
       <div className="theme-card__body">
@@ -83,6 +88,9 @@ function ThemeDialog({ theme, onClose }: { theme: Theme; onClose: () => void }) 
             </button>
           </div>
           <p className="dialog-note">Experimental Mac-first runtime theme. Run <code>doctor</code> first and use <code>restore</code> to return to the official UI.</p>
+          {theme.license.artwork === 'PROTOTYPE-REFERENCE-ONLY' ? (
+            <p className="dialog-note dialog-note--warning">Private fan prototype artwork. Replace the character asset and naming before any public or commercial release.</p>
+          ) : null}
         </div>
       </section>
     </div>
@@ -93,6 +101,7 @@ export function App() {
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('all');
   const [selectedTheme, setSelectedTheme] = useState<Theme | null>(null);
+  const flagship = themes.find((theme) => theme.tags.includes('featured')) ?? themes[0];
 
   const filteredThemes = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -125,17 +134,33 @@ export function App() {
       <main id="top">
         <section className="hero">
           <div className="hero__copy">
-            <p className="eyebrow">Open-source theme atlas / macOS</p>
-            <h1>A field guide to Codex after dark—and in daylight.</h1>
-            <p className="hero__lede">Original workspace themes, a versioned full-workspace adapter, and a restore path you can inspect. Built for people who want atmosphere without giving up control.</p>
+            <p className="eyebrow">Open-source Codex skin system / macOS</p>
+            <h1>Make Codex feel limitless.</h1>
+            <p className="hero__lede">A flagship full-interface theme, a versioned full-workspace adapter, local assets, diagnostics, and a restore path you can inspect. Atmosphere without surrendering control.</p>
             <div className="hero__actions">
               <a className="button button--primary" href="#collection">Browse the collection</a>
               <a className="button button--secondary" href="https://github.com/erickkkyt/Awesome-codex-themes">Inspect the source ↗</a>
             </div>
           </div>
+          <button
+            className="hero__specimen"
+            type="button"
+            onClick={() => setSelectedTheme(flagship)}
+            aria-label={`Open ${flagship.name} flagship`}
+          >
+            <img src={previewUrl(flagship)} alt={`${flagship.name} complete Codex theme mockup`} />
+            <span className="hero__specimen-label" aria-hidden="true">
+              <b>LIMITLESS / SIX EYES</b>
+              <span>Full-interface prototype · open specimen ↗</span>
+            </span>
+          </button>
           <div className="hero__folio" aria-label="Collection summary">
-            <span className="folio-number">04</span>
-            <div><strong>4 original themes</strong><span>MIT engine · local assets</span></div>
+            <span className="folio-number">05</span>
+            <div>
+              <strong>1 flagship theme</strong>
+              <strong>4 original studies</strong>
+              <span>MIT engine · local packages</span>
+            </div>
           </div>
           <div className="hero__orbit" aria-hidden="true"><span /><span /><span /></div>
         </section>

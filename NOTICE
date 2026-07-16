@@ -8,7 +8,9 @@ their respective owner.
 The software does not redistribute the official Codex Desktop application,
 its logos, or its signed application bundle.
 
-Original SVG artwork under themes/* is released under CC0 1.0 as stated in
-each theme's ASSET_LICENSE.md. Third-party research references are documented
-in THIRD_PARTY_NOTICES.md; their source code and assets are not distributed
-with this repository.
+Artwork licensing is stated in each package's ASSET_LICENSE.md. The original
+SVG study themes are CC0 1.0. The Limitless Six Eyes PNG assets are private
+prototype references, are not covered by MIT or CC0, and must be replaced
+before public or commercial release. Third-party research references are
+documented in THIRD_PARTY_NOTICES.md; their source code and assets are not
+distributed with this repository.

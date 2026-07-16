@@ -39,6 +39,7 @@ export const SEMANTIC_COLOR_ROLES = Object.freeze([
   'composer',
 ]);
 export const DEFAULT_MAX_ASSET_BYTES = 10 * 1024 * 1024;
+export const DEFAULT_MAX_RUNTIME_ARTWORK_BYTES = 700 * 1024;
 export const DEFAULT_MAX_CSS_BYTES = 256 * 1024;
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -48,6 +49,14 @@ const HEX_COLOR_PATTERN = /^#[0-9A-Fa-f]{6}(?:[0-9A-Fa-f]{2})?$/;
 const SUPPORTED_PLATFORMS = new Set(['macos']);
 const SUPPORTED_STATUS = new Set(['experimental', 'verified']);
 const SUPPORTED_MODES = new Set(['dark', 'light', 'system']);
+const EXPERIENCE_FIELD_LIMITS = Object.freeze({
+  brand: 48,
+  eyebrow: 48,
+  headline: 80,
+  tagline: 160,
+  status: 48,
+  signature: 80,
+});
 
 export class ThemeValidationError extends Error {
   constructor(code, message, options = {}) {
@@ -66,6 +75,14 @@ function requireString(value, field) {
     fail('THEME_FIELD_REQUIRED', `${field} must be a non-empty string.`);
   }
   return value.trim();
+}
+
+function requireBoundedString(value, field, maxLength) {
+  const normalized = requireString(value, field);
+  if (normalized.length > maxLength) {
+    fail('THEME_FIELD_TOO_LONG', `${field} must be ${maxLength} characters or fewer.`);
+  }
+  return normalized;
 }
 
 function requireStringArray(value, field) {
@@ -148,6 +165,28 @@ function normalizePalette(palette, schemaVersion) {
   };
 }
 
+function normalizeExperience(value, schemaVersion) {
+  if (value === undefined) return undefined;
+  if (schemaVersion !== 2) {
+    fail('THEME_EXPERIENCE_UNSUPPORTED', 'experience metadata requires schemaVersion 2.');
+  }
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    fail('THEME_FIELD_REQUIRED', 'experience must be an object.');
+  }
+  if (value.chrome !== undefined && typeof value.chrome !== 'boolean') {
+    fail('THEME_FIELD_INVALID', 'experience.chrome must be a boolean.');
+  }
+  return {
+    ...Object.fromEntries(
+      Object.entries(EXPERIENCE_FIELD_LIMITS).map(([field, maxLength]) => [
+        field,
+        requireBoundedString(value[field], `experience.${field}`, maxLength),
+      ]),
+    ),
+    chrome: value.chrome ?? true,
+  };
+}
+
 function validateManifestObject(input) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) {
     fail('THEME_JSON_INVALID', 'theme.json must contain an object.');
@@ -212,6 +251,7 @@ function validateManifestObject(input) {
     fail('THEME_COMPATIBILITY_INVALID', 'compatibility.appVersions must contain exact versions or a trailing wildcard.');
   }
 
+  const experience = normalizeExperience(input.experience, input.schemaVersion);
   return {
     schemaVersion: input.schemaVersion,
     slug,
@@ -235,6 +275,7 @@ function validateManifestObject(input) {
     },
     mode,
     palette: normalizePalette(palette, input.schemaVersion),
+    ...(experience ? { experience } : {}),
     files: {
       css: validateLocalPath(files.css, 'files.css'),
       artwork: validateLocalPath(files.artwork, 'files.artwork'),
@@ -350,7 +391,11 @@ function validateSvg(buffer, path) {
 
 export async function loadThemePackage(
   root,
-  { maxAssetBytes = DEFAULT_MAX_ASSET_BYTES, maxCssBytes = DEFAULT_MAX_CSS_BYTES } = {},
+  {
+    maxAssetBytes = DEFAULT_MAX_ASSET_BYTES,
+    maxRuntimeArtworkBytes = DEFAULT_MAX_RUNTIME_ARTWORK_BYTES,
+    maxCssBytes = DEFAULT_MAX_CSS_BYTES,
+  } = {},
 ) {
   let canonicalRoot;
   try {
@@ -381,6 +426,12 @@ export async function loadThemePackage(
   }
   if (artworkInfo.size > maxAssetBytes || previewInfo.size > maxAssetBytes) {
     fail('THEME_ASSET_TOO_LARGE', `Theme artwork exceeds ${maxAssetBytes} bytes.`);
+  }
+  if (artworkInfo.size > maxRuntimeArtworkBytes) {
+    fail(
+      'THEME_RUNTIME_ARTWORK_TOO_LARGE',
+      `Runtime artwork exceeds ${maxRuntimeArtworkBytes} bytes and cannot be injected reliably.`,
+    );
   }
 
   const [css, artworkBuffer, previewBuffer] = await Promise.all([
