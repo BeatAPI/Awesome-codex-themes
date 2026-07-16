@@ -6,6 +6,7 @@ type Theme = (typeof catalog)[number];
 
 const themes = catalog as Theme[];
 const categories = [...new Set(themes.flatMap((theme) => theme.categories))].sort();
+const previewPaletteRoles = ['background', 'surface', 'text', 'accent', 'success'] as const;
 
 function titleCase(value: string) {
   return value.replace(/\b\w/g, (letter) => letter.toUpperCase());
@@ -32,8 +33,8 @@ function ThemeCard({ theme, onOpen }: { theme: Theme; onOpen: (theme: Theme) => 
         <p>{theme.description}</p>
         <div className="theme-card__footer">
           <div className="palette" aria-label={`${theme.name} color palette`}>
-            {Object.entries(theme.palette).map(([name, color]) => (
-              <span key={name} title={`${name}: ${color}`} style={{ background: color }} />
+            {previewPaletteRoles.map((name) => (
+              <span key={name} title={`${name}: ${theme.palette[name]}`} style={{ background: theme.palette[name] }} />
             ))}
           </div>
           <button type="button" className="text-button" onClick={() => onOpen(theme)} aria-label={`Read ${theme.name} details`}>
@@ -70,6 +71,7 @@ function ThemeDialog({ theme, onClose }: { theme: Theme; onClose: () => void }) 
             <div><dt>Mode</dt><dd>{theme.mode}</dd></div>
             <div><dt>Tested range</dt><dd>{theme.compatibility.appVersions.join(', ')}</dd></div>
             <div><dt>Artwork</dt><dd>{theme.license.artwork}</dd></div>
+            <div><dt>Coverage</dt><dd>{theme.tags.includes('full-workspace') ? 'Full workspace' : 'Legacy palette'}</dd></div>
           </dl>
           <div className="tag-list" aria-label="Theme tags">
             {theme.tags.map((tag) => <span key={tag}>#{tag}</span>)}
@@ -125,7 +127,7 @@ export function App() {
           <div className="hero__copy">
             <p className="eyebrow">Open-source theme atlas / macOS</p>
             <h1>A field guide to Codex after dark—and in daylight.</h1>
-            <p className="hero__lede">Original workspace themes, a narrow local engine, and a restore path you can inspect. Built for people who want atmosphere without giving up control.</p>
+            <p className="hero__lede">Original workspace themes, a versioned full-workspace adapter, and a restore path you can inspect. Built for people who want atmosphere without giving up control.</p>
             <div className="hero__actions">
               <a className="button button--primary" href="#collection">Browse the collection</a>
               <a className="button button--secondary" href="https://github.com/erickkkyt/Awesome-codex-themes">Inspect the source ↗</a>

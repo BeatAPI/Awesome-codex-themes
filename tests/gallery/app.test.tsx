@@ -14,6 +14,8 @@ describe('theme gallery', () => {
     expect(screen.getByText(/unofficial and not affiliated/i)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Obsidian Bloom' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Paper Circuit' })).toBeInTheDocument();
+    expect(screen.getByText(/versioned full-workspace adapter/i)).toBeInTheDocument();
+    expect(screen.getByLabelText('Obsidian Bloom color palette').querySelectorAll('span')).toHaveLength(5);
   });
 
   test('searches across names, descriptions, categories, and tags', async () => {
@@ -55,6 +57,7 @@ describe('theme gallery', () => {
     const dialog = screen.getByRole('dialog', { name: 'Obsidian Bloom' });
     expect(dialog).toHaveTextContent('26.707.*');
     expect(dialog).toHaveTextContent('CC0-1.0');
+    expect(dialog).toHaveTextContent('Full workspace');
     await user.click(screen.getByRole('button', { name: /copy apply command/i }));
 
     expect(writeText).toHaveBeenCalledWith('awesome-codex-themes start obsidian-bloom');

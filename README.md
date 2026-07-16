@@ -12,7 +12,7 @@ Awesome Codex Themes gives technical users a small, inspectable way to apply ful
 
 ## Current status
 
-This repository is an experimental `0.1.0` implementation, not a commercial desktop app.
+This repository is an experimental `0.2.0` implementation, not a commercial desktop app.
 
 | Surface | Status |
 | --- | --- |
@@ -20,11 +20,25 @@ This repository is an experimental `0.1.0` implementation, not a commercial desk
 | macOS app identity, signature, Team ID, architecture checks | Implemented and tested |
 | Literal `127.0.0.1` CDP target and port-owner validation | Implemented and tested |
 | Apply, watcher, status, and restore engine | Implemented and tested |
-| Four original launch themes | Included; compatibility remains experimental |
+| Versioned full-workspace adapter for Codex `26.707.*` | Implemented and tested |
+| Obsidian Bloom schema-v2 full theme | Complete semantic palette; compatibility remains experimental |
+| Three original legacy themes | Included for compatibility; not yet tuned for full-workspace coverage |
 | Searchable static gallery | Implemented and production-build verified |
 | Signed GUI / Commercial Desktop | Out of scope |
 
 Every included theme currently declares Codex `26.707.*`. Unknown versions fail closed and leave the official UI unchanged.
+
+### Full-theme coverage
+
+The shared `26.707` adapter maps a theme's semantic palette onto Codex and VS Code renderer tokens plus narrowly scoped component rules. Obsidian Bloom is the first package tuned against the complete palette. It covers:
+
+- canvas artwork, scrims, main surfaces, sidebars, headers, cards, dialogs, menus, listboxes, and tooltips;
+- primary, secondary, muted, and disabled text plus icon tiers;
+- normal, subtle, strong, focus, input, menu, and terminal borders;
+- inputs, placeholders, Composer, send button, links, hover, active, focus, and selection states;
+- code blocks, preformatted text, Monaco/terminal surfaces, added/removed diff colors, status colors, and scrollbars.
+
+“Full-theme” means high coverage on a declared Codex version family. It does not mean future Codex versions are permanently pixel-compatible. Themes remain `experimental` until the relevant page matrix has recorded runtime evidence.
 
 ## Safety model
 
@@ -76,7 +90,7 @@ Return to the official UI:
 If you intentionally started the official app with a loopback CDP port, you can apply and restore against that explicit port:
 
 ```bash
-./bin/awesome-codex-themes apply arctic-signal --port 9341
+./bin/awesome-codex-themes apply obsidian-bloom --port 9341
 ./bin/awesome-codex-themes restore --port 9341
 ```
 
@@ -115,7 +129,7 @@ The gallery is a static Vite build with search, category filters, structured the
 
 ## Theme authoring
 
-Each theme is declarative:
+New full-workspace themes use schema v2 and remain declarative. The versioned adapter owns Codex selectors; packages provide the semantic palette, original artwork, metadata, and optional namespaced refinements:
 
 ```text
 themes/my-theme/

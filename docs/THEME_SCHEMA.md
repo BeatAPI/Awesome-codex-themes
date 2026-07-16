@@ -1,6 +1,6 @@
 # Theme package schema
 
-Schema version `1` defines a self-contained theme directory. A package contains metadata, one CSS file, one runtime artwork file, one gallery preview, and an asset license notice.
+Schema version `2` defines a self-contained semantic theme directory. A package contains metadata, a complete visual palette, one optional refinement CSS file, one runtime artwork file, one gallery preview, and an asset license notice. The engine owns the versioned Codex selector adapter.
 
 ## Directory layout
 
@@ -19,9 +19,9 @@ All file references must be relative, use forward slashes, and resolve below the
 
 ```json
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "slug": "my-original-theme",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "My Original Theme",
   "description": "A concise description of the visual system.",
   "author": {
@@ -42,9 +42,38 @@ All file references must be relative, use forward slashes, and resolve below the
   "mode": "dark",
   "palette": {
     "background": "#15130E",
+    "scrim": "#15130ED9",
     "surface": "#292419D9",
+    "surfaceElevated": "#342D20EE",
+    "surfaceOverlay": "#1C180FF2",
+    "input": "#30291DE8",
     "text": "#FFF4D6",
-    "accent": "#F5B942"
+    "textSecondary": "#DDD0AD",
+    "textMuted": "#A99C7A",
+    "textDisabled": "#746B54",
+    "icon": "#FFF4D6",
+    "iconSecondary": "#D5C69E",
+    "iconMuted": "#938767",
+    "border": "#F5B94238",
+    "borderSubtle": "#F5B9421F",
+    "borderStrong": "#F5B94270",
+    "accent": "#F5B942",
+    "accentHover": "#FFD36F",
+    "selection": "#F5B9424D",
+    "focus": "#FFD983",
+    "link": "#F8C85D",
+    "hover": "#F5B9421F",
+    "active": "#F5B94238",
+    "code": "#100E09F2",
+    "terminal": "#0A0906F7",
+    "diffAdded": "#2DAA6A42",
+    "diffRemoved": "#FF5F5242",
+    "success": "#58D68D",
+    "warning": "#F6C85F",
+    "danger": "#FF6B64",
+    "scrollbar": "#F5B94245",
+    "scrollbarHover": "#F5B94278",
+    "composer": "#211C12F2"
   },
   "files": {
     "css": "theme.css",
@@ -58,7 +87,7 @@ All file references must be relative, use forward slashes, and resolve below the
 
 | Field | Rule |
 | --- | --- |
-| `schemaVersion` | Integer `1`. Unknown versions fail closed. |
+| `schemaVersion` | Integer `2` for new themes. Version `1` remains readable through deterministic palette expansion; unknown versions fail closed. |
 | `slug` | Lowercase kebab-case and identical to the directory name. |
 | `version` | Semantic version such as `1.0.0` or `1.0.0-beta.1`. |
 | `name` | Human-readable global/English launch name. |
@@ -72,19 +101,48 @@ All file references must be relative, use forward slashes, and resolve below the
 | `compatibility.status` | `experimental` or `verified`. Use `verified` only with recorded runtime evidence. |
 | `compatibility.appVersions` | Exact dotted versions or trailing-wildcard ranges such as `26.707.*`. |
 | `mode` | `dark`, `light`, or `system`; defaults to `dark`. |
-| `palette` | Six- or eight-digit hex colors. Alpha belongs at the end (`#RRGGBBAA`). |
+| `palette` | Every schema-v2 semantic role is required. Values are six- or eight-digit hex colors; alpha belongs at the end (`#RRGGBBAA`). |
 | `files` | Local paths to CSS, artwork, and preview. |
 
 ## Runtime tokens
 
-The engine owns five variables on the document root:
+The engine exposes the validated palette as namespaced variables on the document root:
 
 ```css
 --act-artwork
 --act-background
+--act-scrim
 --act-surface
+--act-surface-elevated
+--act-surface-overlay
+--act-input
 --act-text
+--act-text-secondary
+--act-text-muted
+--act-text-disabled
+--act-icon
+--act-icon-secondary
+--act-icon-muted
+--act-border
+--act-border-subtle
+--act-border-strong
 --act-accent
+--act-accent-hover
+--act-selection
+--act-focus
+--act-link
+--act-hover
+--act-active
+--act-code
+--act-terminal
+--act-diff-added
+--act-diff-removed
+--act-success
+--act-warning
+--act-danger
+--act-scrollbar
+--act-scrollbar-hover
+--act-composer
 ```
 
 Scope every rule below the root marker:
@@ -97,7 +155,7 @@ html.awesome-codex-theme body {
 }
 ```
 
-Prefer semantic elements and ARIA roles over hashed application classes. Decorative layers must not capture pointer events or obscure keyboard focus. Avoid structural DOM assumptions and do not hide native controls.
+Theme CSS is appended after the trusted adapter and should contain only artwork composition or narrowly scoped refinements. Prefer semantic elements and ARIA roles over hashed application classes. Decorative layers must not capture pointer events or obscure keyboard focus. Avoid structural DOM assumptions and do not hide native controls.
 
 ## Asset and CSS rules
 

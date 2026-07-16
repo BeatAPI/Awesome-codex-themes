@@ -23,11 +23,12 @@ Use Node 22 or newer for development. End-user engine commands use the Node runt
 
 1. Copy an existing package into a new lowercase kebab-case directory.
 2. Replace all artwork and metadata; do not submit a recolor of copyrighted character or brand art.
-3. Keep CSS under `html.awesome-codex-theme` and preserve native controls, focus states, pointer behavior, and readable contrast.
-4. Add `ASSET_LICENSE.md` with exact provenance and redistributable rights.
-5. Start at `compatibility.status: experimental` and declare only versions you actually tested.
-6. Run `pnpm themes:validate` and `pnpm check`.
-7. Include before/after evidence without conversations, names, account data, or tokens.
+3. Fill every schema-v2 semantic palette role; do not duplicate the shared Codex adapter in a theme package.
+4. Keep optional CSS under `html.awesome-codex-theme` and preserve native controls, focus states, pointer behavior, and readable contrast.
+5. Add `ASSET_LICENSE.md` with exact provenance and redistributable rights.
+6. Start at `compatibility.status: experimental` and declare only versions you actually tested.
+7. Run `pnpm themes:validate` and `pnpm check`.
+8. Include before/after evidence without conversations, names, account data, or tokens.
 
 Read [docs/THEME_SCHEMA.md](docs/THEME_SCHEMA.md) for the contract.
 

@@ -29,12 +29,22 @@ describe('theme catalog', () => {
     expect(catalog.every((theme) => theme.preview.startsWith('/theme-assets/'))).toBe(true);
   });
 
-  test('ships every repository theme on schema v2 with the full semantic palette', async () => {
-    for (const slug of ['arctic-signal', 'obsidian-bloom', 'paper-circuit', 'solar-archive']) {
+  test('ships Obsidian Bloom as the single schema-v2 full semantic theme', async () => {
+    const manifest = JSON.parse(await readFile(join(themesRoot, 'obsidian-bloom', 'theme.json'), 'utf8'));
+
+    expect(manifest.schemaVersion).toBe(2);
+    expect(Object.keys(manifest.palette)).toEqual(SEMANTIC_COLOR_ROLES);
+    expect(manifest.version).toBe('1.1.0');
+    expect(manifest.tags).toContain('full-workspace');
+  });
+
+  test('keeps the other launch themes on the legacy schema until they are tuned', async () => {
+    for (const slug of ['arctic-signal', 'paper-circuit', 'solar-archive']) {
       const manifest = JSON.parse(await readFile(join(themesRoot, slug, 'theme.json'), 'utf8'));
-      expect(manifest.schemaVersion, slug).toBe(2);
-      expect(Object.keys(manifest.palette), slug).toEqual(SEMANTIC_COLOR_ROLES);
-      expect(manifest.version, slug).toBe('1.1.0');
+      expect(manifest.schemaVersion, slug).toBe(1);
+      expect(manifest.version, slug).toBe('1.0.0');
+      expect(Object.keys(manifest.palette), slug).toEqual(['background', 'surface', 'text', 'accent']);
+      expect(manifest.tags, slug).not.toContain('full-workspace');
     }
   });
 
