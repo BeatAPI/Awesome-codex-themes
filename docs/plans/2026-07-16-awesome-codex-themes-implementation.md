@@ -104,5 +104,5 @@
 1. Run full `pnpm check` and inspect complete output.
 2. If safe, apply a fixture theme to the existing loopback CDP session, verify markers, and restore immediately; never restart Codex.
 3. Run the deterministic pre-commit scanner before and after staging, then manually review the full diff against the security checklist.
-4. Commit on `main`, publish `erickkkyt/Awesome-codex-themes`, push with tracking, and verify remote visibility and commit SHA.
+4. Commit on `main`, publish `BeatAPI/Awesome-codex-themes`, push with tracking, and verify remote visibility and commit SHA.
 5. Open the local `Awesome-codex-themes` checkout in GitHub Desktop and verify the app received the repository path.

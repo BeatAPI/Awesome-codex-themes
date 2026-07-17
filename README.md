@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/erickkkyt/Awesome-codex-themes/actions/workflows/ci.yml"><img src="https://github.com/erickkkyt/Awesome-codex-themes/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/BeatAPI/Awesome-codex-themes/actions/workflows/ci.yml"><img src="https://github.com/BeatAPI/Awesome-codex-themes/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-171815.svg" alt="MIT License"></a>
   <img src="https://img.shields.io/badge/platform-macOS-171815.svg" alt="macOS">
   <img src="https://img.shields.io/badge/themes-12-19d3da.svg" alt="12 themes">
@@ -177,7 +177,7 @@ Requirements:
 Clone the repository and run read-only checks first:
 
 ```bash
-git clone https://github.com/erickkkyt/Awesome-codex-themes.git
+git clone https://github.com/BeatAPI/Awesome-codex-themes.git
 cd Awesome-codex-themes
 ./bin/awesome-codex-themes doctor
 ./bin/awesome-codex-themes list
@@ -218,7 +218,7 @@ If Codex is already open without this project's managed CDP endpoint, the agent 
 
 The LaunchAgent points to an immutable installed copy, not the Git clone. It starts the official app with a local CDP endpoint, reapplies the selected theme after renderer reloads, and preserves an explicit pause, restore, and uninstall path.
 
-After an official Codex update, the agent attempts the shared adapter again. If a changed interface looks wrong, run `pause` or `restore` to return to the official UI, then open a [GitHub Issue](https://github.com/erickkkyt/Awesome-codex-themes/issues/new/choose) with the Codex version and a privacy-safe screenshot.
+After an official Codex update, the agent attempts the shared adapter again. If a changed interface looks wrong, run `pause` or `restore` to return to the official UI, then open a [GitHub Issue](https://github.com/BeatAPI/Awesome-codex-themes/issues/new/choose) with the Codex version and a privacy-safe screenshot.
 
 ## Current status
 

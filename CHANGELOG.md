@@ -40,4 +40,4 @@ The private `0.2.0` repository snapshot established the initial engine research 
 - Optional declarative experience metadata and idempotent owned chrome injection/removal.
 - Static React/Vite Gallery, automated tests, CI, security policy, and contribution templates.
 
-[Unreleased]: https://github.com/erickkkyt/Awesome-codex-themes/commits/main
+[Unreleased]: https://github.com/BeatAPI/Awesome-codex-themes/commits/main
