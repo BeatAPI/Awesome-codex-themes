@@ -43,7 +43,7 @@ The `26.715.21425` service-boundary results are recorded in the [Satoru Gojo lif
 
 ## 4. Public visibility gate
 
-Changing repository visibility is a consequential external action. Obtain the repository owner's explicit approval immediately before changing `erickkkyt/Awesome-codex-themes` from private to public.
+Changing repository visibility is a consequential external action. `BeatAPI/Awesome-codex-themes` is public; obtain the repository owner's explicit approval before changing its visibility again.
 
 Before approval is executed, verify:
 

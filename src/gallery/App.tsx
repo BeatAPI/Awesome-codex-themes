@@ -133,7 +133,7 @@ export function App() {
         <nav aria-label="Primary navigation">
           <a href="#collection">Collection</a>
           <a href="#principles">Principles</a>
-          <a href="https://github.com/erickkkyt/Awesome-codex-themes">GitHub ↗</a>
+          <a href="https://github.com/BeatAPI/Awesome-codex-themes">GitHub ↗</a>
         </nav>
       </header>
 
@@ -145,7 +145,7 @@ export function App() {
             <p className="hero__lede">Twelve complete full-workspace themes, one persistent local agent, and an inspectable adapter with diagnostics, switching, and recovery built in.</p>
             <div className="hero__actions">
               <a className="button button--primary" href="#collection">Browse the collection</a>
-              <a className="button button--secondary" href="https://github.com/erickkkyt/Awesome-codex-themes">Inspect the source ↗</a>
+              <a className="button button--secondary" href="https://github.com/BeatAPI/Awesome-codex-themes">Inspect the source ↗</a>
             </div>
           </div>
           <button

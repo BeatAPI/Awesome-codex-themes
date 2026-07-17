@@ -8,11 +8,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/erickkkyt/Awesome-codex-themes.git"
+    "url": "git+https://github.com/BeatAPI/Awesome-codex-themes.git"
   },
-  "homepage": "https://github.com/erickkkyt/Awesome-codex-themes#readme",
+  "homepage": "https://github.com/BeatAPI/Awesome-codex-themes#readme",
   "bugs": {
-    "url": "https://github.com/erickkkyt/Awesome-codex-themes/issues"
+    "url": "https://github.com/BeatAPI/Awesome-codex-themes/issues"
   },
   "keywords": [
     "codex",

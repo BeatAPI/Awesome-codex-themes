@@ -26,7 +26,7 @@ Last verified: 2026-07-17 (Asia/Shanghai)
 | Satoru Gojo (native Japanese name: 五条 悟) | Featured complete package, experimental compatibility | Version `1.2.0` is live-verified on 26.707/26.715 with current assets, owned-state behavior, and persistent lifecycle recovery. |
 | Twelve-theme collection | Implemented and current-version verified | Satoru Gojo is Featured. Eleven additional Schema 2 packages include complete local backgrounds, previews, CSS, metadata, and component assets; all eleven passed the recorded 26.715 workspace, right-panel, home, plugins, scheduled, sites, pull-request, and narrow-window matrix. Compatibility remains experimental outside the recorded builds. |
 | Static Gallery | Implemented | Catalog, search, native-name discovery, detail, copy, and production-build tests are present. |
-| GitHub public release | Not released | The repository remains private and no public GitHub Release has been created. |
+| GitHub repository | Publicly released | The repository is public under `BeatAPI/Awesome-codex-themes`; no tagged GitHub Release has been created yet. |
 | Signed GUI / commercial desktop manager | Out of scope | Intentionally absent from this open-source repository. |
 
 ## Recorded local prototype environment
@@ -50,4 +50,4 @@ The legacy injector plist and script were backed up outside the repository befor
 
 The approved live session recorded the unmanaged `restart-required` transition, renderer reload reapply, pause and owned-state removal, paused-state upgrade, resume, managed relaunch, a real LaunchAgent bootout/bootstrap cycle, the former unknown-version safe mode before the policy changed, uninstall, and a successful reinstall with the original Codex profile preserved.
 
-A clean release candidate passed `release:check`: 34 test files / 248 tests, all 12 theme packages, TypeScript, production Gallery build, production dependency audit, public-file hygiene, and diff whitespace. An anonymous public-clone test remains pending until the private repository is made public. Remaining public-release gates are a physical logout/reboot observation, the exact-commit CI result, and an explicit public-release decision.
+A clean release candidate passed `release:check`: 34 test files / 248 tests, all 12 theme packages, TypeScript, production Gallery build, production dependency audit, public-file hygiene, and diff whitespace. The public repository and anonymous clone path are live. Remaining tagged-release gates are a physical logout/reboot observation, the exact-commit CI result, and an explicit version-tag decision.
