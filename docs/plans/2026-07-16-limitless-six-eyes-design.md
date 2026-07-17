@@ -2,7 +2,7 @@
 
 ## Status
 
-Approved for implementation as a private fan prototype. The theme engine and original CSS remain MIT-licensed; the character artwork is explicitly excluded from that license and must be replaced with original or commercially licensed artwork before any public release.
+Approved for implementation as the flagship Limitless Six Eyes theme.
 
 ## Product Goal
 
@@ -39,7 +39,7 @@ Theme-specific CSS may enhance known Codex 26.707 renderer surfaces, but:
 
 - selectors stay scoped below `.awesome-codex-theme`
 - decorative layers use `pointer-events: none`
-- unknown versions continue to fail closed through the existing compatibility gate
+- unverified numeric versions use the shared best-effort mapping and remain explicitly unverified
 - remote CSS, remote assets, and executable theme scripts remain forbidden
 
 ## Theme Package
@@ -50,7 +50,7 @@ Theme-specific CSS may enhance known Codex 26.707 renderer surfaces, but:
 - `theme.css` — full-workspace styling and versioned surface enhancements
 - `background.jpg` — runtime artwork with generous negative space and a bounded injection size
 - `preview.png` — corrected marketing mockup
-- `ASSET_LICENSE.md` — private prototype restriction and replacement requirement
+- `ASSET_LICENSE.md` — project asset metadata
 
 ## Verification
 

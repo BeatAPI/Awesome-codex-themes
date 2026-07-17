@@ -27,7 +27,8 @@ function validManifest(overrides = {}) {
     compatibility: {
       platforms: ['macos'],
       status: 'experimental',
-      appVersions: ['26.707.*'],
+      strategy: 'best-effort-all',
+      verifiedAppVersions: ['26.707.*'],
     },
     palette: {
       background: '#07111F',
@@ -120,12 +121,54 @@ describe('validateThemeManifest', () => {
     expect(manifest.tags).toEqual(['blue', 'focus']);
   });
 
+  test('keeps English primary and normalizes an optional native display name pair', () => {
+    const manifest = validateThemeManifest(
+      validManifest({
+        name: 'Satoru Gojo',
+        nativeName: '  五条 悟  ',
+        nativeLocale: 'ja-JP',
+      }),
+    );
+
+    expect(manifest.name).toBe('Satoru Gojo');
+    expect(manifest.nativeName).toBe('五条 悟');
+    expect(manifest.nativeLocale).toBe('ja-JP');
+  });
+
+  test.each([
+    [{ nativeName: '五条 悟' }, 'THEME_NATIVE_NAME_INCOMPLETE'],
+    [{ nativeLocale: 'ja-JP' }, 'THEME_NATIVE_NAME_INCOMPLETE'],
+    [{ nativeName: '五条 悟', nativeLocale: 'japanese' }, 'THEME_NATIVE_LOCALE_INVALID'],
+  ])('rejects incomplete or invalid native display metadata', (overrides, code) => {
+    expect(() => validateThemeManifest(validManifest(overrides))).toThrowError(
+      expect.objectContaining({ code }),
+    );
+  });
+
   test.each([
     [{ slug: '../escape' }, 'THEME_SLUG_INVALID'],
     [{ version: 'latest' }, 'THEME_VERSION_INVALID'],
     [{ palette: { ...validManifest().palette, accent: 'blue' } }, 'THEME_COLOR_INVALID'],
     [{ compatibility: { ...validManifest().compatibility, platforms: ['windows'] } }, 'THEME_PLATFORM_UNSUPPORTED'],
     [{ files: { ...validManifest().files, artwork: 'https://example.com/art.svg' } }, 'THEME_PATH_UNSAFE'],
+    [
+      {
+        files: {
+          ...validManifest().files,
+          assets: { 'Six Eyes': 'assets/six-eyes.png' },
+        },
+      },
+      'THEME_ASSET_NAME_INVALID',
+    ],
+    [
+      {
+        files: {
+          ...validManifest().files,
+          assets: { 'six-eyes': '../six-eyes.png' },
+        },
+      },
+      'THEME_PATH_UNSAFE',
+    ],
   ])('rejects unsafe or unsupported metadata with a stable code', (overrides, code) => {
     expect(() => validateThemeManifest(validManifest(overrides))).toThrowError(
       expect.objectContaining({ code }),
@@ -138,6 +181,13 @@ describe('validateThemeManifest', () => {
         schemaVersion: 2,
         palette: semanticPalette(),
         experience: experience({ brand: '  LIMITLESS  ' }),
+        files: {
+          ...validManifest().files,
+          assets: {
+            'six-eyes-emblem': 'assets/six-eyes-emblem.png',
+            'send-infinity': 'assets/send-infinity.png',
+          },
+        },
       }),
     );
 
@@ -146,6 +196,10 @@ describe('validateThemeManifest', () => {
     expect(manifest.palette.surfaceOverlay).toBe('#171411F2');
     expect(manifest.palette.scrollbarHover).toBe('#FFB18A78');
     expect(manifest.experience).toEqual(experience());
+    expect(manifest.files.assets).toEqual({
+      'six-eyes-emblem': 'assets/six-eyes-emblem.png',
+      'send-infinity': 'assets/send-infinity.png',
+    });
   });
 
   test('rejects a schema v2 palette missing a required semantic role', () => {
@@ -201,19 +255,37 @@ describe('validateThemeManifest', () => {
 });
 
 describe('assertThemeCompatibility', () => {
-  test('accepts an app version covered by a declared wildcard range', () => {
+  test('identifies an app version covered by a live-verified wildcard range', () => {
     expect(
       assertThemeCompatibility(validManifest(), { platform: 'macos', appVersion: '26.707.72221' }),
-    ).toEqual({ platform: 'macos', appVersion: '26.707.72221', status: 'experimental' });
+    ).toEqual({
+      platform: 'macos',
+      appVersion: '26.707.72221',
+      status: 'experimental',
+      strategy: 'best-effort-all',
+      verified: true,
+    });
   });
 
-  test.each([
-    [{ platform: 'macos', appVersion: '26.708.1' }, 'THEME_APP_VERSION_UNSUPPORTED'],
-    [{ platform: 'windows', appVersion: '26.707.72221' }, 'THEME_PLATFORM_UNSUPPORTED'],
-  ])('fails closed outside the declared compatibility boundary', (runtime, code) => {
-    expect(() => assertThemeCompatibility(validManifest(), runtime)).toThrowError(
-      expect.objectContaining({ code }),
-    );
+  test('allows every numeric Codex version as best effort and reports unverified status', () => {
+    expect(
+      assertThemeCompatibility(validManifest(), { platform: 'macos', appVersion: '99.1.2' }),
+    ).toEqual({
+      platform: 'macos',
+      appVersion: '99.1.2',
+      status: 'experimental',
+      strategy: 'best-effort-all',
+      verified: false,
+    });
+  });
+
+  test('still rejects unsupported platforms', () => {
+    expect(() =>
+      assertThemeCompatibility(validManifest(), {
+        platform: 'windows',
+        appVersion: '26.707.72221',
+      }),
+    ).toThrowError(expect.objectContaining({ code: 'THEME_PLATFORM_UNSUPPORTED' }));
   });
 });
 
@@ -234,6 +306,52 @@ describe('loadThemePackage', () => {
     expect(theme.artwork.mime).toBe('image/svg+xml');
     expect(theme.artwork.dataUrl).toMatch(/^data:image\/svg\+xml;base64,/);
     expect(theme.artwork.bytes).toBeGreaterThan(0);
+    expect(theme.assets).toEqual({});
+  });
+
+  test('loads declared auxiliary UI assets into named runtime-safe payloads', async () => {
+    const manifest = validManifest({
+      schemaVersion: 2,
+      palette: semanticPalette(),
+      files: {
+        ...validManifest().files,
+        assets: {
+          'six-eyes-emblem': 'assets/six-eyes-emblem.png',
+          'send-infinity': 'assets/send-infinity.png',
+        },
+      },
+    });
+    const root = await createTheme(manifest);
+    await mkdir(join(root, 'assets'), { recursive: true });
+    await writeFile(join(root, 'assets/six-eyes-emblem.png'), Buffer.from('89504e470d0a1a0a', 'hex'));
+    await writeFile(join(root, 'assets/send-infinity.png'), Buffer.from('89504e470d0a1a0a', 'hex'));
+
+    const theme = await loadThemePackage(root);
+
+    expect(Object.keys(theme.assets)).toEqual(['six-eyes-emblem', 'send-infinity']);
+    expect(theme.assets['six-eyes-emblem']).toEqual(
+      expect.objectContaining({
+        mime: 'image/png',
+        bytes: 8,
+        dataUrl: expect.stringMatching(/^data:image\/png;base64,/),
+      }),
+    );
+  });
+
+  test('rejects an oversized auxiliary runtime asset with a stable code', async () => {
+    const manifest = validManifest({
+      files: {
+        ...validManifest().files,
+        assets: { 'six-eyes-emblem': 'assets/six-eyes-emblem.png' },
+      },
+    });
+    const root = await createTheme(manifest);
+    await mkdir(join(root, 'assets'), { recursive: true });
+    await writeFile(join(root, 'assets/six-eyes-emblem.png'), Buffer.alloc(32, 1));
+
+    await expect(
+      loadThemePackage(root, { maxRuntimeAssetBytes: 16 }),
+    ).rejects.toEqual(expect.objectContaining({ code: 'THEME_RUNTIME_ASSET_TOO_LARGE' }));
   });
 
   test('rejects path traversal before reading outside the theme directory', async () => {

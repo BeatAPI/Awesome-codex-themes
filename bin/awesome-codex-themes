@@ -2,6 +2,20 @@
 set -eu
 
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+FOUND_CANDIDATE=0
+
+verify_official_app() {
+  APP_PATH=$1
+  INFO_PLIST="$APP_PATH/Contents/Info.plist"
+
+  BUNDLE_ID=$(/usr/bin/plutil -extract CFBundleIdentifier raw -o - "$INFO_PLIST" 2>/dev/null) || return 1
+  [ "$BUNDLE_ID" = "com.openai.codex" ] || return 1
+
+  /usr/bin/codesign --verify --deep --strict "$APP_PATH" >/dev/null 2>&1 || return 1
+
+  TEAM_ID=$(/usr/bin/codesign -dv --verbose=4 "$APP_PATH" 2>&1 | /usr/bin/sed -n 's/^TeamIdentifier=//p')
+  [ "$TEAM_ID" = "2DC432GLL2" ] || return 1
+}
 
 for APP_PATH in \
   "/Applications/ChatGPT.app" \
@@ -11,9 +25,17 @@ for APP_PATH in \
 do
   NODE_PATH="$APP_PATH/Contents/Resources/cua_node/bin/node"
   if [ -x "$NODE_PATH" ]; then
-    exec "$NODE_PATH" "$SCRIPT_DIR/../src/cli/main.mjs" "$@"
+    FOUND_CANDIDATE=1
+    if verify_official_app "$APP_PATH"; then
+      exec "$NODE_PATH" "$SCRIPT_DIR/../src/cli/main.mjs" "$@"
+    fi
   fi
 done
+
+if [ "$FOUND_CANDIDATE" -eq 1 ]; then
+  echo "[APP_IDENTITY_INVALID] A Codex Desktop bundle was found, but its identity or signature was not trusted." >&2
+  exit 1
+fi
 
 echo "[APP_NOT_FOUND] No official Codex Desktop bundled Node runtime was found." >&2
 exit 1

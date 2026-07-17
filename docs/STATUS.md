@@ -1,11 +1,12 @@
 # Implementation status
 
-Last verified: 2026-07-16 (Asia/Shanghai)
+Last verified: 2026-07-17 (Asia/Shanghai)
 
 ## State definitions
 
 - **Implemented**: present in this repository with automated coverage.
 - **Prototype verified**: exercised successfully on the recorded local environment.
+- **Integration verified**: exercised through the installed macOS service boundary.
 - **Packaged**: available as a versioned installable release artifact.
 - **Publicly released**: published in a public repository or release channel.
 
@@ -13,50 +14,40 @@ Last verified: 2026-07-16 (Asia/Shanghai)
 
 | Capability | State | Evidence |
 | --- | --- | --- |
-| Theme validator and schema | Implemented | Schema v2 requires 33 semantic color roles; schema v1 remains readable through deterministic expansion. Unit tests cover metadata, traversal, symlink confinement, size limits, CSS restrictions, colors, and version ranges. |
-| CDP and macOS safety boundary | Implemented | Unit tests cover literal loopback, renderer allowlist, signature/Team ID, architecture, port owner and descendant checks. |
-| Versioned full-workspace adapter | Prototype verified | The `codex-26.707` adapter was applied with Obsidian Bloom to one main renderer; semantic tokens, live menu and Composer surfaces, and owned-state removal were inspected on the environment below. |
-| One-shot apply and restore | Prototype verified | Applied Obsidian Bloom to one main renderer and restored it without restarting or terminating the app. |
-| Persistent managed watcher | Implemented, not live-smoke verified | Lifecycle and exact process identity are covered by isolated tests; the active user session was not closed to test a fresh launch. |
-| Limitless Six Eyes flagship theme | Prototype verified, experimental | The schema-v2 palette, declarative experience layer, workspace/home classifier, single-surface Composer treatment, one-shot apply, and owned-state restore were exercised locally. The private prototype artwork is not cleared for public release. |
-| Obsidian Bloom full theme | Prototype verified, experimental | The complete palette and current conversation workspace were exercised locally. Menus and Composer were opened/inspected, but the complete settings/editor/diff page matrix has not been live-smoke tested. |
-| Three original legacy themes | Implemented, experimental | Packages remain on schema v1 and are included for compatibility; they have not been tuned as full-workspace themes. |
-| Static Gallery | Implemented | Search/filter/detail/copy tests pass; production build and desktop/mobile browser render checks pass. |
-| Release package/tag | Planned | No version tag or packaged public release yet. |
-| Commercial Desktop | Out of scope | Intentionally absent. |
+| Theme validator and schema | Implemented | Schema v2 validates 33 semantic roles, local assets, CSS, compatibility, and paired native-name metadata. |
+| CDP and macOS safety boundary | Implemented | Tests cover literal loopback, renderer allowlist, signature/Team ID, architecture, and port-owner checks. |
+| One-shot apply and owned restore | Prototype verified | The engine applied and removed the current Satoru Gojo package on the recorded official app renderer without editing the app bundle. |
+| Renderer reload reapply | Integration verified | A new 26.715 renderer document started without markers and regained the one owned style/chrome pair on the fourth 500 ms observation. |
+| Self-contained versioned installer | Implemented | Isolated filesystem tests cover staging, atomic activation, configuration, permissions, replacement, and cleanup. |
+| User LaunchAgent | Integration verified | The legacy plist was backed up and replaced; install, bootout/bootstrap, kickstart, pause/resume, upgrade, and uninstall ran through the real user service boundary. `status` also requires the service to be loaded before it reports `active`. |
+| Full app exit/relaunch recovery | Integration verified | An unmanaged process transitioned through `restart-required` and was replaced by a verified CDP-managed official process without a second profile. |
+| Login service bootstrap | Integration verified; physical reboot pending | `RunAtLoad`/`KeepAlive` plus a real bootout/bootstrap cycle were verified. A physical logout or reboot was not directly observed. |
+| Best-effort version fallback | Implemented | Automated coverage confirms every valid numeric app version selects the shared `codex-best-effort` adapter instead of being rejected. Live visual verification on an unverified future build remains pending. |
+| Satoru Gojo (native Japanese name: 五条 悟) | Featured complete package, experimental compatibility | Version `1.2.0` is live-verified on 26.707/26.715 with current assets, owned-state behavior, and persistent lifecycle recovery. |
+| Twelve-theme collection | Implemented and current-version verified | Satoru Gojo is Featured. Eleven additional Schema 2 packages include complete local backgrounds, previews, CSS, metadata, and component assets; all eleven passed the recorded 26.715 workspace, right-panel, home, plugins, scheduled, sites, pull-request, and narrow-window matrix. Compatibility remains experimental outside the recorded builds. |
+| Static Gallery | Implemented | Catalog, search, native-name discovery, detail, copy, and production-build tests are present. |
+| GitHub public release | Not released | The repository remains private and no public GitHub Release has been created. |
+| Signed GUI / commercial desktop manager | Out of scope | Intentionally absent from this open-source repository. |
 
-## Runtime smoke record
+## Recorded local prototype environment
 
 - Official app: `/Applications/ChatGPT.app`
-- Bundle version: `26.707.91948`
+- Bundle version: `26.715.21425` (updated during the audit from `26.707.91948`)
 - Architecture: arm64
 - Bundle ID: `com.openai.codex`
 - Team ID: `2DC432GLL2`
-- Existing endpoint: `127.0.0.1:9225`
-- Theme: `obsidian-bloom` schema v2 (`1.1.0`)
-- Adapter: `codex-26.707`
-- Apply result: `applied obsidian-bloom to 1 renderer`
-- Runtime markers: owned style present, theme and adapter datasets exact, 33 semantic variables installed.
-- Token checks: panel, text, icon, border, menu, input, code, hover, selection, and scrollbar tokens resolved to the Obsidian Bloom palette.
-- Live surfaces: root background `rgb(16, 15, 14)`; Composer `rgba(25, 22, 19, 0.95)` with the strong theme border; an opened five-item menu `rgba(23, 20, 17, 0.95)` with themed text and border.
-- Visual check: a `3024 × 1752` renderer screenshot was inspected locally and intentionally not committed because it contained active workspace content.
-- Restore result: `restored official UI`
-- Post-restore DOM check: owned style/class/datasets absent and all `--act-*` variables removed.
-- Concurrent injector check: the pre-existing unrelated `cat-theme-style` was temporarily disabled only for the clean visual smoke, then re-enabled; after Awesome restore its `nocturne-mumbai` marker and `2,472,703`-character stylesheet were unchanged.
-- Process behavior: no app restart or termination; live `start` refusal returned `APP_ALREADY_RUNNING` as designed.
+- Observed managed endpoint: `127.0.0.1:9341` (dynamic for this run)
+- Current public theme slug: `satoru-gojo`
+- Adapter family: `codex-26.715` using the shared 26.707/26.715 semantic mapping
 
-This record proves a local prototype path on one app version. It is not evidence of broad compatibility, packaging, notarization, or public release.
+The active renderer was checked for owned style/chrome markers, theme variables, workspace classification, idempotent apply, renderer reload reapply, pointer-transparent decoration, and complete owned-state removal. Private screenshots with active workspace content and internal visual iteration labels remain local development evidence and are not public release assets. See the sanitized [26.715 lifecycle audit](audits/2026-07-17-satoru-gojo-26.715-lifecycle-audit.md).
 
-## Limitless Six Eyes smoke record
+The tested release candidate is installed in the immutable local `0.4.2` runtime. The active service reports `active`; `new-world-studio` was verified with one owned style node, an open right-panel marker, and a dedicated panel background layer. The final handoff restores Satoru Gojo as the selected theme.
 
-- Official app and endpoint: same `26.707.91948` main renderer on `127.0.0.1:9225`.
-- Theme and adapter: `limitless-six-eyes` schema v2 (`0.1.0`) with `codex-26.707`.
-- Apply result: `applied limitless-six-eyes to 1 renderer`.
-- Workspace classification: root marker resolved to `workspace`; no home marker was present.
-- Visual behavior: the active task view kept a quiet artwork-free workspace, the large identity/status chrome was hidden, the selected sidebar item used the compact violet treatment, and Composer rendered as one `15px` surface rather than nested chrome.
-- Visual check: a main-renderer screenshot was inspected locally and intentionally not committed because it contained active workspace content.
-- Restore result: `restored official UI`.
-- Post-restore DOM check: owned style, chrome node, class, and surface marker were absent.
-- Concurrent injector check: the unrelated `cat-theme-style` was temporarily disabled for the clean smoke and restored to `disabled: false` with its `2,472,703`-character stylesheet unchanged.
+The legacy injector plist and script were backed up outside the repository before migration. The old plist is no longer present in `~/Library/LaunchAgents`; its source script was not deleted.
 
-This smoke verifies the active workspace state and restore behavior. Home artwork behavior is covered by automated classifier/theme tests but still needs a dedicated clean-home live screenshot before the theme can move beyond `experimental`.
+## Evidence boundary
+
+The approved live session recorded the unmanaged `restart-required` transition, renderer reload reapply, pause and owned-state removal, paused-state upgrade, resume, managed relaunch, a real LaunchAgent bootout/bootstrap cycle, the former unknown-version safe mode before the policy changed, uninstall, and a successful reinstall with the original Codex profile preserved.
+
+A clean release candidate passed `release:check`: 34 test files / 248 tests, all 12 theme packages, TypeScript, production Gallery build, production dependency audit, public-file hygiene, and diff whitespace. An anonymous public-clone test remains pending until the private repository is made public. Remaining public-release gates are a physical logout/reboot observation, the exact-commit CI result, and an explicit public-release decision.

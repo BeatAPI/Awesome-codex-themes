@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 2,
+  "slug": "foundling-garden",
+  "version": "0.1.1",
+  "name": "Foundling Garden",
+  "description": "A small foundling in a misty moss garden, reinterpreted by the concept art as a wider luminous sanctuary and orbital seed instrument.",
+  "author": {
+    "name": "Awesome Codex Themes"
+  },
+  "license": {
+    "code": "MIT",
+    "artwork": "PROJECT-ASSET"
+  },
+  "categories": [
+    "dark",
+    "full-workspace",
+    "character-inspired"
+  ],
+  "tags": [
+    "foundling-garden",
+    "moss",
+    "soft-stone-arches",
+    "macos"
+  ],
+  "compatibility": {
+    "platforms": [
+      "macos"
+    ],
+    "status": "experimental",
+    "appVersions": [
+      "26.707.*",
+      "26.715.*"
+    ]
+  },
+  "mode": "dark",
+  "palette": {
+    "background": "#101309",
+    "scrim": "#101309E8",
+    "surface": "#171C10DE",
+    "surfaceElevated": "#222819F2",
+    "surfaceOverlay": "#222819F7",
+    "input": "#1B2114F2",
+    "text": "#F2ECD2",
+    "textSecondary": "#C9C29E",
+    "textMuted": "#8B8D6D",
+    "textDisabled": "#5E614C",
+    "icon": "#F2ECD2",
+    "iconSecondary": "#C9C29E",
+    "iconMuted": "#8B8D6D",
+    "border": "#D4B85E3D",
+    "borderSubtle": "#D4B85E24",
+    "borderStrong": "#D4B85E78",
+    "accent": "#D4B85E",
+    "accentHover": "#E6CD78",
+    "selection": "#D4B85E38",
+    "focus": "#8DB66A",
+    "link": "#C6B25D",
+    "hover": "#D4B85E1A",
+    "active": "#8DB66A2B",
+    "code": "#0D1109FA",
+    "terminal": "#080B06FA",
+    "diffAdded": "#78A96840",
+    "diffRemoved": "#C45C4D40",
+    "success": "#78A968",
+    "warning": "#C99647",
+    "danger": "#C45C4D",
+    "scrollbar": "#D4B85E3D",
+    "scrollbarHover": "#D4B85E75",
+    "composer": "#161B0FF2"
+  },
+  "experience": {
+    "brand": "FOUNDLING GARDEN",
+    "eyebrow": "SEEDLING ORDER",
+    "headline": "GROW THE QUIET SYSTEM",
+    "tagline": "Small steps. Living systems.",
+    "status": "GARDEN // LISTENING",
+    "signature": "GROVE 11",
+    "chrome": true
+  },
+  "files": {
+    "css": "theme.css",
+    "artwork": "background.jpg",
+    "preview": "preview.jpg",
+    "assets": {
+      "workspace-panel-safe": "assets/workspace-panel-safe.jpg",
+      "seed-compass": "assets/seed-compass.svg",
+      "leaf-pair": "assets/leaf-pair.svg",
+      "stone-arch": "assets/stone-arch.svg",
+      "firefly-status": "assets/firefly-status.svg",
+      "orbital-pod-send-mark": "assets/orbital-pod-send-mark.svg"
+    }
+  }
+}

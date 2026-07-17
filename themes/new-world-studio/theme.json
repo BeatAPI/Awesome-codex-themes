@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 2,
+  "slug": "new-world-studio",
+  "version": "0.1.1",
+  "name": "New World Studio",
+  "description": "A many-character ink-wash editorial composition over warm paper, black and red brush fields, brass flecks, blossoms, and ocean references.",
+  "author": {
+    "name": "Awesome Codex Themes"
+  },
+  "license": {
+    "code": "MIT",
+    "artwork": "PROJECT-ASSET"
+  },
+  "categories": [
+    "light",
+    "full-workspace",
+    "character-inspired"
+  ],
+  "tags": [
+    "new-world-studio",
+    "warm-kozo-paper",
+    "tidal-contour-lines",
+    "macos"
+  ],
+  "compatibility": {
+    "platforms": [
+      "macos"
+    ],
+    "status": "experimental",
+    "appVersions": [
+      "26.707.*",
+      "26.715.*"
+    ]
+  },
+  "mode": "light",
+  "palette": {
+    "background": "#F0E6D2",
+    "scrim": "#F0E6D2E8",
+    "surface": "#E8DCC5DE",
+    "surfaceElevated": "#FAF2E3F2",
+    "surfaceOverlay": "#FAF2E3F7",
+    "input": "#F4E9D5F2",
+    "text": "#252017",
+    "textSecondary": "#51483B",
+    "textMuted": "#7B7060",
+    "textDisabled": "#AAA08F",
+    "icon": "#252017",
+    "iconSecondary": "#51483B",
+    "iconMuted": "#7B7060",
+    "border": "#A77A2C3D",
+    "borderSubtle": "#A77A2C24",
+    "borderStrong": "#A77A2C78",
+    "accent": "#A77A2C",
+    "accentHover": "#C49443",
+    "selection": "#A77A2C38",
+    "focus": "#A34D3F",
+    "link": "#365F73",
+    "hover": "#A77A2C1A",
+    "active": "#A34D3F2B",
+    "code": "#171A1BFA",
+    "terminal": "#0C0F10FA",
+    "diffAdded": "#4E7D5D40",
+    "diffRemoved": "#A7473E40",
+    "success": "#4E7D5D",
+    "warning": "#B47828",
+    "danger": "#A7473E",
+    "scrollbar": "#A77A2C3D",
+    "scrollbarHover": "#A77A2C75",
+    "composer": "#F1E5D0F2"
+  },
+  "experience": {
+    "brand": "NEW WORLD STUDIO",
+    "eyebrow": "TIDAL EDITION",
+    "headline": "MAKE A WORLD WORTH SAILING",
+    "tagline": "Sketch boldly. Navigate together.",
+    "status": "TIDE // FAVORABLE",
+    "signature": "STUDIO XII",
+    "chrome": true
+  },
+  "files": {
+    "css": "theme.css",
+    "artwork": "background.jpg",
+    "preview": "preview.jpg",
+    "assets": {
+      "workspace-panel-safe": "assets/workspace-panel-safe.jpg",
+      "tidal-contour": "assets/tidal-contour.svg",
+      "shell-fan": "assets/shell-fan.svg",
+      "cartographic-star": "assets/cartographic-star.svg",
+      "wave-bracket": "assets/wave-bracket.svg",
+      "sail-send-mark": "assets/sail-send-mark.svg"
+    }
+  }
+}

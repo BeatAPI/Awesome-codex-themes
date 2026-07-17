@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 2,
+  "slug": "slingshot-lab",
+  "version": "0.1.1",
+  "name": "Slingshot Lab",
+  "description": "A bright island construction lab where timber, stone, glass blocks, tension bands, and projectile arcs form the system language.",
+  "author": {
+    "name": "Awesome Codex Themes"
+  },
+  "license": {
+    "code": "MIT",
+    "artwork": "PROJECT-ASSET"
+  },
+  "categories": [
+    "light",
+    "full-workspace",
+    "character-inspired"
+  ],
+  "tags": [
+    "slingshot-lab",
+    "sunlit-wood",
+    "square-timber-joints",
+    "macos"
+  ],
+  "compatibility": {
+    "platforms": [
+      "macos"
+    ],
+    "status": "experimental",
+    "appVersions": [
+      "26.707.*",
+      "26.715.*"
+    ]
+  },
+  "mode": "light",
+  "palette": {
+    "background": "#E6F6FB",
+    "scrim": "#E6F6FBE8",
+    "surface": "#F0E0B8DE",
+    "surfaceElevated": "#FFF4D5F2",
+    "surfaceOverlay": "#FFF4D5F7",
+    "input": "#F8EBCBF2",
+    "text": "#2B2116",
+    "textSecondary": "#594631",
+    "textMuted": "#806B52",
+    "textDisabled": "#B2A187",
+    "icon": "#2B2116",
+    "iconSecondary": "#594631",
+    "iconMuted": "#806B52",
+    "border": "#D9382B3D",
+    "borderSubtle": "#D9382B24",
+    "borderStrong": "#D9382B78",
+    "accent": "#D9382B",
+    "accentHover": "#F05442",
+    "selection": "#D9382B38",
+    "focus": "#148DAD",
+    "link": "#0E7895",
+    "hover": "#D9382B1A",
+    "active": "#148DAD2B",
+    "code": "#17232AFA",
+    "terminal": "#0D171DFA",
+    "diffAdded": "#4E9B3B40",
+    "diffRemoved": "#C92F2F40",
+    "success": "#4E9B3B",
+    "warning": "#D88A1D",
+    "danger": "#C92F2F",
+    "scrollbar": "#D9382B3D",
+    "scrollbarHover": "#D9382B75",
+    "composer": "#F6E7C5F2"
+  },
+  "experience": {
+    "brand": "SLINGSHOT LAB",
+    "eyebrow": "TRAJECTORY",
+    "headline": "AIM. BUILD. RELEASE.",
+    "tagline": "Turn intent into impact.",
+    "status": "FLIGHTPATH // CLEAR",
+    "signature": "LAB 04",
+    "chrome": true
+  },
+  "files": {
+    "css": "theme.css",
+    "artwork": "background.jpg",
+    "preview": "preview.jpg",
+    "assets": {
+      "workspace-panel-safe": "assets/workspace-panel-safe.jpg",
+      "forked-slingshot": "assets/forked-slingshot.svg",
+      "dotted-arc": "assets/dotted-arc.svg",
+      "impact-star": "assets/impact-star.svg",
+      "feather-vane": "assets/feather-vane.svg",
+      "red-launch-arrow": "assets/red-launch-arrow.svg"
+    }
+  }
+}

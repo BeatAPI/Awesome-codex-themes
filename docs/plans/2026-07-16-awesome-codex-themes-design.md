@@ -22,11 +22,10 @@ The engine discovers `/Applications/ChatGPT.app` and legacy `Codex.app` location
 
 The CLI never silently terminates an active Codex session. If Codex is already running without a usable debugging endpoint, `start` stops with an explanation and asks the user to quit the app explicitly. A future explicit restart flag may be added only after tests cover unsaved-session protection. State records app identity, port, injector PID/start time, theme slug, and paths so the process can refuse unsafe PID reuse.
 
-Unknown Codex versions fail closed: `doctor` may report an unsupported version, while `apply` refuses unless the local compatibility manifest recognizes it or the user opts into an explicitly documented experimental path. `restore` always remains available and removes only Awesome Codex Themes state. The official app bundle, `app.asar`, accounts, conversations, API keys, provider configuration, and unrelated Codex settings are never read or modified.
+Every valid numeric Codex version receives a documented best-effort adapter attempt. `restore` always remains available and removes only Awesome Codex Themes state. The official app bundle, `app.asar`, accounts, conversations, API keys, provider configuration, and unrelated Codex settings are never read or modified.
 
 ## Error handling and verification
 
 Errors are structured for humans and automation: stable codes such as `APP_NOT_FOUND`, `SIGNATURE_INVALID`, `CDP_UNAVAILABLE`, `UNSUPPORTED_VERSION`, `THEME_INVALID`, and `RESTORE_INCOMPLETE` accompany concise recovery instructions. Commands return non-zero status on incomplete work. Logs contain operational metadata but never task content or account data.
 
 Tests are organized around the safety boundary. Unit tests cover manifest validation, path traversal, size and color rules, loopback URL validation, target filtering, state/PID identity checks, and injection idempotency/removal. CLI tests exercise list/help/doctor behavior with isolated fixtures. Gallery tests cover search, filters, details, and copy commands. A macOS smoke test can attach to an already-authorized local CDP endpoint, apply a fixture theme, verify namespaced markers, and restore immediately without restarting the app. Release verification requires tests, typecheck, gallery build, theme validation, deterministic security scanning, and a manual diff review.
-

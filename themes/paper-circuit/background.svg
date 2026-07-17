@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
-  <defs><pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#2455D6" stroke-opacity=".09"/></pattern><filter id="grain"><feTurbulence baseFrequency=".85" numOctaves="2" seed="17" type="fractalNoise"/><feColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 .06 0"/></filter></defs>
-  <rect width="1600" height="1000" fill="#F3EEDC"/><rect width="1600" height="1000" fill="url(#grid)"/><rect width="1600" height="1000" filter="url(#grain)" opacity=".5"/>
-  <g fill="none" stroke="#2455D6" stroke-width="3" stroke-opacity=".34"><path d="M860 180h250v190h260v310h180"/><path d="M1030 0v180M1110 370v260H920v370"/><circle cx="1110" cy="370" r="10"/><circle cx="1370" cy="680" r="10"/><circle cx="920" cy="630" r="10"/></g>
-  <g fill="#EF5C3B" fill-opacity=".5"><circle cx="1280" cy="200" r="25"/><circle cx="1000" cy="760" r="18"/></g>
-</svg>

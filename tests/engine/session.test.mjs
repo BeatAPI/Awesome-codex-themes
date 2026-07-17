@@ -61,7 +61,12 @@ async function createThemeRoot() {
       license: { code: 'MIT', artwork: 'CC0-1.0' },
       categories: ['dark'],
       tags: ['test'],
-      compatibility: { platforms: ['macos'], status: 'experimental', appVersions: ['26.707.*'] },
+      compatibility: {
+        platforms: ['macos'],
+        status: 'experimental',
+        strategy: 'best-effort-all',
+        verifiedAppVersions: ['26.707.*'],
+      },
       palette: { background: '#000000', surface: '#111111CC', text: '#FFFFFF', accent: '#00FFAA' },
       files: { css: 'theme.css', artwork: 'background.svg', preview: 'preview.svg' },
     }),
@@ -102,6 +107,24 @@ describe('applyThemeAtPort', () => {
         evaluate: async () => [{ pass: false }],
       }),
     ).rejects.toEqual(expect.objectContaining({ code: 'THEME_APPLY_UNVERIFIED' }));
+  });
+
+  test('attempts the shared best-effort adapter on an unverified numeric app version', async () => {
+    const themesRoot = await createThemeRoot();
+    const evaluate = vi.fn(async ({ expression }) => {
+      expect(expression).toContain('codex-best-effort');
+      return [{ pass: true, theme: 'test-theme', adapter: 'codex-best-effort' }];
+    });
+
+    await expect(
+      applyThemeAtPort({
+        themesRoot,
+        themeSlug: 'test-theme',
+        port: 9341,
+        appVersion: '99.1.2',
+        evaluate,
+      }),
+    ).resolves.toEqual({ theme: 'test-theme', adapter: 'codex-best-effort', renderers: 1 });
   });
 });
 

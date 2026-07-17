@@ -8,7 +8,17 @@ describe('loadCodexAdapter', () => {
 
     expect(adapter.id).toBe('codex-26.707');
     expect(adapter.appVersions).toEqual(['26.707.*']);
+    expect(adapter.verified).toBe(true);
     expect(adapter.css.length).toBeGreaterThan(4_000);
+  });
+
+  test('loads a separately identified adapter for the live-verified 26.715 family', async () => {
+    const adapter = await loadCodexAdapter('26.715.21425');
+
+    expect(adapter.id).toBe('codex-26.715');
+    expect(adapter.appVersions).toEqual(['26.715.*']);
+    expect(adapter.verified).toBe(true);
+    expect(adapter.css).toContain('.composer-surface-chrome');
   });
 
   test('contains a representative rule for every full-theme coverage group', async () => {
@@ -35,9 +45,25 @@ describe('loadCodexAdapter', () => {
     }
   });
 
-  test('fails closed when no adapter declares the app version', async () => {
-    await expect(loadCodexAdapter('26.708.1')).rejects.toEqual(
-      expect.objectContaining({ code: 'THEME_ADAPTER_UNSUPPORTED' }),
+  test('does not force visible borders onto every native interactive control', async () => {
+    const { css } = await loadCodexAdapter('26.707.72221');
+
+    expect(css).not.toMatch(
+      /html\.awesome-codex-theme\s+:is\(button,\s*\[role="button"\],\s*a\)\s*\{[^}]*border-color/s,
+    );
+    expect(css).not.toMatch(
+      /html\.awesome-codex-theme\s+:is\(button,\s*\[role="button"\],\s*a\):hover\s*\{[^}]*border-color/s,
+    );
+  });
+
+  test('uses the shared mapping as a best-effort adapter for every numeric version', async () => {
+    await expect(loadCodexAdapter('26.716.1')).resolves.toEqual(
+      expect.objectContaining({
+        id: 'codex-best-effort',
+        appVersions: ['*'],
+        verified: false,
+        css: expect.stringContaining('.composer-surface-chrome'),
+      }),
     );
   });
 

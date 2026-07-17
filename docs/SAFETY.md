@@ -21,19 +21,30 @@ It does not trust:
 
 1. Discover the official `ChatGPT.app` or legacy `Codex.app` bundle.
 2. Verify code signature integrity, bundle ID `com.openai.codex`, Team ID `2DC432GLL2`, architecture, and bundled Node version.
-3. Refuse `start` if an exact official app process is already running.
+3. Refuse a managed launch if an exact official app process is already running without this project's trusted endpoint.
 4. Select an unused non-privileged port and launch the inspected executable with `--remote-debugging-address=127.0.0.1`.
 5. Verify the listener address and confirm its PID belongs to the inspected official app.
 6. Query `/json/list` only on literal loopback and accept only the expected main `app://-/index.html` renderer.
-7. Load a local theme, validate its manifest, paths, sizes, CSS, and declared Codex version range.
-8. Select the trusted built-in adapter for the exact supported Codex version family.
+7. Load a local theme and validate its manifest, paths, sizes, CSS, and live-verified Codex version metadata.
+8. Select a live-verified adapter marker when available; otherwise use the same trusted stylesheet as `codex-best-effort`.
 9. Inject one owned style element, one artwork variable, one color-scheme variable, 33 semantic palette variables, namespaced theme/adapter root markers, and at most one inert decorative experience node.
 10. Require the renderer to return the expected theme and adapter markers before reporting success.
-11. Start an idempotent watcher and persist exact process identity in a mode-`0600` state file.
+11. For a session launch, start an idempotent watcher and persist exact process identity in a mode-`0600` state file.
+
+## Persistent agent sequence
+
+1. Validate and copy the runtime into an immutable per-user release outside the Git clone.
+2. Atomically select the installed `current` release and write owner-only desired configuration.
+3. Generate a user LaunchAgent that calls only the stable installed launcher.
+4. Boot out only this project's existing label, then bootstrap and kickstart the replacement.
+5. If Codex is absent, launch the verified official executable with a dynamic `127.0.0.1` CDP port and no alternate data directory.
+6. If Codex is already running unmanaged, record `restart-required` and leave it untouched.
+7. Reapply idempotently while the verified managed process and endpoint remain valid.
+8. After a Codex version change, attempt the verified or best-effort adapter and report a normal typed error if renderer verification fails.
 
 ## Restore sequence
 
-Managed `restore` first observes the recorded watcher so an active watcher cannot race the final CSS removal:
+Session-scoped `restore` first observes the recorded watcher so an active watcher cannot race the final CSS removal:
 
 - Exact PID, start time, executable, and script match: send `SIGTERM` to the watcher, remove live namespaced style state, then remove state.
 - Watcher already exited: remove live style and stale state; there is no process to terminate.
@@ -43,15 +54,19 @@ The official app process is not terminated. If the app has already closed, its n
 
 One-shot `apply --port` does not create a watcher or state file. Use `restore --port` against the same still-running verified endpoint.
 
+For an installed persistent agent, `pause` and no-port `restore` first set `enabled: false`, kickstart the agent into its paused state, and request owned-style removal only through the recorded verified endpoint. This prevents the background agent from immediately reapplying after restore. `uninstall-agent` uses the same ownership boundary before removing the installed service and files.
+
 ## Failure behavior
 
-- Unknown app versions fail before DOM mutation.
+- Every valid numeric app version is attempted. Unverified versions may have visual mismatches, so the user may need `pause` or `restore`.
 - Unsafe/non-loopback endpoints and unexpected renderer targets fail before evaluation.
 - Invalid themes fail before CDP access.
 - Partial renderer confirmation is treated as failure.
+- An enabled persistent agent may relaunch Codex after it exits; use `pause` before intentionally keeping the app closed.
+- An official app update may receive a best-effort theme immediately; no claim of visual compatibility is made until that version is recorded as verified.
 - Malformed state is reported and not silently discarded.
 - Concurrent third-party theme injectors are unsupported because their high-specificity rules can override either theme. Restore or disable the other theme before evaluating Awesome Codex Themes; this engine never deletes unrelated style elements.
 
 ## Non-goals
 
-The engine does not provide a security boundary against a malicious local administrator or a compromised official application. It does not secure CDP for unrelated software, sign a desktop distribution, or guarantee compatibility beyond the ranges declared by each theme.
+The engine does not provide a security boundary against a malicious local administrator or a compromised official application. It does not secure CDP for unrelated software, sign a desktop distribution, intercept an ordinary Dock launch, or guarantee visual compatibility on unverified Codex versions.

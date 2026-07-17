@@ -2,7 +2,10 @@ import { useMemo, useState } from 'react';
 
 import catalog from '../generated/themes.json';
 
-type Theme = (typeof catalog)[number];
+type Theme = (typeof catalog)[number] & {
+  nativeName?: string;
+  nativeLocale?: string;
+};
 
 const themes = [...(catalog as Theme[])].sort((left, right) => {
   const featuredDifference = Number(right.tags.includes('featured')) - Number(left.tags.includes('featured'));
@@ -35,6 +38,7 @@ function ThemeCard({ theme, onOpen }: { theme: Theme; onOpen: (theme: Theme) => 
           <span>{theme.compatibility.status}</span>
         </div>
         <h2>{theme.name}</h2>
+        {theme.nativeName ? <p className="theme-card__native" lang={theme.nativeLocale}>{theme.nativeName}</p> : null}
         <p>{theme.description}</p>
         <div className="theme-card__footer">
           <div className="palette" aria-label={`${theme.name} color palette`}>
@@ -70,11 +74,13 @@ function ThemeDialog({ theme, onClose }: { theme: Theme; onClose: () => void }) 
         <div className="dialog-copy">
           <p className="eyebrow">Theme specimen / {theme.version}</p>
           <h2>{theme.name}</h2>
+          {theme.nativeName ? <p className="theme-dialog__native" lang={theme.nativeLocale}>{theme.nativeName}</p> : null}
           <p className="dialog-description">{theme.description}</p>
           <dl className="detail-grid">
             <div><dt>Status</dt><dd>{theme.compatibility.status}</dd></div>
             <div><dt>Mode</dt><dd>{theme.mode}</dd></div>
-            <div><dt>Tested range</dt><dd>{theme.compatibility.appVersions.join(', ')}</dd></div>
+            <div><dt>Compatibility</dt><dd>Best effort on every numeric Codex Desktop version</dd></div>
+            <div><dt>Highly compatible</dt><dd>{theme.compatibility.verifiedAppVersions.join(', ')}</dd></div>
             <div><dt>Artwork</dt><dd>{theme.license.artwork}</dd></div>
             <div><dt>Coverage</dt><dd>{theme.tags.includes('full-workspace') ? 'Full workspace' : 'Legacy palette'}</dd></div>
           </dl>
@@ -83,14 +89,11 @@ function ThemeDialog({ theme, onClose }: { theme: Theme; onClose: () => void }) 
           </div>
           <div className="command-box">
             <code>{theme.command}</code>
-            <button type="button" onClick={copyCommand} aria-label={copied ? 'Command copied' : 'Copy apply command'}>
+            <button type="button" onClick={copyCommand} aria-label={copied ? 'Command copied' : 'Copy install command'}>
               {copied ? 'Copied' : 'Copy'}
             </button>
           </div>
-          <p className="dialog-note">Experimental Mac-first runtime theme. Run <code>doctor</code> first and use <code>restore</code> to return to the official UI.</p>
-          {theme.license.artwork === 'PROTOTYPE-REFERENCE-ONLY' ? (
-            <p className="dialog-note dialog-note--warning">Private fan prototype artwork. Replace the character asset and naming before any public or commercial release.</p>
-          ) : null}
+          <p className="dialog-note">Experimental Mac-first runtime theme. Run <code>doctor</code> first. If the interface looks wrong, run <code>pause</code> or <code>restore</code> to return to the official UI, then file a GitHub Issue with the Codex version and a privacy-safe screenshot.</p>
         </div>
       </section>
     </div>
@@ -107,7 +110,10 @@ export function App() {
     const normalized = query.trim().toLowerCase();
     return themes.filter((theme) => {
       const matchesCategory = category === 'all' || theme.categories.includes(category);
-      const searchable = [theme.name, theme.description, ...theme.categories, ...theme.tags].join(' ').toLowerCase();
+      const searchable = [theme.name, theme.nativeName, theme.description, ...theme.categories, ...theme.tags]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
       return matchesCategory && (!normalized || searchable.includes(normalized));
     });
   }, [category, query]);
@@ -135,8 +141,8 @@ export function App() {
         <section className="hero">
           <div className="hero__copy">
             <p className="eyebrow">Open-source Codex skin system / macOS</p>
-            <h1>Make Codex feel limitless.</h1>
-            <p className="hero__lede">A flagship full-interface theme, a versioned full-workspace adapter, local assets, diagnostics, and a restore path you can inspect. Atmosphere without surrendering control.</p>
+            <h1>Make Codex feel like yours.</h1>
+            <p className="hero__lede">Twelve complete full-workspace themes, one persistent local agent, and an inspectable adapter with diagnostics, switching, and recovery built in.</p>
             <div className="hero__actions">
               <a className="button button--primary" href="#collection">Browse the collection</a>
               <a className="button button--secondary" href="https://github.com/erickkkyt/Awesome-codex-themes">Inspect the source ↗</a>
@@ -150,15 +156,15 @@ export function App() {
           >
             <img src={previewUrl(flagship)} alt={`${flagship.name} complete Codex theme mockup`} />
             <span className="hero__specimen-label" aria-hidden="true">
-              <b>LIMITLESS / SIX EYES</b>
-              <span>Full-interface prototype · open specimen ↗</span>
+              <b>{flagship.name.toUpperCase()}</b>
+              <span>Featured theme · open specimen ↗</span>
             </span>
           </button>
           <div className="hero__folio" aria-label="Collection summary">
-            <span className="folio-number">05</span>
+            <span className="folio-number">12</span>
             <div>
-              <strong>1 flagship theme</strong>
-              <strong>4 original studies</strong>
+              <strong>12 complete themes</strong>
+              <strong>1 featured flagship</strong>
               <span>MIT engine · local packages</span>
             </div>
           </div>
@@ -181,7 +187,7 @@ export function App() {
                 type="search"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Try “aurora” or “editorial”"
+                placeholder="Try “night city” or “ukiyoe”"
                 aria-label="Search themes"
               />
               <span aria-hidden="true">⌕</span>
@@ -204,7 +210,7 @@ export function App() {
             <div className="empty-state">
               <span aria-hidden="true">∅</span>
               <h2>No matching themes.</h2>
-              <p>The atlas is small on purpose. Try another word or return to the full collection.</p>
+              <p>Try another word or return to the complete twelve-theme collection.</p>
               <button type="button" className="button button--primary" onClick={clearFilters}>Clear search and filters</button>
             </div>
           )}
@@ -216,9 +222,9 @@ export function App() {
             <h2>Decoration should never outrank recovery.</h2>
           </div>
           <ol>
-            <li><span>01</span><div><h3>Local by construction</h3><p>Theme packages use local CSS, metadata, and original artwork. No remote JavaScript and no conversation access.</p></div></li>
-            <li><span>02</span><div><h3>Fail closed</h3><p>The engine checks the signed app, loopback endpoint, renderer target, and supported versions before applying.</p></div></li>
-            <li><span>03</span><div><h3>One owner, clean exit</h3><p>Injection is namespaced and idempotent. Restore removes only the state owned by Awesome Codex Themes.</p></div></li>
+            <li><span>01</span><div><h3>Local by construction</h3><p>Theme packages use local CSS, metadata, and documented artwork. No remote JavaScript and no conversation access.</p></div></li>
+            <li><span>02</span><div><h3>Verify the boundary</h3><p>The engine checks the signed app, loopback endpoint, and renderer target before attempting a verified or best-effort adapter.</p></div></li>
+            <li><span>03</span><div><h3>One owner, clean exit</h3><p>Injection is namespaced and idempotent. Pause and uninstall remove only the state owned by Awesome Codex Themes.</p></div></li>
           </ol>
         </section>
       </main>

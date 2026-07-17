@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 2,
+  "slug": "castle-archive",
+  "version": "0.1.1",
+  "name": "Castle Archive",
+  "description": "A monumental candlelit castle interior built from black columns, burgundy velvet, ivory fabric, and brass archival details.",
+  "author": {
+    "name": "Awesome Codex Themes"
+  },
+  "license": {
+    "code": "MIT",
+    "artwork": "PROJECT-ASSET"
+  },
+  "categories": [
+    "dark",
+    "full-workspace",
+    "character-inspired"
+  ],
+  "tags": [
+    "castle-archive",
+    "ebony-wood",
+    "tall-vertical-rails",
+    "macos"
+  ],
+  "compatibility": {
+    "platforms": [
+      "macos"
+    ],
+    "status": "experimental",
+    "appVersions": [
+      "26.707.*",
+      "26.715.*"
+    ]
+  },
+  "mode": "dark",
+  "palette": {
+    "background": "#080707",
+    "scrim": "#080707E8",
+    "surface": "#11100FDE",
+    "surfaceElevated": "#1A1715F2",
+    "surfaceOverlay": "#1A1715F7",
+    "input": "#151210F2",
+    "text": "#EEE6DB",
+    "textSecondary": "#C9B9A7",
+    "textMuted": "#8A796A",
+    "textDisabled": "#5D5148",
+    "icon": "#EEE6DB",
+    "iconSecondary": "#C9B9A7",
+    "iconMuted": "#8A796A",
+    "border": "#B58A583D",
+    "borderSubtle": "#B58A5824",
+    "borderStrong": "#B58A5878",
+    "accent": "#B58A58",
+    "accentHover": "#D0A674",
+    "selection": "#B58A5838",
+    "focus": "#8E3E49",
+    "link": "#C49A67",
+    "hover": "#B58A581A",
+    "active": "#8E3E492B",
+    "code": "#0E0D0CFA",
+    "terminal": "#070606FA",
+    "diffAdded": "#63856B40",
+    "diffRemoved": "#A8404740",
+    "success": "#63856B",
+    "warning": "#B48445",
+    "danger": "#A84047",
+    "scrollbar": "#B58A583D",
+    "scrollbarHover": "#B58A5875",
+    "composer": "#12100EF2"
+  },
+  "experience": {
+    "brand": "CASTLE ARCHIVE",
+    "eyebrow": "MIDNIGHT INDEX",
+    "headline": "COMMAND THE ARCHIVE",
+    "tagline": "Quiet rooms. Exact execution.",
+    "status": "ARCHIVE // AWAKE",
+    "signature": "CASTLE VII",
+    "chrome": true
+  },
+  "files": {
+    "css": "theme.css",
+    "artwork": "background.jpg",
+    "preview": "preview.jpg",
+    "assets": {
+      "workspace-panel-safe": "assets/workspace-panel-safe.jpg",
+      "keyhole-index": "assets/keyhole-index.svg",
+      "chandelier-drop": "assets/chandelier-drop.svg",
+      "stair-rune": "assets/stair-rune.svg",
+      "wax-seal": "assets/wax-seal.svg",
+      "thorn-send-spear": "assets/thorn-send-spear.svg"
+    }
+  }
+}

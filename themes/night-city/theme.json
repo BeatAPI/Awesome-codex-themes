@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 2,
+  "slug": "night-city",
+  "version": "0.1.1",
+  "name": "Night City",
+  "description": "A moonlit high-rise interior overlooking a rain-blue megacity, with a pale figure, glass reflections, and sparse magenta signal lights.",
+  "author": {
+    "name": "Awesome Codex Themes"
+  },
+  "license": {
+    "code": "MIT",
+    "artwork": "PROJECT-ASSET"
+  },
+  "categories": [
+    "dark",
+    "full-workspace",
+    "character-inspired"
+  ],
+  "tags": [
+    "night-city",
+    "tinted-glass",
+    "cut-corner-panes",
+    "macos"
+  ],
+  "compatibility": {
+    "platforms": [
+      "macos"
+    ],
+    "status": "experimental",
+    "appVersions": [
+      "26.707.*",
+      "26.715.*"
+    ]
+  },
+  "mode": "dark",
+  "palette": {
+    "background": "#050E1A",
+    "scrim": "#050E1AE8",
+    "surface": "#091827DE",
+    "surfaceElevated": "#102238F2",
+    "surfaceOverlay": "#102238F7",
+    "input": "#0B1C2DF2",
+    "text": "#EAF8FF",
+    "textSecondary": "#BAD5E2",
+    "textMuted": "#7798A8",
+    "textDisabled": "#4B6572",
+    "icon": "#EAF8FF",
+    "iconSecondary": "#BAD5E2",
+    "iconMuted": "#7798A8",
+    "border": "#20DFFF3D",
+    "borderSubtle": "#20DFFF24",
+    "borderStrong": "#20DFFF78",
+    "accent": "#20DFFF",
+    "accentHover": "#65ECFF",
+    "selection": "#20DFFF38",
+    "focus": "#F05DC7",
+    "link": "#48E4F5",
+    "hover": "#20DFFF1A",
+    "active": "#F05DC72B",
+    "code": "#06111DFA",
+    "terminal": "#030A12FA",
+    "diffAdded": "#6DDC9B40",
+    "diffRemoved": "#F05D7240",
+    "success": "#6DDC9B",
+    "warning": "#F0B451",
+    "danger": "#F05D72",
+    "scrollbar": "#20DFFF3D",
+    "scrollbarHover": "#20DFFF75",
+    "composer": "#081827F2"
+  },
+  "experience": {
+    "brand": "NIGHT CITY",
+    "eyebrow": "LUNAR LINK",
+    "headline": "RUN THE CITY AFTER DARK",
+    "tagline": "Trace signals. Cut latency.",
+    "status": "NEURAL LINK // CLEAN",
+    "signature": "NC-10",
+    "chrome": true
+  },
+  "files": {
+    "css": "theme.css",
+    "artwork": "background.jpg",
+    "preview": "preview.jpg",
+    "assets": {
+      "workspace-panel-safe": "assets/workspace-panel-safe.jpg",
+      "lunar-phase": "assets/lunar-phase.svg",
+      "fiber-trace": "assets/fiber-trace.svg",
+      "cut-corner-reticle": "assets/cut-corner-reticle.svg",
+      "rain-tick": "assets/rain-tick.svg",
+      "pulse-send-wedge": "assets/pulse-send-wedge.svg"
+    }
+  }
+}

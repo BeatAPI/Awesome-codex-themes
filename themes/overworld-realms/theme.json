@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 2,
+  "slug": "overworld-realms",
+  "version": "0.1.1",
+  "name": "Overworld Realms",
+  "description": "A cross-section of bright overworld village, deep mineral cave, lava seam, and violet portal rendered as an isometric voxel system.",
+  "author": {
+    "name": "Awesome Codex Themes"
+  },
+  "license": {
+    "code": "MIT",
+    "artwork": "PROJECT-ASSET"
+  },
+  "categories": [
+    "dark",
+    "full-workspace",
+    "character-inspired"
+  ],
+  "tags": [
+    "overworld-realms",
+    "deepslate",
+    "8px-voxel-grid",
+    "macos"
+  ],
+  "compatibility": {
+    "platforms": [
+      "macos"
+    ],
+    "status": "experimental",
+    "appVersions": [
+      "26.707.*",
+      "26.715.*"
+    ]
+  },
+  "mode": "dark",
+  "palette": {
+    "background": "#0B1117",
+    "scrim": "#0B1117E8",
+    "surface": "#111A20DE",
+    "surfaceElevated": "#19242AF2",
+    "surfaceOverlay": "#19242AF7",
+    "input": "#131E24F2",
+    "text": "#E9F4F1",
+    "textSecondary": "#B9CBC5",
+    "textMuted": "#78908A",
+    "textDisabled": "#4E625E",
+    "icon": "#E9F4F1",
+    "iconSecondary": "#B9CBC5",
+    "iconMuted": "#78908A",
+    "border": "#27D7DA3D",
+    "borderSubtle": "#27D7DA24",
+    "borderStrong": "#27D7DA78",
+    "accent": "#27D7DA",
+    "accentHover": "#62F1EC",
+    "selection": "#27D7DA38",
+    "focus": "#B461E9",
+    "link": "#4DE6E2",
+    "hover": "#27D7DA1A",
+    "active": "#B461E92B",
+    "code": "#0A1116FA",
+    "terminal": "#060C10FA",
+    "diffAdded": "#71C85A40",
+    "diffRemoved": "#E3574F40",
+    "success": "#71C85A",
+    "warning": "#E89A36",
+    "danger": "#E3574F",
+    "scrollbar": "#27D7DA3D",
+    "scrollbarHover": "#27D7DA75",
+    "composer": "#10191EF2"
+  },
+  "experience": {
+    "brand": "OVERWORLD REALMS",
+    "eyebrow": "CHUNK 08",
+    "headline": "BUILD THE NEXT REALM",
+    "tagline": "Mine context. Craft systems.",
+    "status": "REALM // LOADED",
+    "signature": "SEED 08",
+    "chrome": true
+  },
+  "files": {
+    "css": "theme.css",
+    "artwork": "background.jpg",
+    "preview": "preview.jpg",
+    "assets": {
+      "workspace-panel-safe": "assets/workspace-panel-safe.jpg",
+      "voxel-cube": "assets/voxel-cube.svg",
+      "ore-diamond": "assets/ore-diamond.svg",
+      "chunk-bracket": "assets/chunk-bracket.svg",
+      "torch-meter": "assets/torch-meter.svg",
+      "portal-send-tile": "assets/portal-send-tile.svg"
+    }
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 2,
+  "slug": "zaun-workshop",
+  "version": "0.1.1",
+  "name": "Zaun Workshop",
+  "description": "A volatile undercity workshop framed by fractured stained glass, bridge ironwork, chemical smoke, and kinetic diagonal motion.",
+  "author": {
+    "name": "Awesome Codex Themes"
+  },
+  "license": {
+    "code": "MIT",
+    "artwork": "PROJECT-ASSET"
+  },
+  "categories": [
+    "dark",
+    "full-workspace",
+    "character-inspired"
+  ],
+  "tags": [
+    "zaun-workshop",
+    "smoked-glass",
+    "fractured-polygons",
+    "macos"
+  ],
+  "compatibility": {
+    "platforms": [
+      "macos"
+    ],
+    "status": "experimental",
+    "appVersions": [
+      "26.707.*",
+      "26.715.*"
+    ]
+  },
+  "mode": "dark",
+  "palette": {
+    "background": "#080817",
+    "scrim": "#080817E8",
+    "surface": "#101125DE",
+    "surfaceElevated": "#17182FF2",
+    "surfaceOverlay": "#17182FF7",
+    "input": "#111329F2",
+    "text": "#F5F4FF",
+    "textSecondary": "#C7C6D9",
+    "textMuted": "#8E8AA8",
+    "textDisabled": "#5D596F",
+    "icon": "#F5F4FF",
+    "iconSecondary": "#C7C6D9",
+    "iconMuted": "#8E8AA8",
+    "border": "#00DCEB3D",
+    "borderSubtle": "#00DCEB24",
+    "borderStrong": "#00DCEB78",
+    "accent": "#00DCEB",
+    "accentHover": "#52F4FF",
+    "selection": "#00DCEB38",
+    "focus": "#B864FF",
+    "link": "#45E7F3",
+    "hover": "#00DCEB1A",
+    "active": "#B864FF2B",
+    "code": "#080913FA",
+    "terminal": "#05060DFA",
+    "diffAdded": "#73E35F40",
+    "diffRemoved": "#FF416740",
+    "success": "#73E35F",
+    "warning": "#FFB83E",
+    "danger": "#FF4167",
+    "scrollbar": "#00DCEB3D",
+    "scrollbarHover": "#00DCEB75",
+    "composer": "#0E1022F2"
+  },
+  "experience": {
+    "brand": "ZAUN WORKSHOP",
+    "eyebrow": "SHIMMER CIRCUIT",
+    "headline": "MAKE CHAOS USEFUL",
+    "tagline": "Build loud. Ship precise.",
+    "status": "REACTOR // ONLINE",
+    "signature": "WORKSHOP 02",
+    "chrome": true
+  },
+  "files": {
+    "css": "theme.css",
+    "artwork": "background.jpg",
+    "preview": "preview.jpg",
+    "assets": {
+      "workspace-panel-safe": "assets/workspace-panel-safe.jpg",
+      "fractured-hex-mark": "assets/fractured-hex-mark.svg",
+      "rivet-chevron": "assets/rivet-chevron.svg",
+      "ampoule-bolt": "assets/ampoule-bolt.svg",
+      "spray-cross": "assets/spray-cross.svg",
+      "ballistic-send-arrow": "assets/ballistic-send-arrow.svg"
+    }
+  }
+}

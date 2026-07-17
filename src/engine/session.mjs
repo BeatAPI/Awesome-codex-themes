@@ -86,7 +86,7 @@ export async function startThemeSession(
   if (!Number.isInteger(appPid) || appPid < 1) sessionFail('APP_LAUNCH_FAILED', 'The official app did not return a valid PID.');
   const appStartedAt = await processStartedAt(appPid);
 
-  await waitForRenderer(port);
+  await waitForRenderer(port, app);
   let watcher;
   try {
     await applyTheme({ themeSlug, port, app });

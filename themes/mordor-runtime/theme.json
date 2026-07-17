@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 2,
+  "slug": "mordor-runtime",
+  "version": "0.1.1",
+  "name": "Mordor Runtime",
+  "description": "A storm-black mounted formation crossing basalt and ember fissures beneath a distant volcanic watchtower.",
+  "author": {
+    "name": "Awesome Codex Themes"
+  },
+  "license": {
+    "code": "MIT",
+    "artwork": "PROJECT-ASSET"
+  },
+  "categories": [
+    "dark",
+    "full-workspace",
+    "character-inspired"
+  ],
+  "tags": [
+    "mordor-runtime",
+    "black-iron",
+    "forged-notches",
+    "macos"
+  ],
+  "compatibility": {
+    "platforms": [
+      "macos"
+    ],
+    "status": "experimental",
+    "appVersions": [
+      "26.707.*",
+      "26.715.*"
+    ]
+  },
+  "mode": "dark",
+  "palette": {
+    "background": "#070809",
+    "scrim": "#070809E8",
+    "surface": "#101112DE",
+    "surfaceElevated": "#18191AF2",
+    "surfaceOverlay": "#18191AF7",
+    "input": "#131415F2",
+    "text": "#D9D4CA",
+    "textSecondary": "#ABA59B",
+    "textMuted": "#73716B",
+    "textDisabled": "#4A4A47",
+    "icon": "#D9D4CA",
+    "iconSecondary": "#ABA59B",
+    "iconMuted": "#73716B",
+    "border": "#F05A3B3D",
+    "borderSubtle": "#F05A3B24",
+    "borderStrong": "#F05A3B78",
+    "accent": "#F05A3B",
+    "accentHover": "#FF7658",
+    "selection": "#F05A3B38",
+    "focus": "#FF9A61",
+    "link": "#F37A5E",
+    "hover": "#F05A3B1A",
+    "active": "#FF9A612B",
+    "code": "#0A0B0CFA",
+    "terminal": "#050607FA",
+    "diffAdded": "#71876040",
+    "diffRemoved": "#E0443640",
+    "success": "#718760",
+    "warning": "#D78B3E",
+    "danger": "#E04436",
+    "scrollbar": "#F05A3B3D",
+    "scrollbarHover": "#F05A3B75",
+    "composer": "#0F1011F2"
+  },
+  "experience": {
+    "brand": "MORDOR RUNTIME",
+    "eyebrow": "BLACK GATE",
+    "headline": "FORGE THE RUNTIME",
+    "tagline": "No noise survives the fire.",
+    "status": "WATCH // ACTIVE",
+    "signature": "RUNTIME IX",
+    "chrome": true
+  },
+  "files": {
+    "css": "theme.css",
+    "artwork": "background.jpg",
+    "preview": "preview.jpg",
+    "assets": {
+      "workspace-panel-safe": "assets/workspace-panel-safe.jpg",
+      "forge-notch": "assets/forge-notch.svg",
+      "crown-spike": "assets/crown-spike.svg",
+      "ember-slash": "assets/ember-slash.svg",
+      "chain-link": "assets/chain-link.svg",
+      "gate-send-chevron": "assets/gate-send-chevron.svg"
+    }
+  }
+}

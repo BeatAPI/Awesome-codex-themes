@@ -10,11 +10,21 @@ export class AdapterError extends Error {
 
 const ADAPTERS = Object.freeze([
   Object.freeze({
+    id: 'codex-26.715',
+    appVersions: Object.freeze(['26.715.*']),
+    file: new URL('./adapters/codex-26.707.css', import.meta.url),
+  }),
+  Object.freeze({
     id: 'codex-26.707',
     appVersions: Object.freeze(['26.707.*']),
     file: new URL('./adapters/codex-26.707.css', import.meta.url),
   }),
 ]);
+const BEST_EFFORT_ADAPTER = Object.freeze({
+  id: 'codex-best-effort',
+  appVersions: Object.freeze(['*']),
+  file: new URL('./adapters/codex-26.707.css', import.meta.url),
+});
 
 function versionMatchesRange(appVersion, range) {
   const versionParts = appVersion.split('.');
@@ -30,15 +40,10 @@ export async function loadCodexAdapter(appVersion) {
     throw new AdapterError('THEME_ADAPTER_VERSION_INVALID', 'A numeric Codex app version is required.');
   }
 
-  const adapter = ADAPTERS.find((candidate) =>
+  const verifiedAdapter = ADAPTERS.find((candidate) =>
     candidate.appVersions.some((range) => versionMatchesRange(appVersion, range)),
   );
-  if (!adapter) {
-    throw new AdapterError(
-      'THEME_ADAPTER_UNSUPPORTED',
-      `No full-theme adapter declares support for Codex ${appVersion}; official UI was left unchanged.`,
-    );
-  }
+  const adapter = verifiedAdapter ?? BEST_EFFORT_ADAPTER;
 
   let css;
   try {
@@ -51,5 +56,10 @@ export async function loadCodexAdapter(appVersion) {
   if (!css.includes('html.awesome-codex-theme')) {
     throw new AdapterError('THEME_ADAPTER_INVALID', `Built-in adapter ${adapter.id} is not namespaced.`);
   }
-  return { id: adapter.id, appVersions: [...adapter.appVersions], css };
+  return {
+    id: adapter.id,
+    appVersions: [...adapter.appVersions],
+    verified: Boolean(verifiedAdapter),
+    css,
+  };
 }

@@ -5,7 +5,10 @@ Schema version `2` defines a self-contained semantic theme directory. A package 
 ## Directory layout
 
 ```text
-themes/obsidian-bloom/
+themes/my-theme/
+├── assets/
+│   ├── brand-emblem.png
+│   └── send-control.png
 ├── theme.json
 ├── theme.css
 ├── background.svg
@@ -23,6 +26,8 @@ All file references must be relative, use forward slashes, and resolve below the
   "slug": "my-original-theme",
   "version": "1.1.0",
   "name": "My Original Theme",
+  "nativeName": "Optional Native Name",
+  "nativeLocale": "ja-JP",
   "description": "A concise description of the visual system.",
   "author": {
     "name": "Your Name",
@@ -37,7 +42,8 @@ All file references must be relative, use forward slashes, and resolve below the
   "compatibility": {
     "platforms": ["macos"],
     "status": "experimental",
-    "appVersions": ["26.707.*"]
+    "strategy": "best-effort-all",
+    "verifiedAppVersions": ["26.707.*", "26.715.*"]
   },
   "mode": "dark",
   "palette": {
@@ -78,16 +84,20 @@ All file references must be relative, use forward slashes, and resolve below the
   "experience": {
     "brand": "LIMITLESS",
     "eyebrow": "SIX EYES",
-    "headline": "LIMITLESS WORKSPACE",
-    "tagline": "Plan beyond the visible.",
-    "status": "LIMITLESS ONLINE",
-    "signature": "SATORU GOJO",
+    "headline": "CODEX THEME SYSTEM",
+    "tagline": "Editorial workspace protocol.",
+    "status": "SPECIAL GRADE // ACTIVE",
+    "signature": "SYSTEM 05 // LIMITLESS",
     "chrome": true
   },
   "files": {
     "css": "theme.css",
     "artwork": "background.svg",
-    "preview": "preview.svg"
+    "preview": "preview.svg",
+    "assets": {
+      "brand-emblem": "assets/brand-emblem.png",
+      "send-control": "assets/send-control.png"
+    }
   }
 }
 ```
@@ -100,6 +110,8 @@ All file references must be relative, use forward slashes, and resolve below the
 | `slug` | Lowercase kebab-case and identical to the directory name. |
 | `version` | Semantic version such as `1.0.0` or `1.0.0-beta.1`. |
 | `name` | Human-readable global/English launch name. |
+| `nativeName` | Optional native-language display name. It must be supplied together with `nativeLocale`. |
+| `nativeLocale` | Canonical BCP 47 locale for `nativeName`; it cannot appear alone. |
 | `description` | Plain, non-empty summary. |
 | `author.name` | Required. `author.url` is optional metadata. |
 | `license.code` | License identifier for CSS/metadata. Repository themes use `MIT`. |
@@ -108,11 +120,12 @@ All file references must be relative, use forward slashes, and resolve below the
 | `tags` | Non-empty normalized search terms. |
 | `compatibility.platforms` | Version 1 accepts only `macos`. |
 | `compatibility.status` | `experimental` or `verified`. Use `verified` only with recorded runtime evidence. |
-| `compatibility.appVersions` | Exact dotted versions or trailing-wildcard ranges such as `26.707.*`. |
+| `compatibility.strategy` | `best-effort-all`. Every valid numeric Codex version is attempted with the shared mapping. |
+| `compatibility.verifiedAppVersions` | Exact dotted versions or trailing-wildcard ranges with recorded compatibility evidence, such as `26.707.*`. This is evidence metadata, not an allow/deny list. |
 | `mode` | `dark`, `light`, or `system`; defaults to `dark`. |
 | `palette` | Every schema-v2 semantic role is required. Values are six- or eight-digit hex colors; alpha belongs at the end (`#RRGGBBAA`). |
 | `experience` | Optional schema-v2 declarative brand layer. When present, all six copy fields are required and bounded; `chrome` defaults to `true`. It cannot contain selectors, markup, or JavaScript. |
-| `files` | Local paths to CSS, artwork, and preview. |
+| `files` | Local paths to CSS, artwork, preview, and optional named UI assets. `files.assets` keys use lowercase kebab-case and are limited to 16 entries. |
 
 ## Runtime tokens
 
@@ -154,6 +167,8 @@ The engine exposes the validated palette as namespaced variables on the document
 --act-scrollbar
 --act-scrollbar-hover
 --act-composer
+--act-asset-brand-emblem
+--act-asset-send-control
 ```
 
 Scope every rule below the root marker:
@@ -163,6 +178,10 @@ html.awesome-codex-theme body {
   color: var(--act-text);
   background-color: var(--act-background);
   background-image: var(--act-artwork);
+}
+
+html.awesome-codex-theme .brand-emblem {
+  background-image: var(--act-asset-brand-emblem);
 }
 ```
 
@@ -174,13 +193,15 @@ When `experience.chrome` is enabled, the engine creates one `#awesome-codex-them
 
 - Artwork formats: SVG, PNG, JPEG, WebP, or AVIF.
 - Default maximum runtime artwork size: 700 KiB so its base64 CSS variable remains below the renderer declaration budget.
+- Default maximum size for each named runtime UI asset: 256 KiB.
 - Default maximum preview size: 10 MiB.
 - Default maximum CSS size: 256 KiB.
-- CSS `url(...)`, remote/protocol-relative strings, `@import`, executable URLs, `expression(...)`, and escape sequences that could obscure those tokens are rejected. Runtime artwork is available only through `var(--act-artwork)`.
+- CSS `url(...)`, remote/protocol-relative resource loads, `@import`, executable URLs, `expression(...)`, and escape sequences that could obscure those tokens are rejected. Runtime artwork is available through `var(--act-artwork)` and named UI assets through `var(--act-asset-<name>)`.
+- Named runtime UI assets accept the same image formats and SVG safety checks as artwork. Reapply and restore remove stale `--act-asset-*` variables before setting the next theme.
 - SVG artwork and previews cannot contain scripts, active embedded markup, event handlers, document/entity declarations, obscured tokens, or non-fragment `href`, `src`, and `url(...)` values.
 - Arbitrary JavaScript, remote fonts, analytics beacons, data collection, and content scripts are not part of the schema.
-- Artwork must be original or commercially redistributable. Do not submit character, celebrity, game, anime, brand, or logo artwork without documented rights.
-- A private prototype may use a restrictive artwork identifier only while the repository remains private. It cannot be accepted into a public release until the assets and naming are replaced or fully licensed.
+- `ASSET_LICENSE.md` must document provenance, attribution, and redistribution terms. Contributors confirm that they have the necessary rights to publish and redistribute every included asset and derivative under those terms.
+- Character, celebrity, game, anime, brand, and logo artwork receives the same rights review; inclusion in a package is not itself a legal guarantee.
 
 ## Validation
 

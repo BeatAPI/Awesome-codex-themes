@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 2,
+  "slug": "grand-line",
+  "version": "0.1.1",
+  "name": "Grand Line",
+  "description": "A weathered black-sail navigation desk illuminated by brass chart marks, rope, smoke, and a high-energy captain portrait.",
+  "author": {
+    "name": "Awesome Codex Themes"
+  },
+  "license": {
+    "code": "MIT",
+    "artwork": "PROJECT-ASSET"
+  },
+  "categories": [
+    "dark",
+    "full-workspace",
+    "character-inspired"
+  ],
+  "tags": [
+    "grand-line",
+    "black-sailcloth",
+    "chart-ticks",
+    "macos"
+  ],
+  "compatibility": {
+    "platforms": [
+      "macos"
+    ],
+    "status": "experimental",
+    "appVersions": [
+      "26.707.*",
+      "26.715.*"
+    ]
+  },
+  "mode": "dark",
+  "palette": {
+    "background": "#0B0906",
+    "scrim": "#0B0906E8",
+    "surface": "#17120DDE",
+    "surfaceElevated": "#21190FF2",
+    "surfaceOverlay": "#21190FF7",
+    "input": "#1A140EF2",
+    "text": "#F1D8A4",
+    "textSecondary": "#C8AD78",
+    "textMuted": "#8F7A55",
+    "textDisabled": "#5F523D",
+    "icon": "#F1D8A4",
+    "iconSecondary": "#C8AD78",
+    "iconMuted": "#8F7A55",
+    "border": "#D59B363D",
+    "borderSubtle": "#D59B3624",
+    "borderStrong": "#D59B3678",
+    "accent": "#D59B36",
+    "accentHover": "#F0B957",
+    "selection": "#D59B3638",
+    "focus": "#B13E35",
+    "link": "#E1B45A",
+    "hover": "#D59B361A",
+    "active": "#B13E352B",
+    "code": "#100D09FA",
+    "terminal": "#080705FA",
+    "diffAdded": "#5E9B6340",
+    "diffRemoved": "#C34A3D40",
+    "success": "#5E9B63",
+    "warning": "#D59732",
+    "danger": "#C34A3D",
+    "scrollbar": "#D59B363D",
+    "scrollbarHover": "#D59B3675",
+    "composer": "#15100BF2"
+  },
+  "experience": {
+    "brand": "GRAND LINE",
+    "eyebrow": "LOG POSE",
+    "headline": "CHART THE UNKNOWN",
+    "tagline": "Plot the route. Ship the voyage.",
+    "status": "COURSE // LOCKED",
+    "signature": "NAV LOG 06",
+    "chrome": true
+  },
+  "files": {
+    "css": "theme.css",
+    "artwork": "background.jpg",
+    "preview": "preview.jpg",
+    "assets": {
+      "workspace-panel-safe": "assets/workspace-panel-safe.jpg",
+      "compass-wedge": "assets/compass-wedge.svg",
+      "rope-knot": "assets/rope-knot.svg",
+      "sextant-tick": "assets/sextant-tick.svg",
+      "tide-arrow": "assets/tide-arrow.svg",
+      "pennant-send-mark": "assets/pennant-send-mark.svg"
+    }
+  }
+}
