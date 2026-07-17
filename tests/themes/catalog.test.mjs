@@ -15,62 +15,55 @@ afterEach(async () => {
 });
 
 describe('theme catalog', () => {
-  test('loads the five themes in deterministic package order', async () => {
+  test('loads only complete runnable release themes', async () => {
     const catalog = await buildThemeCatalog(themesRoot);
 
     expect(catalog.map((theme) => theme.slug)).toEqual([
-      'arctic-signal',
-      'limitless-six-eyes',
-      'obsidian-bloom',
-      'paper-circuit',
-      'solar-archive',
+      'castle-archive',
+      'foundling-garden',
+      'grand-line',
+      'mordor-runtime',
+      'new-world-studio',
+      'night-city',
+      'overworld-realms',
+      'saiyan-ukiyoe',
+      'satoru-gojo',
+      'slingshot-lab',
+      'symbiote-sumi-e',
+      'zaun-workshop',
     ]);
+    expect(catalog).toHaveLength(12);
     expect(catalog.every((theme) => theme.compatibility.status === 'experimental')).toBe(true);
-    expect(catalog.every((theme) => theme.command.startsWith('awesome-codex-themes start '))).toBe(true);
+    expect(catalog.every((theme) => theme.command.startsWith('./bin/awesome-codex-themes install-agent '))).toBe(true);
     expect(catalog.every((theme) => theme.preview.startsWith('/theme-assets/'))).toBe(true);
   });
 
-  test('ships Obsidian Bloom as a schema-v2 full semantic theme', async () => {
-    const manifest = JSON.parse(await readFile(join(themesRoot, 'obsidian-bloom', 'theme.json'), 'utf8'));
-
-    expect(manifest.schemaVersion).toBe(2);
-    expect(Object.keys(manifest.palette)).toEqual(SEMANTIC_COLOR_ROLES);
-    expect(manifest.version).toBe('1.1.0');
-    expect(manifest.tags).toContain('full-workspace');
-  });
-
-  test('publishes Limitless Six Eyes metadata for a flagship experience', async () => {
+  test('publishes English-first Satoru Gojo metadata for a flagship experience', async () => {
     const catalog = await buildThemeCatalog(themesRoot);
-    const theme = catalog.find((item) => item.slug === 'limitless-six-eyes');
+    const theme = catalog.find((item) => item.slug === 'satoru-gojo');
 
+    expect(theme?.name).toBe('Satoru Gojo');
+    expect(theme?.nativeName).toBe('五条 悟');
+    expect(theme?.nativeLocale).toBe('ja-JP');
     expect(theme?.tags).toContain('featured');
     expect(theme?.tags).toContain('full-workspace');
-    expect(theme?.license.artwork).toBe('PROTOTYPE-REFERENCE-ONLY');
+    expect(theme?.license.artwork).toBe('PROJECT-ASSET');
     expect(theme?.experience).toEqual(
       expect.objectContaining({
         brand: 'LIMITLESS',
-        status: 'LIMITLESS ONLINE',
+        status: 'LIMITLESS // ACTIVE',
         chrome: true,
       }),
     );
   });
 
-  test('keeps the other launch themes on the legacy schema until they are tuned', async () => {
-    for (const slug of ['arctic-signal', 'paper-circuit', 'solar-archive']) {
-      const manifest = JSON.parse(await readFile(join(themesRoot, slug, 'theme.json'), 'utf8'));
-      expect(manifest.schemaVersion, slug).toBe(1);
-      expect(manifest.version, slug).toBe('1.0.0');
-      expect(Object.keys(manifest.palette), slug).toEqual(['background', 'surface', 'text', 'accent']);
-      expect(manifest.tags, slug).not.toContain('full-workspace');
-    }
-  });
-
-  test('identifies Obsidian Bloom as a full-workspace theme for the first live check', async () => {
+  test('keeps exactly one Featured theme and project assets across the collection', async () => {
     const catalog = await buildThemeCatalog(themesRoot);
-    const theme = catalog.find((item) => item.slug === 'obsidian-bloom');
 
-    expect(theme?.tags).toContain('full-workspace');
-    expect(theme?.compatibility.status).toBe('experimental');
+    expect(catalog.filter((theme) => theme.tags.includes('featured')).map((theme) => theme.slug)).toEqual([
+      'satoru-gojo',
+    ]);
+    expect(catalog.every((theme) => theme.license.artwork === 'PROJECT-ASSET')).toBe(true);
   });
 
   test('writes gallery metadata and only the declared local preview assets', async () => {
@@ -78,6 +71,9 @@ describe('theme catalog', () => {
     tempDirs.push(outputRoot);
     const jsonPath = join(outputRoot, 'generated/themes.json');
     const publicRoot = join(outputRoot, 'public');
+    const stalePreview = join(publicRoot, 'theme-assets/removed-theme/preview.svg');
+    await mkdir(join(publicRoot, 'theme-assets/removed-theme'), { recursive: true });
+    await writeFile(stalePreview, '<svg xmlns="http://www.w3.org/2000/svg"/>');
 
     const catalog = await writeThemeCatalog({ themesRoot, jsonPath, publicRoot });
     const written = JSON.parse(await readFile(jsonPath, 'utf8'));
@@ -87,6 +83,7 @@ describe('theme catalog', () => {
       await expect(access(join(publicRoot, theme.preview))).resolves.toBeUndefined();
       expect(theme.preview).not.toMatch(/\.\.|https?:/);
     }
+    await expect(access(stalePreview)).rejects.toThrow();
   });
 
   test('copies a declared preview from a nested safe package path', async () => {
@@ -98,14 +95,21 @@ describe('theme catalog', () => {
     await writeFile(join(themeRoot, 'theme.json'), JSON.stringify({
       schemaVersion: 1,
       slug: 'nested-preview',
-      version: '1.0.0',
+      version: '1.1.0',
       name: 'Nested Preview',
+      nativeName: 'プレビュー',
+      nativeLocale: 'ja-JP',
       description: 'Tests a nested preview path.',
       author: { name: 'Tests' },
       license: { code: 'MIT', artwork: 'CC0-1.0' },
       categories: ['test'],
       tags: ['nested'],
-      compatibility: { platforms: ['macos'], status: 'experimental', appVersions: ['26.707.*'] },
+      compatibility: {
+        platforms: ['macos'],
+        status: 'experimental',
+        strategy: 'best-effort-all',
+        verifiedAppVersions: ['26.707.*', '26.715.*'],
+      },
       palette: { background: '#111111', surface: '#222222CC', text: '#FFFFFF', accent: '#00AAFF' },
       files: { css: 'theme.css', artwork: 'background.svg', preview: 'assets/preview.svg' },
     }));
@@ -121,6 +125,8 @@ describe('theme catalog', () => {
     });
 
     expect(catalog[0].preview).toBe('/theme-assets/nested-preview/preview.svg');
+    expect(catalog[0].nativeName).toBe('プレビュー');
+    expect(catalog[0].nativeLocale).toBe('ja-JP');
     await expect(readFile(join(outputRoot, 'public/theme-assets/nested-preview/preview.svg'), 'utf8')).resolves.toContain('<rect');
   });
 });

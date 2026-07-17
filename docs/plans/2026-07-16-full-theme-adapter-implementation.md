@@ -2,7 +2,7 @@
 
 **Goal:** Add a versioned Codex `26.707` full-theme adapter and one complete semantic theme system that covers every requested visual surface while preserving safe restore.
 
-**Architecture:** Load a trusted shared adapter from `src/engine/adapters/`, validate semantic theme palettes in schema v2, and compose adapter CSS with per-theme CSS in the existing owned style element. Keep schema v1 readable through deterministic palette expansion, migrate Obsidian Bloom to v2, and fail closed when no adapter supports the app version.
+**Architecture:** Load a trusted shared adapter from `src/engine/adapters/`, validate semantic theme palettes in schema v2, and compose adapter CSS with per-theme CSS in the existing owned style element. Keep schema v1 readable through deterministic palette expansion and identify unverified app versions with a shared best-effort marker.
 
 **Tech Stack:** Node.js 22 ESM, Vitest, JSDOM, CSS custom properties, Chromium DevTools Protocol, Vite/React gallery.
 
@@ -43,7 +43,7 @@ Expected: PASS.
 
 **Step 1: Write failing coverage tests**
 
-Require a `26.707.*` adapter to contain representative rules for canvas/artwork, surfaces, text, icons, borders, menus, inputs, code/diff, hover/active/selection, scrollbars, composer, dialogs, and focus. Require unknown versions to fail with `THEME_ADAPTER_UNSUPPORTED`.
+Require a `26.707.*` adapter to contain representative rules for canvas/artwork, surfaces, text, icons, borders, menus, inputs, code/diff, hover/active/selection, scrollbars, composer, dialogs, and focus. Require unverified numeric versions to load the same mapping as `codex-best-effort`.
 
 **Step 2: Run and verify RED**
 

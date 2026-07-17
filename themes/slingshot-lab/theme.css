@@ -1,0 +1,175 @@
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] {
+  --batch-theme-signature: "slingshot-lab";
+  --batch-radius: 8px;
+  --batch-radius-lg: 14px;
+  --batch-edge: polygon(2% 0, 98% 0, 100% 12%, 100% 88%, 98% 100%, 2% 100%, 0 88%, 0 12%);
+  --batch-border-width: 2px;
+  --batch-display-font: Avenir Next Rounded, Trebuchet MS, Helvetica Neue, sans-serif;
+  --batch-code-font: SFMono-Regular, Menlo, Consolas, monospace;
+  --batch-mark: var(--act-asset-forked-slingshot);
+  background-position: center !important;
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"][data-awesome-codex-artifact-panel-state="open"] {
+  background-image: linear-gradient(115deg, var(--act-scrim), color-mix(in srgb, var(--act-scrim) 54%, transparent)), var(--act-asset-workspace-panel-safe) !important;
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] :is(h1, h2, h3, [data-awesome-codex-sidebar-brand="true"], #awesome-codex-theme-chrome) {
+  font-family: var(--batch-display-font) !important;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] :is(pre, code, kbd, samp, .monaco-editor, .terminal) {
+  font-family: var(--batch-code-font) !important;
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] .app-shell-left-panel {
+  border-inline-end: var(--batch-border-width) solid var(--act-border-strong) !important;
+  box-shadow: 0 6px 0 color-mix(in srgb, var(--act-text) 15%, transparent) !important;
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] [data-awesome-codex-sidebar-brand="true"] {
+  background-image: var(--act-asset-forked-slingshot) !important;
+  background-position: right 10px center !important;
+  background-repeat: no-repeat !important;
+  background-size: 24px 24px !important;
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] :is([data-awesome-codex-sidebar-nav], [data-awesome-codex-domain-header], [data-awesome-codex-project-row], [data-awesome-codex-task-row]) {
+  border-radius: var(--batch-radius) !important;
+  transition: background-color 140ms ease, color 140ms ease, transform 140ms ease;
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] :is([data-awesome-codex-sidebar-nav], [data-awesome-codex-project-row], [data-awesome-codex-task-row]):is(:hover, [aria-current="page"], [data-state="active"]) {
+  background: linear-gradient(90deg, var(--act-active), var(--act-hover)) !important;
+  box-shadow: inset 3px 0 0 var(--act-accent);
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] [data-awesome-codex-domain-header]::after {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-inline-start: auto;
+  background: var(--act-asset-dotted-arc) center / contain no-repeat;
+  opacity: 0.82;
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] [data-awesome-codex-home="true"] {
+  position: relative;
+  isolation: isolate;
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] [data-awesome-codex-home-prompt="true"] {
+  border-radius: var(--batch-radius-lg) !important;
+  clip-path: var(--batch-edge);
+  background: color-mix(in srgb, var(--act-surface-elevated) 88%, transparent) !important;
+  box-shadow: 0 6px 0 color-mix(in srgb, var(--act-text) 15%, transparent);
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] :is(.composer-root, .composer-surface-chrome) {
+  border-width: var(--batch-border-width) !important;
+  border-radius: var(--batch-radius-lg) !important;
+  clip-path: var(--batch-edge);
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] [data-awesome-codex-composer-control] {
+  min-width: 32px;
+  min-height: 32px;
+  border-radius: var(--batch-radius) !important;
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] [data-awesome-codex-composer-control="attachment"] {
+  background-image: var(--act-asset-impact-star) !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 15px 15px !important;
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] [data-awesome-codex-composer-control="primary"] {
+  color: var(--act-background) !important;
+  background-color: var(--act-accent) !important;
+  background-image: var(--act-asset-red-launch-arrow) !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 19px 19px !important;
+  box-shadow: 0 6px 0 color-mix(in srgb, var(--act-text) 15%, transparent);
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] [data-awesome-codex-artifact-panel="true"] {
+  background-color: color-mix(in srgb, var(--act-surface-elevated) 94%, transparent) !important;
+  background-image: linear-gradient(180deg, color-mix(in srgb, var(--act-surface-overlay) 92%, transparent), var(--act-surface-elevated)), var(--act-asset-workspace-panel-safe) !important;
+  background-position: center !important;
+  background-size: cover !important;
+  border-inline-start: var(--batch-border-width) solid var(--act-border-strong) !important;
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] [data-awesome-codex-artifact-header="true"] {
+  border-block-end: var(--batch-border-width) solid var(--act-border) !important;
+  background-image: var(--act-asset-feather-vane) !important;
+  background-position: right 14px center !important;
+  background-repeat: no-repeat !important;
+  background-size: 44px 10px !important;
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] :is([role="dialog"], [role="menu"], [role="listbox"], [role="tooltip"], [data-awesome-codex-plugin-card], [data-awesome-codex-collection-row]) {
+  border-radius: var(--batch-radius-lg) !important;
+  clip-path: var(--batch-edge);
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] :is([data-awesome-codex-plugin-card], [data-awesome-codex-collection-row]):hover {
+  border-color: var(--act-border-strong) !important;
+  background-color: var(--act-hover) !important;
+  transform: translateY(-1px);
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] :is(input, textarea, select, [contenteditable="true"]):focus-visible {
+  outline: 2px solid var(--act-focus) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--act-focus) 18%, transparent) !important;
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] :is(.monaco-editor, .terminal, .xterm-viewport, pre, code) {
+  border-radius: var(--batch-radius) !important;
+  border-color: var(--act-border-subtle) !important;
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] :is([data-awesome-codex-activity-item], [data-awesome-codex-completed-summary])::before {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-inline-end: 7px;
+  background: var(--act-asset-dotted-arc) center / contain no-repeat;
+  vertical-align: -3px;
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] :is(button, [role="button"]):active {
+  transform: translateY(1px);
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] *::-webkit-scrollbar-thumb {
+  border-radius: var(--batch-radius) !important;
+}
+
+@media (max-width: 1120px) {
+  html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] :is([data-awesome-codex-project-row], [data-awesome-codex-task-row], [data-awesome-codex-collection-row]) {
+    min-width: 0;
+  }
+  html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] :is([data-awesome-codex-project-row], [data-awesome-codex-task-row], [data-awesome-codex-collection-row]) :is(span, p) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] *,
+  html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] *::before,
+  html.awesome-codex-theme[data-awesome-codex-theme="slingshot-lab"] *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

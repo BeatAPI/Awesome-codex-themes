@@ -40,14 +40,19 @@ export const SEMANTIC_COLOR_ROLES = Object.freeze([
 ]);
 export const DEFAULT_MAX_ASSET_BYTES = 10 * 1024 * 1024;
 export const DEFAULT_MAX_RUNTIME_ARTWORK_BYTES = 700 * 1024;
+export const DEFAULT_MAX_RUNTIME_ASSET_BYTES = 256 * 1024;
 export const DEFAULT_MAX_CSS_BYTES = 256 * 1024;
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const AUXILIARY_ASSET_NAME_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const MAX_AUXILIARY_ASSETS = 16;
 const VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
 const APP_VERSION_RANGE_PATTERN = /^\d+(?:\.\d+)+(?:\.\*)?$/;
+const NATIVE_LOCALE_PATTERN = /^[a-z]{2,3}(?:-[A-Z][a-z]{3})?(?:-(?:[A-Z]{2}|\d{3}))?(?:-[A-Za-z0-9]{4,8})*$/;
 const HEX_COLOR_PATTERN = /^#[0-9A-Fa-f]{6}(?:[0-9A-Fa-f]{2})?$/;
 const SUPPORTED_PLATFORMS = new Set(['macos']);
 const SUPPORTED_STATUS = new Set(['experimental', 'verified']);
+const SUPPORTED_COMPATIBILITY_STRATEGIES = new Set(['best-effort-all']);
 const SUPPORTED_MODES = new Set(['dark', 'light', 'system']);
 const EXPERIENCE_FIELD_LIMITS = Object.freeze({
   brand: 48,
@@ -104,6 +109,25 @@ function validateLocalPath(value, field) {
     fail('THEME_PATH_UNSAFE', `${field} must be a local file below the theme directory.`);
   }
   return path;
+}
+
+function normalizeAuxiliaryAssets(value) {
+  if (value === undefined) return {};
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    fail('THEME_FIELD_INVALID', 'files.assets must be an object of named local image paths.');
+  }
+  const entries = Object.entries(value);
+  if (entries.length > MAX_AUXILIARY_ASSETS) {
+    fail('THEME_ASSET_COUNT_EXCEEDED', `files.assets supports at most ${MAX_AUXILIARY_ASSETS} entries.`);
+  }
+  return Object.fromEntries(
+    entries.map(([name, path]) => {
+      if (!AUXILIARY_ASSET_NAME_PATTERN.test(name)) {
+        fail('THEME_ASSET_NAME_INVALID', 'files.assets keys must use lowercase kebab-case.');
+      }
+      return [name, validateLocalPath(path, `files.assets.${name}`)];
+    }),
+  );
 }
 
 function validateColor(value, field) {
@@ -187,6 +211,22 @@ function normalizeExperience(value, schemaVersion) {
   };
 }
 
+function normalizeNativeDisplayName(input) {
+  const hasNativeName = input.nativeName !== undefined;
+  const hasNativeLocale = input.nativeLocale !== undefined;
+  if (hasNativeName !== hasNativeLocale) {
+    fail('THEME_NATIVE_NAME_INCOMPLETE', 'nativeName and nativeLocale must be provided together.');
+  }
+  if (!hasNativeName) return undefined;
+
+  const nativeName = requireString(input.nativeName, 'nativeName');
+  const nativeLocale = requireString(input.nativeLocale, 'nativeLocale');
+  if (!NATIVE_LOCALE_PATTERN.test(nativeLocale)) {
+    fail('THEME_NATIVE_LOCALE_INVALID', 'nativeLocale must use a canonical BCP 47 language tag such as ja-JP.');
+  }
+  return { nativeName, nativeLocale };
+}
+
 function validateManifestObject(input) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) {
     fail('THEME_JSON_INVALID', 'theme.json must contain an object.');
@@ -246,17 +286,29 @@ function validateManifestObject(input) {
     fail('THEME_MODE_INVALID', 'mode must be dark, light, or system.');
   }
 
-  const appVersions = requireStringArray(compatibility.appVersions, 'compatibility.appVersions');
-  if (appVersions.some((range) => !APP_VERSION_RANGE_PATTERN.test(range))) {
-    fail('THEME_COMPATIBILITY_INVALID', 'compatibility.appVersions must contain exact versions or a trailing wildcard.');
+  const strategy = compatibility.strategy ?? 'best-effort-all';
+  if (!SUPPORTED_COMPATIBILITY_STRATEGIES.has(strategy)) {
+    fail('THEME_COMPATIBILITY_INVALID', 'compatibility.strategy must be best-effort-all.');
+  }
+  const verifiedAppVersions = requireStringArray(
+    compatibility.verifiedAppVersions ?? compatibility.appVersions,
+    'compatibility.verifiedAppVersions',
+  );
+  if (verifiedAppVersions.some((range) => !APP_VERSION_RANGE_PATTERN.test(range))) {
+    fail(
+      'THEME_COMPATIBILITY_INVALID',
+      'compatibility.verifiedAppVersions must contain exact versions or a trailing wildcard.',
+    );
   }
 
   const experience = normalizeExperience(input.experience, input.schemaVersion);
+  const nativeDisplayName = normalizeNativeDisplayName(input);
   return {
     schemaVersion: input.schemaVersion,
     slug,
     version,
     name: requireString(input.name, 'name'),
+    ...(nativeDisplayName ?? {}),
     description: requireString(input.description, 'description'),
     author: {
       name: requireString(author.name, 'author.name'),
@@ -271,7 +323,8 @@ function validateManifestObject(input) {
     compatibility: {
       platforms,
       status: compatibility.status,
-      appVersions,
+      strategy,
+      verifiedAppVersions,
     },
     mode,
     palette: normalizePalette(palette, input.schemaVersion),
@@ -280,6 +333,10 @@ function validateManifestObject(input) {
       css: validateLocalPath(files.css, 'files.css'),
       artwork: validateLocalPath(files.artwork, 'files.artwork'),
       preview: validateLocalPath(files.preview, 'files.preview'),
+      ...(() => {
+        const assets = normalizeAuxiliaryAssets(files.assets);
+        return Object.keys(assets).length > 0 ? { assets } : {};
+      })(),
     },
   };
 }
@@ -306,13 +363,16 @@ export function assertThemeCompatibility(input, { platform, appVersion } = {}) {
   if (typeof appVersion !== 'string' || !/^\d+(?:\.\d+)+$/.test(appVersion)) {
     fail('THEME_APP_VERSION_INVALID', 'A numeric Codex app version is required.');
   }
-  if (!manifest.compatibility.appVersions.some((range) => versionMatchesRange(appVersion, range))) {
-    fail(
-      'THEME_APP_VERSION_UNSUPPORTED',
-      `Theme ${manifest.slug} does not declare support for Codex ${appVersion}; official UI was left unchanged.`,
-    );
-  }
-  return { platform, appVersion, status: manifest.compatibility.status };
+  const verified = manifest.compatibility.verifiedAppVersions.some((range) =>
+    versionMatchesRange(appVersion, range),
+  );
+  return {
+    platform,
+    appVersion,
+    status: manifest.compatibility.status,
+    strategy: manifest.compatibility.strategy,
+    verified,
+  };
 }
 
 async function resolveThemeFile(root, relativePath) {
@@ -357,7 +417,7 @@ function validateCss(css) {
   if (css.includes('\\')) {
     fail('THEME_CSS_UNSAFE_ESCAPE', 'Theme CSS cannot contain escape sequences that obscure executable or remote tokens.');
   }
-  if (/\@import\s/i.test(css) || /https?:|\/\//i.test(css)) {
+  if (/\@import\s/i.test(css) || /https?:|(?:url|image-set)\s*\([^)]*\/\//i.test(css)) {
     fail('THEME_CSS_REMOTE_IMPORT', 'Theme CSS cannot load remote resources.');
   }
   if (/url\s*\(/i.test(css) || /javascript\s*:|expression\s*\(/i.test(css)) {
@@ -394,6 +454,7 @@ export async function loadThemePackage(
   {
     maxAssetBytes = DEFAULT_MAX_ASSET_BYTES,
     maxRuntimeArtworkBytes = DEFAULT_MAX_RUNTIME_ARTWORK_BYTES,
+    maxRuntimeAssetBytes = DEFAULT_MAX_RUNTIME_ASSET_BYTES,
     maxCssBytes = DEFAULT_MAX_CSS_BYTES,
   } = {},
 ) {
@@ -415,10 +476,19 @@ export async function loadThemePackage(
   const cssPath = await resolveThemeFile(canonicalRoot, manifest.files.css);
   const artworkPath = await resolveThemeFile(canonicalRoot, manifest.files.artwork);
   const previewPath = await resolveThemeFile(canonicalRoot, manifest.files.preview);
-  const [cssInfo, artworkInfo, previewInfo] = await Promise.all([
+  const auxiliaryAssetEntries = await Promise.all(
+    Object.entries(manifest.files.assets ?? {}).map(async ([name, relativePath]) => [
+      name,
+      await resolveThemeFile(canonicalRoot, relativePath),
+    ]),
+  );
+  const [cssInfo, artworkInfo, previewInfo, auxiliaryAssetInfos] = await Promise.all([
     stat(cssPath),
     stat(artworkPath),
     stat(previewPath),
+    Promise.all(
+      auxiliaryAssetEntries.map(async ([name, path]) => [name, path, await stat(path)]),
+    ),
   ]);
 
   if (cssInfo.size > maxCssBytes) {
@@ -433,17 +503,46 @@ export async function loadThemePackage(
       `Runtime artwork exceeds ${maxRuntimeArtworkBytes} bytes and cannot be injected reliably.`,
     );
   }
+  for (const [name, , info] of auxiliaryAssetInfos) {
+    if (info.size > maxAssetBytes) {
+      fail('THEME_ASSET_TOO_LARGE', `Theme asset ${name} exceeds ${maxAssetBytes} bytes.`);
+    }
+    if (info.size > maxRuntimeAssetBytes) {
+      fail(
+        'THEME_RUNTIME_ASSET_TOO_LARGE',
+        `Runtime asset ${name} exceeds ${maxRuntimeAssetBytes} bytes and cannot be injected reliably.`,
+      );
+    }
+  }
 
-  const [css, artworkBuffer, previewBuffer] = await Promise.all([
+  const [css, artworkBuffer, previewBuffer, auxiliaryAssetBuffers] = await Promise.all([
     readFile(cssPath, 'utf8'),
     readFile(artworkPath),
     readFile(previewPath),
+    Promise.all(
+      auxiliaryAssetEntries.map(async ([name, path]) => [name, path, await readFile(path)]),
+    ),
   ]);
   validateCss(css);
   const mime = mimeForArtwork(artworkPath);
   mimeForArtwork(previewPath);
   validateSvg(artworkBuffer, artworkPath);
   validateSvg(previewBuffer, previewPath);
+  const assets = Object.fromEntries(
+    auxiliaryAssetBuffers.map(([name, path, buffer]) => {
+      const assetMime = mimeForArtwork(path);
+      validateSvg(buffer, path);
+      return [
+        name,
+        {
+          path,
+          mime: assetMime,
+          bytes: buffer.byteLength,
+          dataUrl: `data:${assetMime};base64,${buffer.toString('base64')}`,
+        },
+      ];
+    }),
+  );
 
   return {
     root: canonicalRoot,
@@ -455,6 +554,7 @@ export async function loadThemePackage(
       bytes: artworkBuffer.byteLength,
       dataUrl: `data:${mime};base64,${artworkBuffer.toString('base64')}`,
     },
+    assets,
     previewPath,
   };
 }

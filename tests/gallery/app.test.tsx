@@ -9,26 +9,25 @@ describe('theme gallery', () => {
   test('presents the flagship-led collection and project boundary', () => {
     render(<App />);
 
-    expect(screen.getByRole('heading', { name: /make codex feel limitless/i })).toBeInTheDocument();
-    expect(screen.getByText('1 flagship theme')).toBeInTheDocument();
-    expect(screen.getByText('4 original studies')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /make codex feel like yours/i })).toBeInTheDocument();
+    expect(screen.getByText('12 complete themes')).toBeInTheDocument();
+    expect(screen.getByText('1 featured flagship')).toBeInTheDocument();
     expect(screen.getByText(/unofficial and not affiliated/i)).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Limitless Six Eyes' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Obsidian Bloom' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Paper Circuit' })).toBeInTheDocument();
-    expect(screen.getByText(/versioned full-workspace adapter/i)).toBeInTheDocument();
-    expect(screen.getByLabelText('Obsidian Bloom color palette').querySelectorAll('span')).toHaveLength(5);
-    expect(screen.getAllByRole('button', { name: /^view /i })[0]).toHaveAccessibleName('View Limitless Six Eyes');
-  });
+    expect(screen.getByRole('heading', { name: 'Satoru Gojo' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Night City' })).toBeInTheDocument();
+    expect(screen.getByText('五条 悟')).toBeInTheDocument();
+    expect(screen.getByText(/inspectable adapter/i)).toBeInTheDocument();
+    expect(screen.getByLabelText('Satoru Gojo color palette').querySelectorAll('span')).toHaveLength(5);
+    expect(screen.getAllByRole('button', { name: /^view /i })[0]).toHaveAccessibleName('View Satoru Gojo');
+  }, 15_000);
 
   test('searches across names, descriptions, categories, and tags', async () => {
     const user = userEvent.setup();
     render(<App />);
 
-    await user.type(screen.getByRole('searchbox', { name: /search themes/i }), 'aurora');
+    await user.type(screen.getByRole('searchbox', { name: /search themes/i }), '五条');
 
-    expect(screen.getByRole('heading', { name: 'Arctic Signal' })).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: 'Solar Archive' })).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Satoru Gojo' })).toBeInTheDocument();
     expect(screen.getByText('1 theme shown')).toBeInTheDocument();
   });
 
@@ -37,14 +36,12 @@ describe('theme gallery', () => {
     render(<App />);
 
     await user.click(screen.getByRole('button', { name: 'Editorial' }));
-    expect(screen.getByRole('heading', { name: 'Paper Circuit' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Solar Archive' })).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: 'Arctic Signal' })).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Satoru Gojo' })).toBeInTheDocument();
 
     await user.type(screen.getByRole('searchbox', { name: /search themes/i }), 'nonexistent');
     expect(screen.getByRole('heading', { name: /no matching themes/i })).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /clear search and filters/i }));
-    expect(screen.getByRole('heading', { name: 'Arctic Signal' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Satoru Gojo' })).toBeInTheDocument();
   });
 
   test('opens structured details and copies the exact CLI command', async () => {
@@ -56,26 +53,31 @@ describe('theme gallery', () => {
     });
     render(<App />);
 
-    await user.click(screen.getByRole('button', { name: /view obsidian bloom/i }));
-    const dialog = screen.getByRole('dialog', { name: 'Obsidian Bloom' });
+    await user.click(screen.getByRole('button', { name: /view satoru gojo/i }));
+    const dialog = screen.getByRole('dialog', { name: 'Satoru Gojo' });
+    expect(dialog).toHaveTextContent('Best effort on every numeric Codex Desktop version');
+    expect(dialog).toHaveTextContent('Highly compatible');
     expect(dialog).toHaveTextContent('26.707.*');
-    expect(dialog).toHaveTextContent('CC0-1.0');
+    expect(dialog).toHaveTextContent('26.715.*');
+    expect(dialog).toHaveTextContent('PROJECT-ASSET');
     expect(dialog).toHaveTextContent('Full workspace');
-    await user.click(screen.getByRole('button', { name: /copy apply command/i }));
+    expect(dialog).toHaveTextContent(/pause.*restore.*GitHub Issue/i);
+    await user.click(screen.getByRole('button', { name: /copy install command/i }));
 
-    expect(writeText).toHaveBeenCalledWith('awesome-codex-themes start obsidian-bloom');
+    expect(writeText).toHaveBeenCalledWith('./bin/awesome-codex-themes install-agent satoru-gojo');
     expect(screen.getByRole('button', { name: /command copied/i })).toBeInTheDocument();
   });
 
-  test('labels private prototype artwork without weakening the theme coverage claim', async () => {
+  test('shows the approved project artwork without a prototype restriction warning', async () => {
     const user = userEvent.setup();
     render(<App />);
 
-    await user.click(screen.getByRole('button', { name: /view limitless six eyes/i }));
+    await user.click(screen.getByRole('button', { name: /view satoru gojo/i }));
 
-    const dialog = screen.getByRole('dialog', { name: 'Limitless Six Eyes' });
-    expect(dialog).toHaveTextContent('PROTOTYPE-REFERENCE-ONLY');
+    const dialog = screen.getByRole('dialog', { name: 'Satoru Gojo' });
+    expect(dialog).toHaveTextContent('五条 悟');
+    expect(dialog).toHaveTextContent('PROJECT-ASSET');
     expect(dialog).toHaveTextContent('Full workspace');
-    expect(dialog).toHaveTextContent(/private fan prototype/i);
+    expect(dialog).not.toHaveTextContent(/private fan|must be replaced|public or commercial release/i);
   });
 });

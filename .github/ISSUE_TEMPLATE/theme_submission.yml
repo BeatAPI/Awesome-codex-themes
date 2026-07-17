@@ -1,5 +1,5 @@
 name: Theme proposal
-description: Propose an original or properly licensed theme package.
+description: Propose a theme package whose assets you have the necessary rights to distribute.
 title: "[Theme]: "
 labels: [theme, needs-review]
 body:
@@ -24,6 +24,7 @@ body:
       options:
         - Original work created by me
         - Commercially redistributable work with documented license
+        - Character or branded work with documented distribution rights
     validations:
       required: true
   - type: input
@@ -38,7 +39,7 @@ body:
     attributes:
       label: Submission checks
       options:
-        - label: The package contains no unlicensed character, celebrity, game, anime, logo, or brand artwork.
+        - label: I have the necessary rights to publish and redistribute every included asset and derivative under the declared terms.
           required: true
         - label: The CSS preserves native controls, focus, pointer, and keyboard interaction.
           required: true

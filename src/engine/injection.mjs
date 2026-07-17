@@ -6,6 +6,8 @@ export const CHROME_ID = 'awesome-codex-theme-chrome';
 export const EXPERIENCE_MARKER = 'awesome-codex-theme-experience';
 const OWNER = 'awesome-codex-themes';
 const SURFACE_OBSERVER_KEY = '__awesomeCodexThemeSurfaceObserver';
+const AUXILIARY_ASSET_NAME_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const AUXILIARY_ASSET_VARIABLE_PREFIX = '--act-asset-';
 
 function roleToVariable(role) {
   return `--act-${role.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)}`;
@@ -60,6 +62,19 @@ function runtimePayload(theme, adapter) {
       return [variable, value];
     }),
   );
+  const assetVariables = Object.fromEntries(
+    Object.entries(theme.assets ?? {}).map(([name, asset]) => {
+      if (
+        !AUXILIARY_ASSET_NAME_PATTERN.test(name) ||
+        !asset ||
+        typeof asset.dataUrl !== 'string' ||
+        !asset.dataUrl.startsWith('data:image/')
+      ) {
+        throw new TypeError(`Theme runtime asset is invalid: ${name}`);
+      }
+      return [`${AUXILIARY_ASSET_VARIABLE_PREFIX}${name}`, `url("${asset.dataUrl}")`];
+    }),
+  );
   return {
     slug: manifest.slug,
     colorScheme: manifest.mode === 'system' ? 'light dark' : manifest.mode,
@@ -68,6 +83,7 @@ function runtimePayload(theme, adapter) {
     adapterCss: adapter.css,
     artworkDataUrl: artwork.dataUrl,
     variables,
+    assetVariables,
     experience: manifest.experience?.chrome
       ? {
           brand: manifest.experience.brand,
@@ -107,7 +123,16 @@ export function buildApplyExpression(theme, adapter) {
     root.dataset.awesomeCodexAdapter = payload.adapterId;
     root.style.setProperty('--act-artwork', 'url("' + payload.artworkDataUrl + '")');
     root.style.setProperty('--act-color-scheme', payload.colorScheme);
+    for (let index = root.style.length - 1; index >= 0; index -= 1) {
+      const variable = root.style.item(index);
+      if (variable.startsWith(${serializeForExpression(AUXILIARY_ASSET_VARIABLE_PREFIX)})) {
+        root.style.removeProperty(variable);
+      }
+    }
     for (const [variable, value] of Object.entries(payload.variables)) {
+      root.style.setProperty(variable, value);
+    }
+    for (const [variable, value] of Object.entries(payload.assetVariables)) {
       root.style.setProperty(variable, value);
     }
 
@@ -168,24 +193,391 @@ export function buildApplyExpression(theme, adapter) {
       const computed = getComputedStyle(node);
       return rect.width > 1 && rect.height > 1 && computed.display !== 'none' && computed.visibility !== 'hidden' && computed.opacity !== '0';
     };
+    const isEffectivelyVisible = (node) => {
+      if (!(node instanceof Element)) return false;
+      const rect = node.getBoundingClientRect();
+      if (
+        rect.width <= 1 ||
+        rect.height <= 1 ||
+        rect.right <= 0 ||
+        rect.left >= window.innerWidth ||
+        rect.bottom <= 0 ||
+        rect.top >= window.innerHeight
+      ) return false;
+      for (let current = node; current && current !== document; current = current.parentElement) {
+        const computed = getComputedStyle(current);
+        if (
+          computed.display === 'none' ||
+          computed.visibility === 'hidden' ||
+          Number.parseFloat(computed.opacity || '1') < 0.01
+        ) return false;
+      }
+      return true;
+    };
+    const findPluginSearchInput = () => {
+      for (const candidate of document.querySelectorAll('input[placeholder]')) {
+        const placeholder = candidate.getAttribute('placeholder') || '';
+        if (/search plugins|搜索插件/i.test(placeholder)) return candidate;
+      }
+      return null;
+    };
+    const findScheduledSearchInput = () => {
+      for (const candidate of document.querySelectorAll('input[placeholder]')) {
+        const placeholder = candidate.getAttribute('placeholder') || '';
+        if (/search scheduled|搜索已安排/i.test(placeholder)) return candidate;
+      }
+      return null;
+    };
+    const findSitesSearchInput = () => {
+      for (const candidate of document.querySelectorAll('input[placeholder]')) {
+        const placeholder = candidate.getAttribute('placeholder') || '';
+        if (/search sites|搜索站点/i.test(placeholder)) return candidate;
+      }
+      return null;
+    };
+    const findPullRequestsSearchInput = () => {
+      for (const candidate of document.querySelectorAll('input[placeholder]')) {
+        const placeholder = candidate.getAttribute('placeholder') || '';
+        if (/pull requests?|拉取请求/i.test(placeholder)) return candidate;
+      }
+      return null;
+    };
+    const findPullRequestsRoot = () => {
+      for (const heading of document.querySelectorAll('h1')) {
+        const copy = heading.textContent?.trim() || '';
+        if (/^pull requests?$/i.test(copy) || /^拉取请求$/.test(copy)) {
+          return (
+            heading.closest('[role="main"]') ||
+            heading.closest('.app-shell-main-content-viewport') ||
+            heading.closest('.app-shell-main-content-frame') ||
+            document.body
+          );
+        }
+      }
+      return null;
+    };
+    const closestMainSurface = (candidate) => {
+      if (!candidate) return null;
+      return (
+        candidate.closest?.('[role="main"]') ||
+        candidate.closest?.('.app-shell-main-content-viewport') ||
+        candidate.closest?.('.app-shell-main-content-frame') ||
+        document.body
+      );
+    };
+    const updateComponentRoles = () => {
+      const roleKeys = [
+        'awesomeCodexArtifactPanel',
+        'awesomeCodexArtifactPanelHost',
+        'awesomeCodexArtifactHeader',
+        'awesomeCodexPanelMore',
+        'awesomeCodexCompletedSummary',
+        'awesomeCodexActivityItem',
+        'awesomeCodexActivitySummary',
+        'awesomeCodexHeaderControl',
+        'awesomeCodexSidebarBrand',
+        'awesomeCodexSidebarNav',
+        'awesomeCodexDomainHeader',
+        'awesomeCodexProjectRow',
+        'awesomeCodexDomainId',
+        'awesomeCodexTaskRow',
+        'awesomeCodexAccountTrigger',
+        'awesomeCodexAccountIdentity',
+        'awesomeCodexHelpTrigger',
+        'awesomeCodexHomePrompt',
+        'awesomeCodexDomainMarker',
+        'awesomeCodexComposerControl',
+        'awesomeCodexPluginSearch',
+        'awesomeCodexPluginTab',
+        'awesomeCodexPluginSectionHeader',
+        'awesomeCodexPluginInstalled',
+        'awesomeCodexPluginCard',
+        'awesomeCodexPluginIcon',
+        'awesomeCodexPluginAction',
+        'awesomeCodexCollectionSearch',
+        'awesomeCodexCollectionTab',
+        'awesomeCodexCollectionSectionHeader',
+        'awesomeCodexCollectionRow',
+        'awesomeCodexCollectionEmpty',
+        'awesomeCodexCollectionStatus',
+        'awesomeCodexCollectionAction',
+      ];
+      for (const roleKey of roleKeys) {
+        const attribute = 'data-' + roleKey.replace(/[A-Z]/g, (letter) => '-' + letter.toLowerCase());
+        for (const candidate of document.querySelectorAll('[' + attribute + ']')) {
+          delete candidate.dataset[roleKey];
+        }
+      }
+
+      for (const candidate of document.querySelectorAll('.bg-token-dropdown-background:not(header)')) {
+        const headers = candidate.querySelectorAll('section > header.bg-token-dropdown-background');
+        if (headers.length === 0) continue;
+        candidate.dataset.awesomeCodexArtifactPanel = 'true';
+        const panelHost =
+          candidate.closest('[data-pip-obstacle="thread-summary-panel"]') || candidate.parentElement;
+        if (panelHost) panelHost.dataset.awesomeCodexArtifactPanelHost = 'true';
+        for (const header of headers) header.dataset.awesomeCodexArtifactHeader = 'true';
+        for (const panelMore of candidate.querySelectorAll('.text-token-conversation-summary-trailing')) {
+          panelMore.dataset.awesomeCodexPanelMore = 'true';
+        }
+      }
+
+      for (const candidate of document.querySelectorAll('button')) {
+        const isCompletedSummary = Boolean(
+          candidate.matches('.text-size-chat.inline-flex.items-center.gap-1') &&
+          candidate.querySelector('.text-token-conversation-body'),
+        );
+        if (isCompletedSummary) {
+          candidate.dataset.awesomeCodexCompletedSummary = 'true';
+        } else if (candidate.classList.contains('group/activity-header')) {
+          candidate.dataset.awesomeCodexActivityItem = 'true';
+        }
+      }
+
+      for (const candidate of document.querySelectorAll('.app-header-tint :is(button, [role="button"])')) {
+        candidate.dataset.awesomeCodexHeaderControl = 'true';
+      }
+
+      for (const candidate of document.querySelectorAll('[class~="group/folder-row"]')) {
+        candidate.dataset.awesomeCodexProjectRow = 'true';
+      }
+      for (const [index, candidate] of [
+        ...document.querySelectorAll('[data-awesome-codex-project-row="true"]'),
+      ].entries()) {
+        candidate.dataset.awesomeCodexDomainId = 'D-' + String(index + 1).padStart(2, '0');
+      }
+      for (const dragHandle of document.querySelectorAll('[class~="cursor-grab"]')) {
+        const taskRow = dragHandle.closest('div.group.relative') || dragHandle.parentElement;
+        if (taskRow) taskRow.dataset.awesomeCodexTaskRow = 'true';
+      }
+
+      for (const sidebar of document.querySelectorAll('.app-shell-left-panel')) {
+        const domainHeaders = [...sidebar.querySelectorAll('[class~="group/section-toggle"]')];
+        for (const candidate of domainHeaders) {
+          candidate.dataset.awesomeCodexDomainHeader = 'true';
+        }
+        const firstDomainHeader = domainHeaders[0] ?? null;
+        for (const candidate of sidebar.querySelectorAll('button')) {
+          const label = (candidate.getAttribute('aria-label') || '').toLocaleLowerCase();
+          if (/switch mode|切换模式/.test(label)) {
+            candidate.dataset.awesomeCodexSidebarBrand = 'true';
+          }
+          if (candidate.querySelector('img.rounded-full')) {
+            candidate.dataset.awesomeCodexAccountIdentity = 'true';
+            candidate.dataset.awesomeCodexAccountTrigger = 'true';
+          }
+        }
+        for (const candidate of sidebar.querySelectorAll('button')) {
+          if (candidate === firstDomainHeader) break;
+          if (candidate.classList.contains('h-[var(--height-token-row)]')) {
+            const currentIndex = sidebar.querySelectorAll('[data-awesome-codex-sidebar-nav]').length + 1;
+            candidate.dataset.awesomeCodexSidebarNav = String(currentIndex).padStart(2, '0');
+          }
+        }
+        for (const candidate of sidebar.querySelectorAll('button[aria-label], [role="button"][aria-label]')) {
+          const label = (candidate.getAttribute('aria-label') || '').toLocaleLowerCase();
+          if (
+            label.includes('profile menu') ||
+            label.includes('account menu') ||
+            label.includes('个人资料菜单') ||
+            label.includes('账户菜单')
+          ) {
+            candidate.dataset.awesomeCodexAccountTrigger = 'true';
+          } else if (label.includes('help') || label.includes('帮助')) {
+            candidate.dataset.awesomeCodexHelpTrigger = 'true';
+          }
+        }
+      }
+
+      const homePrompt = document.querySelector(
+        '[data-awesome-codex-home="true"] [data-feature="game-source"]',
+      );
+      if (homePrompt) {
+        homePrompt.dataset.awesomeCodexHomePrompt = 'true';
+        const domainMarker = homePrompt.querySelector('button');
+        if (domainMarker) domainMarker.dataset.awesomeCodexDomainMarker = 'true';
+      }
+
+      for (const composer of document.querySelectorAll('.composer-surface-chrome')) {
+        for (const candidate of composer.querySelectorAll('button')) {
+          const label = (candidate.getAttribute('aria-label') || '').toLocaleLowerCase();
+          const isSquare = candidate.classList.contains('aspect-square');
+          let control = '';
+          if (
+            candidate.matches('[data-testid="composer-send-button"], .composer-send-button') ||
+            candidate.classList.contains('size-token-button-composer') ||
+            candidate.classList.contains('bg-token-foreground')
+          ) {
+            control = 'primary';
+          } else if (label.includes('dictation') || label.includes('听写')) {
+            control = 'dictation';
+          } else if (
+            label.includes('add files') ||
+            label.includes('attach') ||
+            label.includes('添加文件') ||
+            label.includes('附件')
+          ) {
+            control = 'attachment';
+          } else if (candidate.classList.contains('h-token-button-composer-sm')) {
+            control = 'access';
+          } else if (candidate.classList.contains('h-token-button-composer') && !isSquare) {
+            control = 'model';
+          }
+          if (control) candidate.dataset.awesomeCodexComposerControl = control;
+        }
+      }
+
+      const pluginSearchInput = findPluginSearchInput();
+      if (pluginSearchInput) {
+        const pluginRoot = closestMainSurface(pluginSearchInput);
+        const searchSurface = pluginSearchInput.parentElement;
+        if (searchSurface) {
+          searchSurface.dataset.awesomeCodexPluginSearch = 'true';
+          searchSurface.dataset.awesomeCodexCollectionSearch = 'true';
+        }
+
+        for (const heading of pluginRoot.querySelectorAll('h2')) {
+          if (heading.parentElement) {
+            heading.parentElement.dataset.awesomeCodexPluginSectionHeader = 'true';
+            heading.parentElement.dataset.awesomeCodexCollectionSectionHeader = 'true';
+          }
+        }
+
+        for (const installedRow of pluginRoot.querySelectorAll('[class~="group/plugin-row"]')) {
+          for (const button of installedRow.querySelectorAll(':scope > button')) {
+            button.dataset.awesomeCodexPluginInstalled = 'true';
+            button.dataset.awesomeCodexCollectionRow = 'true';
+            const icon = button.querySelector('img')?.parentElement;
+            if (icon) icon.dataset.awesomeCodexPluginIcon = 'true';
+          }
+        }
+
+        for (const candidate of pluginRoot.querySelectorAll('button.shrink-0')) {
+          if (
+            candidate.classList.contains('h-token-button-composer') &&
+            !candidate.closest('[data-awesome-codex-plugin-card="true"]') &&
+            !candidate.closest('[class~="group/plugin-row"]')
+          ) {
+            candidate.dataset.awesomeCodexPluginTab = 'true';
+            candidate.dataset.awesomeCodexCollectionTab = 'true';
+          }
+        }
+
+        for (const candidate of pluginRoot.querySelectorAll('div[role="button"][tabindex="0"]')) {
+          const iconImage = candidate.querySelector('img');
+          const contentRow = candidate.querySelector(':scope > .flex.items-center.gap-3');
+          if (!iconImage || !contentRow) continue;
+          candidate.dataset.awesomeCodexPluginCard = 'true';
+          candidate.dataset.awesomeCodexCollectionRow = 'true';
+          const icon = iconImage.parentElement;
+          if (icon) icon.dataset.awesomeCodexPluginIcon = 'true';
+          for (const action of candidate.querySelectorAll('button')) {
+            action.dataset.awesomeCodexPluginAction = action.classList.contains('aspect-square')
+              ? 'menu'
+              : 'install';
+          }
+        }
+      }
+
+      const scheduledSearchInput = findScheduledSearchInput();
+      if (scheduledSearchInput) {
+        const scheduledRoot = closestMainSurface(scheduledSearchInput);
+        if (scheduledSearchInput.parentElement) {
+          scheduledSearchInput.parentElement.dataset.awesomeCodexCollectionSearch = 'true';
+        }
+        for (const candidate of scheduledRoot.querySelectorAll('button.shrink-0.h-token-button-composer')) {
+          candidate.dataset.awesomeCodexCollectionTab = 'true';
+        }
+        for (const candidate of scheduledRoot.querySelectorAll('.automation-row')) {
+          candidate.dataset.awesomeCodexCollectionRow = 'true';
+        }
+        for (const heading of scheduledRoot.querySelectorAll('h2')) {
+          if (heading.parentElement) {
+            heading.parentElement.dataset.awesomeCodexCollectionSectionHeader = 'true';
+          }
+        }
+      }
+
+      const sitesSearchInput = findSitesSearchInput();
+      if (sitesSearchInput) {
+        const sitesRoot = closestMainSurface(sitesSearchInput);
+        if (sitesSearchInput.parentElement) {
+          sitesSearchInput.parentElement.dataset.awesomeCodexCollectionSearch = 'true';
+        }
+        const emptyState = sitesRoot.querySelector('.max-w-xl.flex-col.items-center');
+        if (emptyState) {
+          emptyState.dataset.awesomeCodexCollectionEmpty = 'true';
+          const action = emptyState.querySelector('button');
+          if (action) action.dataset.awesomeCodexCollectionAction = 'primary';
+        }
+      }
+
+      const pullRequestsSearchInput = findPullRequestsSearchInput();
+      const pullRequestsRoot =
+        closestMainSurface(pullRequestsSearchInput) || findPullRequestsRoot();
+      if (pullRequestsRoot) {
+        if (pullRequestsSearchInput?.parentElement) {
+          pullRequestsSearchInput.parentElement.dataset.awesomeCodexCollectionSearch = 'true';
+        }
+        for (const candidate of pullRequestsRoot.querySelectorAll('button.shrink-0.h-token-button-composer')) {
+          candidate.dataset.awesomeCodexCollectionTab = 'true';
+        }
+        const status = pullRequestsRoot.querySelector('[role="status"]');
+        if (status) status.dataset.awesomeCodexCollectionStatus = 'true';
+        const emptyState = pullRequestsRoot.querySelector('.max-w-xl.flex-col.items-center');
+        if (emptyState) emptyState.dataset.awesomeCodexCollectionEmpty = 'true';
+      }
+    };
     const updateSurface = () => {
+      const pluginSearchInput = findPluginSearchInput();
+      const scheduledSearchInput = findScheduledSearchInput();
+      const sitesSearchInput = findSitesSearchInput();
+      const pullRequestsSearchInput = findPullRequestsSearchInput();
+      const pullRequestsRoot = findPullRequestsRoot();
       let home = null;
-      for (const candidate of document.querySelectorAll('[role="main"]')) {
-        const icon = candidate.querySelector('[data-testid="home-icon"]');
-        const source = candidate.querySelector('[data-feature="game-source"]');
-        const suggestions = candidate.querySelector('[class~="group/home-suggestions"]');
-        const hasIdentity = isVisible(icon) && isVisible(source);
-        const hasActions = isVisible(source) && isVisible(suggestions);
-        if (isVisible(candidate) && (hasIdentity || hasActions)) {
-          home = candidate;
-          break;
+      if (
+        !pluginSearchInput &&
+        !scheduledSearchInput &&
+        !sitesSearchInput &&
+        !pullRequestsSearchInput &&
+        !pullRequestsRoot
+      ) {
+        for (const candidate of document.querySelectorAll('[role="main"]')) {
+          const icon = candidate.querySelector('[data-testid="home-icon"]');
+          const source = candidate.querySelector('[data-feature="game-source"]');
+          const suggestions = candidate.querySelector('[class~="group/home-suggestions"]');
+          const hasIdentity = isVisible(icon) && isVisible(source);
+          const hasActions = isVisible(source) && isVisible(suggestions);
+          if (isVisible(candidate) && (hasIdentity || hasActions)) {
+            home = candidate;
+            break;
+          }
         }
       }
       for (const candidate of document.querySelectorAll('[data-awesome-codex-home]')) {
         if (candidate !== home) delete candidate.dataset.awesomeCodexHome;
       }
       if (home) home.dataset.awesomeCodexHome = 'true';
-      root.dataset.awesomeCodexSurface = home ? 'home' : 'workspace';
+      root.dataset.awesomeCodexSurface = pluginSearchInput
+        ? 'plugins'
+        : scheduledSearchInput
+          ? 'scheduled'
+          : sitesSearchInput
+            ? 'sites'
+            : pullRequestsSearchInput || pullRequestsRoot
+              ? 'pull-requests'
+              : home
+                ? 'home'
+                : 'workspace';
+      updateComponentRoles();
+      const artifactPanels = [...document.querySelectorAll('[data-awesome-codex-artifact-panel="true"]')];
+      if (artifactPanels.length === 0) {
+        delete root.dataset.awesomeCodexArtifactPanelState;
+      } else {
+        root.dataset.awesomeCodexArtifactPanelState = artifactPanels.some(isEffectivelyVisible)
+          ? 'open'
+          : 'closed';
+      }
     };
     updateSurface();
     const previousObserver = window[${serializeForExpression(SURFACE_OBSERVER_KEY)}];
@@ -200,7 +592,12 @@ export function buildApplyExpression(theme, adapter) {
           updateSurface();
         });
       });
-      observer.observe(document.body, { childList: true, subtree: true });
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['class', 'style', 'aria-pressed'],
+      });
       window[${serializeForExpression(SURFACE_OBSERVER_KEY)}] = observer;
     }
 
@@ -243,10 +640,59 @@ export function buildRemoveExpression() {
       delete root.dataset.awesomeCodexTheme;
       delete root.dataset.awesomeCodexAdapter;
       delete root.dataset.awesomeCodexSurface;
+      delete root.dataset.awesomeCodexArtifactPanelState;
       for (const variable of ${variables}) root.style.removeProperty(variable);
+      for (let index = root.style.length - 1; index >= 0; index -= 1) {
+        const variable = root.style.item(index);
+        if (variable.startsWith(${serializeForExpression(AUXILIARY_ASSET_VARIABLE_PREFIX)})) {
+          root.style.removeProperty(variable);
+        }
+      }
     }
     for (const candidate of document.querySelectorAll('[data-awesome-codex-home]')) {
       delete candidate.dataset.awesomeCodexHome;
+    }
+    const roleKeys = [
+      'awesomeCodexArtifactPanel',
+      'awesomeCodexArtifactPanelHost',
+      'awesomeCodexArtifactHeader',
+      'awesomeCodexPanelMore',
+      'awesomeCodexCompletedSummary',
+      'awesomeCodexActivityItem',
+      'awesomeCodexActivitySummary',
+      'awesomeCodexHeaderControl',
+      'awesomeCodexSidebarBrand',
+      'awesomeCodexSidebarNav',
+      'awesomeCodexDomainHeader',
+      'awesomeCodexProjectRow',
+      'awesomeCodexDomainId',
+      'awesomeCodexTaskRow',
+      'awesomeCodexAccountTrigger',
+      'awesomeCodexAccountIdentity',
+      'awesomeCodexHelpTrigger',
+      'awesomeCodexHomePrompt',
+      'awesomeCodexDomainMarker',
+      'awesomeCodexComposerControl',
+      'awesomeCodexPluginSearch',
+      'awesomeCodexPluginTab',
+      'awesomeCodexPluginSectionHeader',
+      'awesomeCodexPluginInstalled',
+      'awesomeCodexPluginCard',
+      'awesomeCodexPluginIcon',
+      'awesomeCodexPluginAction',
+      'awesomeCodexCollectionSearch',
+      'awesomeCodexCollectionTab',
+      'awesomeCodexCollectionSectionHeader',
+      'awesomeCodexCollectionRow',
+      'awesomeCodexCollectionEmpty',
+      'awesomeCodexCollectionStatus',
+      'awesomeCodexCollectionAction',
+    ];
+    for (const roleKey of roleKeys) {
+      const attribute = 'data-' + roleKey.replace(/[A-Z]/g, (letter) => '-' + letter.toLowerCase());
+      for (const candidate of document.querySelectorAll('[' + attribute + ']')) {
+        delete candidate.dataset[roleKey];
+      }
     }
     return {
       pass: !document.getElementById(${serializeForExpression(STYLE_ID)}) && !document.getElementById(${serializeForExpression(CHROME_ID)}) && !root?.classList?.contains(${serializeForExpression(APPLY_MARKER)}),

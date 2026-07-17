@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 2,
+  "slug": "saiyan-ukiyoe",
+  "version": "0.1.1",
+  "name": "Saiyan Ukiyo-e",
+  "description": "A parchment-and-indigo battle chronicle using ukiyo-e brush rhythm, orange ki, wave energy, and carved seal logic.",
+  "author": {
+    "name": "Awesome Codex Themes"
+  },
+  "license": {
+    "code": "MIT",
+    "artwork": "PROJECT-ASSET"
+  },
+  "categories": [
+    "light",
+    "full-workspace",
+    "character-inspired"
+  ],
+  "tags": [
+    "saiyan-ukiyoe",
+    "mulberry-paper",
+    "brush-rectangles",
+    "macos"
+  ],
+  "compatibility": {
+    "platforms": [
+      "macos"
+    ],
+    "status": "experimental",
+    "appVersions": [
+      "26.707.*",
+      "26.715.*"
+    ]
+  },
+  "mode": "light",
+  "palette": {
+    "background": "#EFE2C6",
+    "scrim": "#EFE2C6E8",
+    "surface": "#E7D5B2DE",
+    "surfaceElevated": "#FAEFD8F2",
+    "surfaceOverlay": "#FAEFD8F7",
+    "input": "#F3E4C5F2",
+    "text": "#12293A",
+    "textSecondary": "#314A59",
+    "textMuted": "#687A7E",
+    "textDisabled": "#9DA69E",
+    "icon": "#12293A",
+    "iconSecondary": "#314A59",
+    "iconMuted": "#687A7E",
+    "border": "#DF68183D",
+    "borderSubtle": "#DF681824",
+    "borderStrong": "#DF681878",
+    "accent": "#DF6818",
+    "accentHover": "#F2862F",
+    "selection": "#DF681838",
+    "focus": "#1E5C86",
+    "link": "#174D70",
+    "hover": "#DF68181A",
+    "active": "#1E5C862B",
+    "code": "#102330FA",
+    "terminal": "#091720FA",
+    "diffAdded": "#3F845E40",
+    "diffRemoved": "#B93F2D40",
+    "success": "#3F845E",
+    "warning": "#B77A19",
+    "danger": "#B93F2D",
+    "scrollbar": "#DF68183D",
+    "scrollbarHover": "#DF681875",
+    "composer": "#F1E1C0F2"
+  },
+  "experience": {
+    "brand": "SAIYAN UKIYO-E",
+    "eyebrow": "KI IMPRESSION",
+    "headline": "BUILD BEYOND LIMITS",
+    "tagline": "Refine the form. Raise the power.",
+    "status": "KI // RISING",
+    "signature": "UKIYO-E 05",
+    "chrome": true
+  },
+  "files": {
+    "css": "theme.css",
+    "artwork": "background.jpg",
+    "preview": "preview.jpg",
+    "assets": {
+      "workspace-panel-safe": "assets/workspace-panel-safe.jpg",
+      "brush-sun": "assets/brush-sun.svg",
+      "ki-slash": "assets/ki-slash.svg",
+      "square-training-seal": "assets/square-training-seal.svg",
+      "cloud-curl": "assets/cloud-curl.svg",
+      "wave-send-crest": "assets/wave-send-crest.svg"
+    }
+  }
+}

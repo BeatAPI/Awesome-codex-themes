@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 2,
+  "slug": "satoru-gojo",
+  "version": "1.2.0",
+  "name": "Satoru Gojo",
+  "nativeName": "五条 悟",
+  "nativeLocale": "ja-JP",
+  "description": "A porcelain-white editorial workspace shaped by Limitless, Six Eyes, iris-violet telemetry, and a midnight code cockpit.",
+  "author": {
+    "name": "Awesome Codex Themes"
+  },
+  "license": {
+    "code": "MIT",
+    "artwork": "PROJECT-ASSET"
+  },
+  "categories": [
+    "light",
+    "editorial"
+  ],
+  "tags": [
+    "featured",
+    "full-workspace",
+    "composer",
+    "editorial",
+    "lavender",
+    "glass",
+    "anime",
+    "character"
+  ],
+  "compatibility": {
+    "platforms": [
+      "macos"
+    ],
+    "status": "experimental",
+    "strategy": "best-effort-all",
+    "verifiedAppVersions": [
+      "26.707.*",
+      "26.715.*"
+    ]
+  },
+  "mode": "light",
+  "palette": {
+    "background": "#EAF5FF",
+    "scrim": "#EAF5FFE8",
+    "surface": "#F8F9FDDE",
+    "surfaceElevated": "#FFFFFFF2",
+    "surfaceOverlay": "#F8F9FDF7",
+    "input": "#F4F8FFF2",
+    "text": "#171B31",
+    "textSecondary": "#3E4A69",
+    "textMuted": "#74829F",
+    "textDisabled": "#ADB7C9",
+    "icon": "#202A4A",
+    "iconSecondary": "#61718E",
+    "iconMuted": "#92A0B7",
+    "border": "#718BC63D",
+    "borderSubtle": "#7891C624",
+    "borderStrong": "#5D73B078",
+    "accent": "#4C75E8",
+    "accentHover": "#658AF1",
+    "selection": "#4C75E838",
+    "focus": "#6754D9",
+    "link": "#3B62C9",
+    "hover": "#4C75E81A",
+    "active": "#6754D92B",
+    "code": "#111426FA",
+    "terminal": "#0A0D1BFA",
+    "diffAdded": "#59BFA440",
+    "diffRemoved": "#DB627640",
+    "success": "#59BFA4",
+    "warning": "#B77712",
+    "danger": "#DB6276",
+    "scrollbar": "#6B82B83D",
+    "scrollbarHover": "#566FAE75",
+    "composer": "#F8F9FDF2"
+  },
+  "experience": {
+    "brand": "LIMITLESS",
+    "eyebrow": "SIX EYES",
+    "headline": "CODEX THEME SYSTEM",
+    "tagline": "Editorial workspace protocol.",
+    "status": "LIMITLESS // ACTIVE",
+    "signature": "SATORU GOJO // 五条 悟",
+    "chrome": true
+  },
+  "files": {
+    "css": "theme.css",
+    "artwork": "background.jpg",
+    "preview": "preview.png",
+    "assets": {
+      "six-eyes-emblem": "assets/six-eyes-emblem.png",
+      "send-infinity": "assets/send-infinity.png",
+      "panel-reticle": "assets/panel-reticle.png",
+      "blindfold-stripe": "assets/blindfold-stripe.png",
+      "six-dot-sequence": "assets/six-dot-sequence.png",
+      "workspace-panel-safe": "assets/workspace-panel-safe.jpg"
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import { copyFile, mkdir, readdir, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readdir, rm, writeFile } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
 
 import { loadThemePackage } from '../src/engine/theme.mjs';
@@ -17,6 +17,9 @@ export async function buildThemeCatalog(themesRoot) {
       slug: manifest.slug,
       version: manifest.version,
       name: manifest.name,
+      ...(manifest.nativeName
+        ? { nativeName: manifest.nativeName, nativeLocale: manifest.nativeLocale }
+        : {}),
       description: manifest.description,
       author: manifest.author,
       license: manifest.license,
@@ -27,7 +30,7 @@ export async function buildThemeCatalog(themesRoot) {
       palette: manifest.palette,
       ...(manifest.experience ? { experience: manifest.experience } : {}),
       preview: `/theme-assets/${manifest.slug}/${basename(manifest.files.preview)}`,
-      command: `awesome-codex-themes start ${manifest.slug}`,
+      command: `./bin/awesome-codex-themes install-agent ${manifest.slug}`,
     });
   }
 
@@ -38,6 +41,7 @@ export async function writeThemeCatalog({ themesRoot, jsonPath, publicRoot }) {
   const catalog = await buildThemeCatalog(themesRoot);
   await mkdir(dirname(jsonPath), { recursive: true });
   await writeFile(jsonPath, `${JSON.stringify(catalog, null, 2)}\n`);
+  await rm(join(publicRoot, 'theme-assets'), { recursive: true, force: true });
 
   for (const theme of catalog) {
     const previewName = theme.preview.split('/').at(-1);

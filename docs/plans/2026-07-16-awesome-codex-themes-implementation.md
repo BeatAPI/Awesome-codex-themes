@@ -2,7 +2,7 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Build and privately publish a Mac-first MIT Codex Desktop theme engine, original theme catalogue, and static searchable gallery in a new independent repository.
+**Goal:** Build and publish a Mac-first MIT Codex Desktop theme engine, original theme catalogue, and static searchable gallery in a new independent repository.
 
 **Architecture:** A dependency-light Node ESM engine owns validation, CDP communication, safe injection, macOS discovery, state, and CLI commands. A Vite/React frontend renders generated metadata from declarative theme packages. Runtime code never executes remote theme JavaScript and never mutates the official application bundle.
 
@@ -96,7 +96,7 @@
 2. Use MIT for original code and explicit license/provenance per theme asset.
 3. Record conceptual references and exact source reuse, if any.
 
-### Task 9: Live smoke, security gate, and private GitHub publication
+### Task 9: Live smoke, security gate, and GitHub publication
 
 **Files:**
 - Create: `scripts/smoke-live.mjs` if the existing CDP endpoint is suitable.
@@ -104,6 +104,5 @@
 1. Run full `pnpm check` and inspect complete output.
 2. If safe, apply a fixture theme to the existing loopback CDP session, verify markers, and restore immediately; never restart Codex.
 3. Run the deterministic pre-commit scanner before and after staging, then manually review the full diff against the security checklist.
-4. Commit on `main`, create `erickkkyt/Awesome-codex-themes` as a private repository, push with tracking, and verify remote visibility and commit SHA.
-5. Open `/Users/kkkk/Desktop/Awesome-codex-themes` in GitHub Desktop and verify the app received the repository path.
-
+4. Commit on `main`, publish `erickkkyt/Awesome-codex-themes`, push with tracking, and verify remote visibility and commit SHA.
+5. Open the local `Awesome-codex-themes` checkout in GitHub Desktop and verify the app received the repository path.

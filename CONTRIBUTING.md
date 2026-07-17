@@ -22,10 +22,10 @@ Use Node 22 or newer for development. End-user engine commands use the Node runt
 ## Theme contributions
 
 1. Copy an existing package into a new lowercase kebab-case directory.
-2. Replace all artwork and metadata; do not submit a recolor of copyrighted character or brand art.
+2. Replace all artwork and metadata. Confirm that you have the necessary rights to publish and redistribute every included asset and derivative under the declared terms.
 3. Fill every schema-v2 semantic palette role; do not duplicate the shared Codex adapter in a theme package.
 4. Keep optional CSS under `html.awesome-codex-theme` and preserve native controls, focus states, pointer behavior, and readable contrast.
-5. Add `ASSET_LICENSE.md` with exact provenance and redistributable rights.
+5. Add `ASSET_LICENSE.md` with exact provenance, attribution, and redistribution terms.
 6. Start at `compatibility.status: experimental` and declare only versions you actually tested.
 7. Run `pnpm themes:validate` and `pnpm check`.
 8. Include before/after evidence without conversations, names, account data, or tokens.
@@ -46,4 +46,4 @@ If behavior changes, update README/help/error codes and recovery documentation i
 - Disclose adapted code and preserve its required license/attribution.
 - Expect review of safety, recovery, licensing, compatibility evidence, accessibility, and reduced-motion behavior.
 
-By contributing, you agree that your code contribution is licensed under MIT and that any artwork contribution is available under the license declared in its package.
+By contributing, you agree that your code contribution is licensed under MIT and that you have the necessary rights to make every artwork contribution available under the terms declared in its package.

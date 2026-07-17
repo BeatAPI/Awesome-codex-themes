@@ -35,8 +35,8 @@ jobs:
       - name: Install locked dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Test, validate themes, typecheck, and build
-        run: pnpm check
+      - name: Run the portable release gate
+        run: pnpm release:check
 
       - name: Upload static Gallery artifact
         uses: actions/upload-artifact@v4

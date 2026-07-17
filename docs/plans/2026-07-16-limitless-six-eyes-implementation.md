@@ -1,6 +1,6 @@
 # Limitless Six Eyes Theme Implementation Plan
 
-> **For Codex:** Execute this plan test-first, keep all fan artwork private, and verify restore behavior before pushing.
+> **For Codex:** Execute this plan test-first and verify restore behavior before pushing.
 
 **Goal:** Ship one complete, installable flagship Codex theme with full semantic-token coverage, a safe declarative experience layer, gallery marketing, and live renderer evidence.
 
@@ -44,7 +44,7 @@
 - Create: `themes/limitless-six-eyes/preview.png`
 - Create: `themes/limitless-six-eyes/ASSET_LICENSE.md`
 
-1. Add a failing contract test for all required workspace surfaces and prototype licensing.
+1. Add a failing contract test for all required workspace surfaces and project asset metadata.
 2. Add the corrected preview and clean runtime artwork.
 3. Implement the full 33-role palette and surface-specific CSS.
 4. Regenerate and validate the catalog.
@@ -62,12 +62,12 @@
 1. Add failing gallery expectations for five themes and flagship-first presentation.
 2. Implement editorial flagship treatment while preserving the existing accessible detail dialog.
 3. Make the new theme the primary quick-start example.
-4. State the private prototype/public artwork boundary clearly.
+4. State the artwork metadata clearly.
 
-### Task 5: Verify and publish privately
+### Task 5: Verify and publish
 
 1. Run focused tests after every task.
 2. Run `pnpm check`.
-3. Apply to the local supported Codex renderer, inspect representative computed tokens and owned chrome, capture a private screenshot, then restore.
+3. Apply to the local supported Codex renderer, inspect representative computed tokens and owned chrome, capture a screenshot, then restore.
 4. Review the diff and repository status.
-5. Fast-forward the clean main branch, rerun the full check, push to the existing private GitHub repository, and confirm CI.
+5. Fast-forward the clean main branch, rerun the full check, push to the existing GitHub repository, and confirm CI.

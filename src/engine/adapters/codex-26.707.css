@@ -1,5 +1,5 @@
 /*
- * Awesome Codex Themes — Codex Desktop 26.707 adapter
+ * Awesome Codex Themes — shared Codex Desktop 26.707 / 26.715 adapter mapping
  * Original MIT-licensed compatibility layer. Rules are scoped to the project marker.
  */
 
@@ -236,14 +236,6 @@ html.awesome-codex-theme :is(input, textarea)::placeholder {
   opacity: 1 !important;
 }
 
-html.awesome-codex-theme :is(button, [role="button"], a) {
-  border-color: var(--act-border-subtle);
-}
-
-html.awesome-codex-theme :is(button, [role="button"], a):hover {
-  border-color: var(--act-border) !important;
-}
-
 html.awesome-codex-theme :is(button, [role="button"], a, input, textarea, select, [contenteditable="true"]):focus-visible {
   outline: 2px solid var(--act-focus) !important;
   outline-offset: 2px !important;
@@ -336,6 +328,23 @@ html.awesome-codex-theme :is(
   .editor-container
 )::after {
   border-color: var(--act-border-subtle) !important;
+}
+
+html.awesome-codex-theme[data-awesome-codex-artifact-panel-state="open"]:not([data-awesome-codex-theme="satoru-gojo"])
+  [data-awesome-codex-artifact-panel-host="true"] {
+  background-color: color-mix(in srgb, var(--act-surface-elevated) 82%, transparent) !important;
+  background-image:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--act-surface-overlay) 48%, transparent),
+      color-mix(in srgb, var(--act-background) 68%, transparent)
+    ),
+    var(--act-asset-workspace-panel-safe) !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  border-radius: 24px 0 0 24px;
+  box-shadow: inset 1px 0 0 var(--act-border-strong);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -12,6 +12,7 @@ body:
       label: Surface
       options:
         - CLI / diagnostics
+        - Persistent agent / installer
         - Apply / watcher / restore
         - Theme package
         - Static Gallery
@@ -44,6 +45,14 @@ body:
     id: expected
     attributes:
       label: Expected and actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: theme_recovery
+    attributes:
+      label: Theme recovery result
+      description: State whether `pause` or `restore` returned the interface to the official UI. Add a privacy-safe screenshot only if useful.
+      placeholder: `./bin/awesome-codex-themes pause` restored the official UI.
     validations:
       required: true
   - type: checkboxes

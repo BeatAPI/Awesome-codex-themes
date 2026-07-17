@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 2,
+  "slug": "symbiote-sumi-e",
+  "version": "0.1.1",
+  "name": "Symbiote Sumi-e",
+  "description": "A monochrome symbiote emerging from rice-paper negative space, ink blooms, brush drag, and sparse gold repair seams.",
+  "author": {
+    "name": "Awesome Codex Themes"
+  },
+  "license": {
+    "code": "MIT",
+    "artwork": "PROJECT-ASSET"
+  },
+  "categories": [
+    "light",
+    "full-workspace",
+    "character-inspired"
+  ],
+  "tags": [
+    "symbiote-sumi-e",
+    "uncoated-washi",
+    "brush-cut-edges",
+    "macos"
+  ],
+  "compatibility": {
+    "platforms": [
+      "macos"
+    ],
+    "status": "experimental",
+    "appVersions": [
+      "26.707.*",
+      "26.715.*"
+    ]
+  },
+  "mode": "light",
+  "palette": {
+    "background": "#F1EEE5",
+    "scrim": "#F1EEE5E8",
+    "surface": "#E9E4D9DE",
+    "surfaceElevated": "#FBF8F0F2",
+    "surfaceOverlay": "#FBF8F0F7",
+    "input": "#F6F1E7F2",
+    "text": "#171512",
+    "textSecondary": "#413B32",
+    "textMuted": "#756C5E",
+    "textDisabled": "#A79E90",
+    "icon": "#171512",
+    "iconSecondary": "#413B32",
+    "iconMuted": "#756C5E",
+    "border": "#A77C2D3D",
+    "borderSubtle": "#A77C2D24",
+    "borderStrong": "#A77C2D78",
+    "accent": "#A77C2D",
+    "accentHover": "#C69B48",
+    "selection": "#A77C2D38",
+    "focus": "#6E4E18",
+    "link": "#76551F",
+    "hover": "#A77C2D1A",
+    "active": "#6E4E182B",
+    "code": "#181714FA",
+    "terminal": "#0D0D0BFA",
+    "diffAdded": "#3D7B5C40",
+    "diffRemoved": "#A63D3240",
+    "success": "#3D7B5C",
+    "warning": "#A96A1F",
+    "danger": "#A63D32",
+    "scrollbar": "#A77C2D3D",
+    "scrollbarHover": "#A77C2D75",
+    "composer": "#F5F0E6F2"
+  },
+  "experience": {
+    "brand": "SYMBIOTE SUMI-E",
+    "eyebrow": "INKBOND",
+    "headline": "LET THE INK ADAPT",
+    "tagline": "One surface. Two instincts.",
+    "status": "BOND // STABLE",
+    "signature": "SUMI PROTOCOL 03",
+    "chrome": true
+  },
+  "files": {
+    "css": "theme.css",
+    "artwork": "background.jpg",
+    "preview": "preview.jpg",
+    "assets": {
+      "workspace-panel-safe": "assets/workspace-panel-safe.jpg",
+      "ink-drop-mon": "assets/ink-drop-mon.svg",
+      "brush-slash": "assets/brush-slash.svg",
+      "repair-seam": "assets/repair-seam.svg",
+      "negative-space-fang-notch": "assets/negative-space-fang-notch.svg",
+      "seal-send-mark": "assets/seal-send-mark.svg"
+    }
+  }
+}

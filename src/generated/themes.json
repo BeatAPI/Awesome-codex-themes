@@ -1,85 +1,673 @@
 [
   {
-    "slug": "arctic-signal",
-    "version": "1.0.0",
-    "name": "Arctic Signal",
-    "description": "A polar-night workspace cut by electric cyan telemetry and quiet aurora bands.",
+    "slug": "castle-archive",
+    "version": "0.1.1",
+    "name": "Castle Archive",
+    "description": "A monumental candlelit castle interior built from black columns, burgundy velvet, ivory fabric, and brass archival details.",
     "author": {
       "name": "Awesome Codex Themes"
     },
     "license": {
       "code": "MIT",
-      "artwork": "CC0-1.0"
+      "artwork": "PROJECT-ASSET"
     },
     "categories": [
       "dark",
-      "technical"
+      "full-workspace",
+      "character-inspired"
     ],
     "tags": [
-      "cyan",
-      "aurora",
-      "terminal",
-      "high-contrast"
+      "castle-archive",
+      "ebony-wood",
+      "tall-vertical-rails",
+      "macos"
     ],
     "compatibility": {
       "platforms": [
         "macos"
       ],
       "status": "experimental",
-      "appVersions": [
-        "26.707.*"
+      "strategy": "best-effort-all",
+      "verifiedAppVersions": [
+        "26.707.*",
+        "26.715.*"
       ]
     },
     "mode": "dark",
     "palette": {
-      "background": "#071219",
-      "scrim": "#071219D9",
-      "surface": "#0D202BCC",
-      "surfaceElevated": "#0D202BF2",
-      "surfaceOverlay": "#071219F2",
-      "input": "#0D202BCC",
-      "text": "#E6FAFF",
-      "textSecondary": "#E6FAFFBF",
-      "textMuted": "#E6FAFF8F",
-      "textDisabled": "#E6FAFF66",
-      "icon": "#E6FAFF",
-      "iconSecondary": "#E6FAFFBF",
-      "iconMuted": "#E6FAFF8F",
-      "border": "#50E6FF38",
-      "borderSubtle": "#50E6FF1F",
-      "borderStrong": "#50E6FF70",
-      "accent": "#50E6FF",
-      "accentHover": "#50E6FF",
-      "selection": "#50E6FF4D",
-      "focus": "#50E6FF",
-      "link": "#50E6FF",
-      "hover": "#50E6FF1F",
-      "active": "#50E6FF38",
-      "code": "#071219F2",
-      "terminal": "#071219F2",
-      "diffAdded": "#2DAA6A42",
-      "diffRemoved": "#FF5F5242",
-      "success": "#40C977",
-      "warning": "#F6C85F",
-      "danger": "#FF6764",
-      "scrollbar": "#50E6FF45",
-      "scrollbarHover": "#50E6FF78",
-      "composer": "#0D202BCC"
+      "background": "#080707",
+      "scrim": "#080707E8",
+      "surface": "#11100FDE",
+      "surfaceElevated": "#1A1715F2",
+      "surfaceOverlay": "#1A1715F7",
+      "input": "#151210F2",
+      "text": "#EEE6DB",
+      "textSecondary": "#C9B9A7",
+      "textMuted": "#8A796A",
+      "textDisabled": "#5D5148",
+      "icon": "#EEE6DB",
+      "iconSecondary": "#C9B9A7",
+      "iconMuted": "#8A796A",
+      "border": "#B58A583D",
+      "borderSubtle": "#B58A5824",
+      "borderStrong": "#B58A5878",
+      "accent": "#B58A58",
+      "accentHover": "#D0A674",
+      "selection": "#B58A5838",
+      "focus": "#8E3E49",
+      "link": "#C49A67",
+      "hover": "#B58A581A",
+      "active": "#8E3E492B",
+      "code": "#0E0D0CFA",
+      "terminal": "#070606FA",
+      "diffAdded": "#63856B40",
+      "diffRemoved": "#A8404740",
+      "success": "#63856B",
+      "warning": "#B48445",
+      "danger": "#A84047",
+      "scrollbar": "#B58A583D",
+      "scrollbarHover": "#B58A5875",
+      "composer": "#12100EF2"
     },
-    "preview": "/theme-assets/arctic-signal/preview.svg",
-    "command": "awesome-codex-themes start arctic-signal"
+    "experience": {
+      "brand": "CASTLE ARCHIVE",
+      "eyebrow": "MIDNIGHT INDEX",
+      "headline": "COMMAND THE ARCHIVE",
+      "tagline": "Quiet rooms. Exact execution.",
+      "status": "ARCHIVE // AWAKE",
+      "signature": "CASTLE VII",
+      "chrome": true
+    },
+    "preview": "/theme-assets/castle-archive/preview.jpg",
+    "command": "./bin/awesome-codex-themes install-agent castle-archive"
   },
   {
-    "slug": "limitless-six-eyes",
-    "version": "0.1.0",
-    "name": "Limitless Six Eyes",
-    "description": "A porcelain-white editorial workspace with iris-violet telemetry, technical geometry, and a midnight code cockpit.",
+    "slug": "foundling-garden",
+    "version": "0.1.1",
+    "name": "Foundling Garden",
+    "description": "A small foundling in a misty moss garden, reinterpreted by the concept art as a wider luminous sanctuary and orbital seed instrument.",
     "author": {
       "name": "Awesome Codex Themes"
     },
     "license": {
       "code": "MIT",
-      "artwork": "PROTOTYPE-REFERENCE-ONLY"
+      "artwork": "PROJECT-ASSET"
+    },
+    "categories": [
+      "dark",
+      "full-workspace",
+      "character-inspired"
+    ],
+    "tags": [
+      "foundling-garden",
+      "moss",
+      "soft-stone-arches",
+      "macos"
+    ],
+    "compatibility": {
+      "platforms": [
+        "macos"
+      ],
+      "status": "experimental",
+      "strategy": "best-effort-all",
+      "verifiedAppVersions": [
+        "26.707.*",
+        "26.715.*"
+      ]
+    },
+    "mode": "dark",
+    "palette": {
+      "background": "#101309",
+      "scrim": "#101309E8",
+      "surface": "#171C10DE",
+      "surfaceElevated": "#222819F2",
+      "surfaceOverlay": "#222819F7",
+      "input": "#1B2114F2",
+      "text": "#F2ECD2",
+      "textSecondary": "#C9C29E",
+      "textMuted": "#8B8D6D",
+      "textDisabled": "#5E614C",
+      "icon": "#F2ECD2",
+      "iconSecondary": "#C9C29E",
+      "iconMuted": "#8B8D6D",
+      "border": "#D4B85E3D",
+      "borderSubtle": "#D4B85E24",
+      "borderStrong": "#D4B85E78",
+      "accent": "#D4B85E",
+      "accentHover": "#E6CD78",
+      "selection": "#D4B85E38",
+      "focus": "#8DB66A",
+      "link": "#C6B25D",
+      "hover": "#D4B85E1A",
+      "active": "#8DB66A2B",
+      "code": "#0D1109FA",
+      "terminal": "#080B06FA",
+      "diffAdded": "#78A96840",
+      "diffRemoved": "#C45C4D40",
+      "success": "#78A968",
+      "warning": "#C99647",
+      "danger": "#C45C4D",
+      "scrollbar": "#D4B85E3D",
+      "scrollbarHover": "#D4B85E75",
+      "composer": "#161B0FF2"
+    },
+    "experience": {
+      "brand": "FOUNDLING GARDEN",
+      "eyebrow": "SEEDLING ORDER",
+      "headline": "GROW THE QUIET SYSTEM",
+      "tagline": "Small steps. Living systems.",
+      "status": "GARDEN // LISTENING",
+      "signature": "GROVE 11",
+      "chrome": true
+    },
+    "preview": "/theme-assets/foundling-garden/preview.jpg",
+    "command": "./bin/awesome-codex-themes install-agent foundling-garden"
+  },
+  {
+    "slug": "grand-line",
+    "version": "0.1.1",
+    "name": "Grand Line",
+    "description": "A weathered black-sail navigation desk illuminated by brass chart marks, rope, smoke, and a high-energy captain portrait.",
+    "author": {
+      "name": "Awesome Codex Themes"
+    },
+    "license": {
+      "code": "MIT",
+      "artwork": "PROJECT-ASSET"
+    },
+    "categories": [
+      "dark",
+      "full-workspace",
+      "character-inspired"
+    ],
+    "tags": [
+      "grand-line",
+      "black-sailcloth",
+      "chart-ticks",
+      "macos"
+    ],
+    "compatibility": {
+      "platforms": [
+        "macos"
+      ],
+      "status": "experimental",
+      "strategy": "best-effort-all",
+      "verifiedAppVersions": [
+        "26.707.*",
+        "26.715.*"
+      ]
+    },
+    "mode": "dark",
+    "palette": {
+      "background": "#0B0906",
+      "scrim": "#0B0906E8",
+      "surface": "#17120DDE",
+      "surfaceElevated": "#21190FF2",
+      "surfaceOverlay": "#21190FF7",
+      "input": "#1A140EF2",
+      "text": "#F1D8A4",
+      "textSecondary": "#C8AD78",
+      "textMuted": "#8F7A55",
+      "textDisabled": "#5F523D",
+      "icon": "#F1D8A4",
+      "iconSecondary": "#C8AD78",
+      "iconMuted": "#8F7A55",
+      "border": "#D59B363D",
+      "borderSubtle": "#D59B3624",
+      "borderStrong": "#D59B3678",
+      "accent": "#D59B36",
+      "accentHover": "#F0B957",
+      "selection": "#D59B3638",
+      "focus": "#B13E35",
+      "link": "#E1B45A",
+      "hover": "#D59B361A",
+      "active": "#B13E352B",
+      "code": "#100D09FA",
+      "terminal": "#080705FA",
+      "diffAdded": "#5E9B6340",
+      "diffRemoved": "#C34A3D40",
+      "success": "#5E9B63",
+      "warning": "#D59732",
+      "danger": "#C34A3D",
+      "scrollbar": "#D59B363D",
+      "scrollbarHover": "#D59B3675",
+      "composer": "#15100BF2"
+    },
+    "experience": {
+      "brand": "GRAND LINE",
+      "eyebrow": "LOG POSE",
+      "headline": "CHART THE UNKNOWN",
+      "tagline": "Plot the route. Ship the voyage.",
+      "status": "COURSE // LOCKED",
+      "signature": "NAV LOG 06",
+      "chrome": true
+    },
+    "preview": "/theme-assets/grand-line/preview.jpg",
+    "command": "./bin/awesome-codex-themes install-agent grand-line"
+  },
+  {
+    "slug": "mordor-runtime",
+    "version": "0.1.1",
+    "name": "Mordor Runtime",
+    "description": "A storm-black mounted formation crossing basalt and ember fissures beneath a distant volcanic watchtower.",
+    "author": {
+      "name": "Awesome Codex Themes"
+    },
+    "license": {
+      "code": "MIT",
+      "artwork": "PROJECT-ASSET"
+    },
+    "categories": [
+      "dark",
+      "full-workspace",
+      "character-inspired"
+    ],
+    "tags": [
+      "mordor-runtime",
+      "black-iron",
+      "forged-notches",
+      "macos"
+    ],
+    "compatibility": {
+      "platforms": [
+        "macos"
+      ],
+      "status": "experimental",
+      "strategy": "best-effort-all",
+      "verifiedAppVersions": [
+        "26.707.*",
+        "26.715.*"
+      ]
+    },
+    "mode": "dark",
+    "palette": {
+      "background": "#070809",
+      "scrim": "#070809E8",
+      "surface": "#101112DE",
+      "surfaceElevated": "#18191AF2",
+      "surfaceOverlay": "#18191AF7",
+      "input": "#131415F2",
+      "text": "#D9D4CA",
+      "textSecondary": "#ABA59B",
+      "textMuted": "#73716B",
+      "textDisabled": "#4A4A47",
+      "icon": "#D9D4CA",
+      "iconSecondary": "#ABA59B",
+      "iconMuted": "#73716B",
+      "border": "#F05A3B3D",
+      "borderSubtle": "#F05A3B24",
+      "borderStrong": "#F05A3B78",
+      "accent": "#F05A3B",
+      "accentHover": "#FF7658",
+      "selection": "#F05A3B38",
+      "focus": "#FF9A61",
+      "link": "#F37A5E",
+      "hover": "#F05A3B1A",
+      "active": "#FF9A612B",
+      "code": "#0A0B0CFA",
+      "terminal": "#050607FA",
+      "diffAdded": "#71876040",
+      "diffRemoved": "#E0443640",
+      "success": "#718760",
+      "warning": "#D78B3E",
+      "danger": "#E04436",
+      "scrollbar": "#F05A3B3D",
+      "scrollbarHover": "#F05A3B75",
+      "composer": "#0F1011F2"
+    },
+    "experience": {
+      "brand": "MORDOR RUNTIME",
+      "eyebrow": "BLACK GATE",
+      "headline": "FORGE THE RUNTIME",
+      "tagline": "No noise survives the fire.",
+      "status": "WATCH // ACTIVE",
+      "signature": "RUNTIME IX",
+      "chrome": true
+    },
+    "preview": "/theme-assets/mordor-runtime/preview.jpg",
+    "command": "./bin/awesome-codex-themes install-agent mordor-runtime"
+  },
+  {
+    "slug": "new-world-studio",
+    "version": "0.1.1",
+    "name": "New World Studio",
+    "description": "A many-character ink-wash editorial composition over warm paper, black and red brush fields, brass flecks, blossoms, and ocean references.",
+    "author": {
+      "name": "Awesome Codex Themes"
+    },
+    "license": {
+      "code": "MIT",
+      "artwork": "PROJECT-ASSET"
+    },
+    "categories": [
+      "light",
+      "full-workspace",
+      "character-inspired"
+    ],
+    "tags": [
+      "new-world-studio",
+      "warm-kozo-paper",
+      "tidal-contour-lines",
+      "macos"
+    ],
+    "compatibility": {
+      "platforms": [
+        "macos"
+      ],
+      "status": "experimental",
+      "strategy": "best-effort-all",
+      "verifiedAppVersions": [
+        "26.707.*",
+        "26.715.*"
+      ]
+    },
+    "mode": "light",
+    "palette": {
+      "background": "#F0E6D2",
+      "scrim": "#F0E6D2E8",
+      "surface": "#E8DCC5DE",
+      "surfaceElevated": "#FAF2E3F2",
+      "surfaceOverlay": "#FAF2E3F7",
+      "input": "#F4E9D5F2",
+      "text": "#252017",
+      "textSecondary": "#51483B",
+      "textMuted": "#7B7060",
+      "textDisabled": "#AAA08F",
+      "icon": "#252017",
+      "iconSecondary": "#51483B",
+      "iconMuted": "#7B7060",
+      "border": "#A77A2C3D",
+      "borderSubtle": "#A77A2C24",
+      "borderStrong": "#A77A2C78",
+      "accent": "#A77A2C",
+      "accentHover": "#C49443",
+      "selection": "#A77A2C38",
+      "focus": "#A34D3F",
+      "link": "#365F73",
+      "hover": "#A77A2C1A",
+      "active": "#A34D3F2B",
+      "code": "#171A1BFA",
+      "terminal": "#0C0F10FA",
+      "diffAdded": "#4E7D5D40",
+      "diffRemoved": "#A7473E40",
+      "success": "#4E7D5D",
+      "warning": "#B47828",
+      "danger": "#A7473E",
+      "scrollbar": "#A77A2C3D",
+      "scrollbarHover": "#A77A2C75",
+      "composer": "#F1E5D0F2"
+    },
+    "experience": {
+      "brand": "NEW WORLD STUDIO",
+      "eyebrow": "TIDAL EDITION",
+      "headline": "MAKE A WORLD WORTH SAILING",
+      "tagline": "Sketch boldly. Navigate together.",
+      "status": "TIDE // FAVORABLE",
+      "signature": "STUDIO XII",
+      "chrome": true
+    },
+    "preview": "/theme-assets/new-world-studio/preview.jpg",
+    "command": "./bin/awesome-codex-themes install-agent new-world-studio"
+  },
+  {
+    "slug": "night-city",
+    "version": "0.1.1",
+    "name": "Night City",
+    "description": "A moonlit high-rise interior overlooking a rain-blue megacity, with a pale figure, glass reflections, and sparse magenta signal lights.",
+    "author": {
+      "name": "Awesome Codex Themes"
+    },
+    "license": {
+      "code": "MIT",
+      "artwork": "PROJECT-ASSET"
+    },
+    "categories": [
+      "dark",
+      "full-workspace",
+      "character-inspired"
+    ],
+    "tags": [
+      "night-city",
+      "tinted-glass",
+      "cut-corner-panes",
+      "macos"
+    ],
+    "compatibility": {
+      "platforms": [
+        "macos"
+      ],
+      "status": "experimental",
+      "strategy": "best-effort-all",
+      "verifiedAppVersions": [
+        "26.707.*",
+        "26.715.*"
+      ]
+    },
+    "mode": "dark",
+    "palette": {
+      "background": "#050E1A",
+      "scrim": "#050E1AE8",
+      "surface": "#091827DE",
+      "surfaceElevated": "#102238F2",
+      "surfaceOverlay": "#102238F7",
+      "input": "#0B1C2DF2",
+      "text": "#EAF8FF",
+      "textSecondary": "#BAD5E2",
+      "textMuted": "#7798A8",
+      "textDisabled": "#4B6572",
+      "icon": "#EAF8FF",
+      "iconSecondary": "#BAD5E2",
+      "iconMuted": "#7798A8",
+      "border": "#20DFFF3D",
+      "borderSubtle": "#20DFFF24",
+      "borderStrong": "#20DFFF78",
+      "accent": "#20DFFF",
+      "accentHover": "#65ECFF",
+      "selection": "#20DFFF38",
+      "focus": "#F05DC7",
+      "link": "#48E4F5",
+      "hover": "#20DFFF1A",
+      "active": "#F05DC72B",
+      "code": "#06111DFA",
+      "terminal": "#030A12FA",
+      "diffAdded": "#6DDC9B40",
+      "diffRemoved": "#F05D7240",
+      "success": "#6DDC9B",
+      "warning": "#F0B451",
+      "danger": "#F05D72",
+      "scrollbar": "#20DFFF3D",
+      "scrollbarHover": "#20DFFF75",
+      "composer": "#081827F2"
+    },
+    "experience": {
+      "brand": "NIGHT CITY",
+      "eyebrow": "LUNAR LINK",
+      "headline": "RUN THE CITY AFTER DARK",
+      "tagline": "Trace signals. Cut latency.",
+      "status": "NEURAL LINK // CLEAN",
+      "signature": "NC-10",
+      "chrome": true
+    },
+    "preview": "/theme-assets/night-city/preview.jpg",
+    "command": "./bin/awesome-codex-themes install-agent night-city"
+  },
+  {
+    "slug": "overworld-realms",
+    "version": "0.1.1",
+    "name": "Overworld Realms",
+    "description": "A cross-section of bright overworld village, deep mineral cave, lava seam, and violet portal rendered as an isometric voxel system.",
+    "author": {
+      "name": "Awesome Codex Themes"
+    },
+    "license": {
+      "code": "MIT",
+      "artwork": "PROJECT-ASSET"
+    },
+    "categories": [
+      "dark",
+      "full-workspace",
+      "character-inspired"
+    ],
+    "tags": [
+      "overworld-realms",
+      "deepslate",
+      "8px-voxel-grid",
+      "macos"
+    ],
+    "compatibility": {
+      "platforms": [
+        "macos"
+      ],
+      "status": "experimental",
+      "strategy": "best-effort-all",
+      "verifiedAppVersions": [
+        "26.707.*",
+        "26.715.*"
+      ]
+    },
+    "mode": "dark",
+    "palette": {
+      "background": "#0B1117",
+      "scrim": "#0B1117E8",
+      "surface": "#111A20DE",
+      "surfaceElevated": "#19242AF2",
+      "surfaceOverlay": "#19242AF7",
+      "input": "#131E24F2",
+      "text": "#E9F4F1",
+      "textSecondary": "#B9CBC5",
+      "textMuted": "#78908A",
+      "textDisabled": "#4E625E",
+      "icon": "#E9F4F1",
+      "iconSecondary": "#B9CBC5",
+      "iconMuted": "#78908A",
+      "border": "#27D7DA3D",
+      "borderSubtle": "#27D7DA24",
+      "borderStrong": "#27D7DA78",
+      "accent": "#27D7DA",
+      "accentHover": "#62F1EC",
+      "selection": "#27D7DA38",
+      "focus": "#B461E9",
+      "link": "#4DE6E2",
+      "hover": "#27D7DA1A",
+      "active": "#B461E92B",
+      "code": "#0A1116FA",
+      "terminal": "#060C10FA",
+      "diffAdded": "#71C85A40",
+      "diffRemoved": "#E3574F40",
+      "success": "#71C85A",
+      "warning": "#E89A36",
+      "danger": "#E3574F",
+      "scrollbar": "#27D7DA3D",
+      "scrollbarHover": "#27D7DA75",
+      "composer": "#10191EF2"
+    },
+    "experience": {
+      "brand": "OVERWORLD REALMS",
+      "eyebrow": "CHUNK 08",
+      "headline": "BUILD THE NEXT REALM",
+      "tagline": "Mine context. Craft systems.",
+      "status": "REALM // LOADED",
+      "signature": "SEED 08",
+      "chrome": true
+    },
+    "preview": "/theme-assets/overworld-realms/preview.jpg",
+    "command": "./bin/awesome-codex-themes install-agent overworld-realms"
+  },
+  {
+    "slug": "saiyan-ukiyoe",
+    "version": "0.1.1",
+    "name": "Saiyan Ukiyo-e",
+    "description": "A parchment-and-indigo battle chronicle using ukiyo-e brush rhythm, orange ki, wave energy, and carved seal logic.",
+    "author": {
+      "name": "Awesome Codex Themes"
+    },
+    "license": {
+      "code": "MIT",
+      "artwork": "PROJECT-ASSET"
+    },
+    "categories": [
+      "light",
+      "full-workspace",
+      "character-inspired"
+    ],
+    "tags": [
+      "saiyan-ukiyoe",
+      "mulberry-paper",
+      "brush-rectangles",
+      "macos"
+    ],
+    "compatibility": {
+      "platforms": [
+        "macos"
+      ],
+      "status": "experimental",
+      "strategy": "best-effort-all",
+      "verifiedAppVersions": [
+        "26.707.*",
+        "26.715.*"
+      ]
+    },
+    "mode": "light",
+    "palette": {
+      "background": "#EFE2C6",
+      "scrim": "#EFE2C6E8",
+      "surface": "#E7D5B2DE",
+      "surfaceElevated": "#FAEFD8F2",
+      "surfaceOverlay": "#FAEFD8F7",
+      "input": "#F3E4C5F2",
+      "text": "#12293A",
+      "textSecondary": "#314A59",
+      "textMuted": "#687A7E",
+      "textDisabled": "#9DA69E",
+      "icon": "#12293A",
+      "iconSecondary": "#314A59",
+      "iconMuted": "#687A7E",
+      "border": "#DF68183D",
+      "borderSubtle": "#DF681824",
+      "borderStrong": "#DF681878",
+      "accent": "#DF6818",
+      "accentHover": "#F2862F",
+      "selection": "#DF681838",
+      "focus": "#1E5C86",
+      "link": "#174D70",
+      "hover": "#DF68181A",
+      "active": "#1E5C862B",
+      "code": "#102330FA",
+      "terminal": "#091720FA",
+      "diffAdded": "#3F845E40",
+      "diffRemoved": "#B93F2D40",
+      "success": "#3F845E",
+      "warning": "#B77A19",
+      "danger": "#B93F2D",
+      "scrollbar": "#DF68183D",
+      "scrollbarHover": "#DF681875",
+      "composer": "#F1E1C0F2"
+    },
+    "experience": {
+      "brand": "SAIYAN UKIYO-E",
+      "eyebrow": "KI IMPRESSION",
+      "headline": "BUILD BEYOND LIMITS",
+      "tagline": "Refine the form. Raise the power.",
+      "status": "KI // RISING",
+      "signature": "UKIYO-E 05",
+      "chrome": true
+    },
+    "preview": "/theme-assets/saiyan-ukiyoe/preview.jpg",
+    "command": "./bin/awesome-codex-themes install-agent saiyan-ukiyoe"
+  },
+  {
+    "slug": "satoru-gojo",
+    "version": "1.2.0",
+    "name": "Satoru Gojo",
+    "nativeName": "五条 悟",
+    "nativeLocale": "ja-JP",
+    "description": "A porcelain-white editorial workspace shaped by Limitless, Six Eyes, iris-violet telemetry, and a midnight code cockpit.",
+    "author": {
+      "name": "Awesome Codex Themes"
+    },
+    "license": {
+      "code": "MIT",
+      "artwork": "PROJECT-ASSET"
     },
     "categories": [
       "light",
@@ -92,274 +680,312 @@
       "editorial",
       "lavender",
       "glass",
-      "anime-prototype"
+      "anime",
+      "character"
     ],
     "compatibility": {
       "platforms": [
         "macos"
       ],
       "status": "experimental",
-      "appVersions": [
-        "26.707.*"
+      "strategy": "best-effort-all",
+      "verifiedAppVersions": [
+        "26.707.*",
+        "26.715.*"
       ]
     },
     "mode": "light",
     "palette": {
-      "background": "#F2F1F8",
-      "scrim": "#F2F1F8E8",
-      "surface": "#F8F7FCDD",
+      "background": "#EAF5FF",
+      "scrim": "#EAF5FFE8",
+      "surface": "#F8F9FDDE",
       "surfaceElevated": "#FFFFFFF2",
-      "surfaceOverlay": "#FCFBFFF7",
-      "input": "#F4F2FAF2",
-      "text": "#1C1930",
-      "textSecondary": "#494260",
-      "textMuted": "#77708E",
-      "textDisabled": "#AAA4B9",
-      "icon": "#2C2648",
-      "iconSecondary": "#675F81",
-      "iconMuted": "#958EA8",
-      "border": "#7567B83D",
-      "borderSubtle": "#7567B824",
-      "borderStrong": "#6654C47A",
-      "accent": "#5E4BD8",
-      "accentHover": "#7461EC",
-      "selection": "#9D8EFF52",
-      "focus": "#6E5AE6",
-      "link": "#5544C8",
-      "hover": "#7567B81C",
-      "active": "#7567B833",
-      "code": "#17152BFA",
-      "terminal": "#100F20FA",
-      "diffAdded": "#1E7E5740",
-      "diffRemoved": "#D94F7040",
-      "success": "#1E9A65",
-      "warning": "#B97B13",
-      "danger": "#D44761",
-      "scrollbar": "#7166A83D",
-      "scrollbarHover": "#6559AD75",
-      "composer": "#FFFFFFF2"
+      "surfaceOverlay": "#F8F9FDF7",
+      "input": "#F4F8FFF2",
+      "text": "#171B31",
+      "textSecondary": "#3E4A69",
+      "textMuted": "#74829F",
+      "textDisabled": "#ADB7C9",
+      "icon": "#202A4A",
+      "iconSecondary": "#61718E",
+      "iconMuted": "#92A0B7",
+      "border": "#718BC63D",
+      "borderSubtle": "#7891C624",
+      "borderStrong": "#5D73B078",
+      "accent": "#4C75E8",
+      "accentHover": "#658AF1",
+      "selection": "#4C75E838",
+      "focus": "#6754D9",
+      "link": "#3B62C9",
+      "hover": "#4C75E81A",
+      "active": "#6754D92B",
+      "code": "#111426FA",
+      "terminal": "#0A0D1BFA",
+      "diffAdded": "#59BFA440",
+      "diffRemoved": "#DB627640",
+      "success": "#59BFA4",
+      "warning": "#B77712",
+      "danger": "#DB6276",
+      "scrollbar": "#6B82B83D",
+      "scrollbarHover": "#566FAE75",
+      "composer": "#F8F9FDF2"
     },
     "experience": {
       "brand": "LIMITLESS",
       "eyebrow": "SIX EYES",
-      "headline": "LIMITLESS WORKSPACE",
-      "tagline": "Plan beyond the visible.",
-      "status": "LIMITLESS ONLINE",
-      "signature": "SATORU GOJO",
+      "headline": "CODEX THEME SYSTEM",
+      "tagline": "Editorial workspace protocol.",
+      "status": "LIMITLESS // ACTIVE",
+      "signature": "SATORU GOJO // 五条 悟",
       "chrome": true
     },
-    "preview": "/theme-assets/limitless-six-eyes/preview.png",
-    "command": "awesome-codex-themes start limitless-six-eyes"
+    "preview": "/theme-assets/satoru-gojo/preview.png",
+    "command": "./bin/awesome-codex-themes install-agent satoru-gojo"
   },
   {
-    "slug": "obsidian-bloom",
-    "version": "1.1.0",
-    "name": "Obsidian Bloom",
-    "description": "A charcoal garden with ember-orange petals and softly layered glass surfaces.",
+    "slug": "slingshot-lab",
+    "version": "0.1.1",
+    "name": "Slingshot Lab",
+    "description": "A bright island construction lab where timber, stone, glass blocks, tension bands, and projectile arcs form the system language.",
     "author": {
       "name": "Awesome Codex Themes"
     },
     "license": {
       "code": "MIT",
-      "artwork": "CC0-1.0"
-    },
-    "categories": [
-      "dark",
-      "organic"
-    ],
-    "tags": [
-      "charcoal",
-      "orange",
-      "botanical",
-      "glass",
-      "full-workspace"
-    ],
-    "compatibility": {
-      "platforms": [
-        "macos"
-      ],
-      "status": "experimental",
-      "appVersions": [
-        "26.707.*"
-      ]
-    },
-    "mode": "dark",
-    "palette": {
-      "background": "#100F0E",
-      "scrim": "#100F0ED9",
-      "surface": "#201D1ACC",
-      "surfaceElevated": "#29241FEE",
-      "surfaceOverlay": "#171411F2",
-      "input": "#24201CE6",
-      "text": "#F5EDE3",
-      "textSecondary": "#D8CFC4",
-      "textMuted": "#A79D91",
-      "textDisabled": "#756D64",
-      "icon": "#F5EDE3",
-      "iconSecondary": "#C6BCAF",
-      "iconMuted": "#8F867C",
-      "border": "#FFB18A38",
-      "borderSubtle": "#FFB18A1F",
-      "borderStrong": "#FFB18A70",
-      "accent": "#FF7849",
-      "accentHover": "#FF936C",
-      "selection": "#FF78494D",
-      "focus": "#FFB18A",
-      "link": "#FF9B75",
-      "hover": "#FFB18A1F",
-      "active": "#FF784938",
-      "code": "#0C0B0AF2",
-      "terminal": "#080706F2",
-      "diffAdded": "#2DAA6A42",
-      "diffRemoved": "#FF5F5242",
-      "success": "#58D68D",
-      "warning": "#F6C85F",
-      "danger": "#FF6B64",
-      "scrollbar": "#FFB18A45",
-      "scrollbarHover": "#FFB18A78",
-      "composer": "#191613F2"
-    },
-    "preview": "/theme-assets/obsidian-bloom/preview.svg",
-    "command": "awesome-codex-themes start obsidian-bloom"
-  },
-  {
-    "slug": "paper-circuit",
-    "version": "1.0.0",
-    "name": "Paper Circuit",
-    "description": "A bright drafting-table theme with graphite type, cobalt traces, and warm paper grain.",
-    "author": {
-      "name": "Awesome Codex Themes"
-    },
-    "license": {
-      "code": "MIT",
-      "artwork": "CC0-1.0"
+      "artwork": "PROJECT-ASSET"
     },
     "categories": [
       "light",
-      "editorial"
+      "full-workspace",
+      "character-inspired"
     ],
     "tags": [
-      "paper",
-      "cobalt",
-      "diagram",
-      "low-glare"
+      "slingshot-lab",
+      "sunlit-wood",
+      "square-timber-joints",
+      "macos"
     ],
     "compatibility": {
       "platforms": [
         "macos"
       ],
       "status": "experimental",
-      "appVersions": [
-        "26.707.*"
+      "strategy": "best-effort-all",
+      "verifiedAppVersions": [
+        "26.707.*",
+        "26.715.*"
       ]
     },
     "mode": "light",
     "palette": {
-      "background": "#F3EEDC",
-      "scrim": "#F3EEDCD9",
-      "surface": "#FFFDF5DD",
-      "surfaceElevated": "#FFFDF5F2",
-      "surfaceOverlay": "#F3EEDCF2",
-      "input": "#FFFDF5DD",
-      "text": "#242621",
-      "textSecondary": "#242621BF",
-      "textMuted": "#2426218F",
-      "textDisabled": "#24262166",
-      "icon": "#242621",
-      "iconSecondary": "#242621BF",
-      "iconMuted": "#2426218F",
-      "border": "#2455D638",
-      "borderSubtle": "#2455D61F",
-      "borderStrong": "#2455D670",
-      "accent": "#2455D6",
-      "accentHover": "#2455D6",
-      "selection": "#2455D64D",
-      "focus": "#2455D6",
-      "link": "#2455D6",
-      "hover": "#2455D61F",
-      "active": "#2455D638",
-      "code": "#F3EEDCF2",
-      "terminal": "#F3EEDCF2",
-      "diffAdded": "#2DAA6A42",
-      "diffRemoved": "#FF5F5242",
-      "success": "#40C977",
-      "warning": "#F6C85F",
-      "danger": "#FF6764",
-      "scrollbar": "#2455D645",
-      "scrollbarHover": "#2455D678",
-      "composer": "#FFFDF5DD"
+      "background": "#E6F6FB",
+      "scrim": "#E6F6FBE8",
+      "surface": "#F0E0B8DE",
+      "surfaceElevated": "#FFF4D5F2",
+      "surfaceOverlay": "#FFF4D5F7",
+      "input": "#F8EBCBF2",
+      "text": "#2B2116",
+      "textSecondary": "#594631",
+      "textMuted": "#806B52",
+      "textDisabled": "#B2A187",
+      "icon": "#2B2116",
+      "iconSecondary": "#594631",
+      "iconMuted": "#806B52",
+      "border": "#D9382B3D",
+      "borderSubtle": "#D9382B24",
+      "borderStrong": "#D9382B78",
+      "accent": "#D9382B",
+      "accentHover": "#F05442",
+      "selection": "#D9382B38",
+      "focus": "#148DAD",
+      "link": "#0E7895",
+      "hover": "#D9382B1A",
+      "active": "#148DAD2B",
+      "code": "#17232AFA",
+      "terminal": "#0D171DFA",
+      "diffAdded": "#4E9B3B40",
+      "diffRemoved": "#C92F2F40",
+      "success": "#4E9B3B",
+      "warning": "#D88A1D",
+      "danger": "#C92F2F",
+      "scrollbar": "#D9382B3D",
+      "scrollbarHover": "#D9382B75",
+      "composer": "#F6E7C5F2"
     },
-    "preview": "/theme-assets/paper-circuit/preview.svg",
-    "command": "awesome-codex-themes start paper-circuit"
+    "experience": {
+      "brand": "SLINGSHOT LAB",
+      "eyebrow": "TRAJECTORY",
+      "headline": "AIM. BUILD. RELEASE.",
+      "tagline": "Turn intent into impact.",
+      "status": "FLIGHTPATH // CLEAR",
+      "signature": "LAB 04",
+      "chrome": true
+    },
+    "preview": "/theme-assets/slingshot-lab/preview.jpg",
+    "command": "./bin/awesome-codex-themes install-agent slingshot-lab"
   },
   {
-    "slug": "solar-archive",
-    "version": "1.0.0",
-    "name": "Solar Archive",
-    "description": "A midnight reading room illuminated by amber index marks and orbiting archival forms.",
+    "slug": "symbiote-sumi-e",
+    "version": "0.1.1",
+    "name": "Symbiote Sumi-e",
+    "description": "A monochrome symbiote emerging from rice-paper negative space, ink blooms, brush drag, and sparse gold repair seams.",
     "author": {
       "name": "Awesome Codex Themes"
     },
     "license": {
       "code": "MIT",
-      "artwork": "CC0-1.0"
+      "artwork": "PROJECT-ASSET"
     },
     "categories": [
-      "dark",
-      "editorial"
+      "light",
+      "full-workspace",
+      "character-inspired"
     ],
     "tags": [
-      "amber",
-      "archive",
-      "warm",
-      "reading"
+      "symbiote-sumi-e",
+      "uncoated-washi",
+      "brush-cut-edges",
+      "macos"
     ],
     "compatibility": {
       "platforms": [
         "macos"
       ],
       "status": "experimental",
-      "appVersions": [
-        "26.707.*"
+      "strategy": "best-effort-all",
+      "verifiedAppVersions": [
+        "26.707.*",
+        "26.715.*"
+      ]
+    },
+    "mode": "light",
+    "palette": {
+      "background": "#F1EEE5",
+      "scrim": "#F1EEE5E8",
+      "surface": "#E9E4D9DE",
+      "surfaceElevated": "#FBF8F0F2",
+      "surfaceOverlay": "#FBF8F0F7",
+      "input": "#F6F1E7F2",
+      "text": "#171512",
+      "textSecondary": "#413B32",
+      "textMuted": "#756C5E",
+      "textDisabled": "#A79E90",
+      "icon": "#171512",
+      "iconSecondary": "#413B32",
+      "iconMuted": "#756C5E",
+      "border": "#A77C2D3D",
+      "borderSubtle": "#A77C2D24",
+      "borderStrong": "#A77C2D78",
+      "accent": "#A77C2D",
+      "accentHover": "#C69B48",
+      "selection": "#A77C2D38",
+      "focus": "#6E4E18",
+      "link": "#76551F",
+      "hover": "#A77C2D1A",
+      "active": "#6E4E182B",
+      "code": "#181714FA",
+      "terminal": "#0D0D0BFA",
+      "diffAdded": "#3D7B5C40",
+      "diffRemoved": "#A63D3240",
+      "success": "#3D7B5C",
+      "warning": "#A96A1F",
+      "danger": "#A63D32",
+      "scrollbar": "#A77C2D3D",
+      "scrollbarHover": "#A77C2D75",
+      "composer": "#F5F0E6F2"
+    },
+    "experience": {
+      "brand": "SYMBIOTE SUMI-E",
+      "eyebrow": "INKBOND",
+      "headline": "LET THE INK ADAPT",
+      "tagline": "One surface. Two instincts.",
+      "status": "BOND // STABLE",
+      "signature": "SUMI PROTOCOL 03",
+      "chrome": true
+    },
+    "preview": "/theme-assets/symbiote-sumi-e/preview.jpg",
+    "command": "./bin/awesome-codex-themes install-agent symbiote-sumi-e"
+  },
+  {
+    "slug": "zaun-workshop",
+    "version": "0.1.1",
+    "name": "Zaun Workshop",
+    "description": "A volatile undercity workshop framed by fractured stained glass, bridge ironwork, chemical smoke, and kinetic diagonal motion.",
+    "author": {
+      "name": "Awesome Codex Themes"
+    },
+    "license": {
+      "code": "MIT",
+      "artwork": "PROJECT-ASSET"
+    },
+    "categories": [
+      "dark",
+      "full-workspace",
+      "character-inspired"
+    ],
+    "tags": [
+      "zaun-workshop",
+      "smoked-glass",
+      "fractured-polygons",
+      "macos"
+    ],
+    "compatibility": {
+      "platforms": [
+        "macos"
+      ],
+      "status": "experimental",
+      "strategy": "best-effort-all",
+      "verifiedAppVersions": [
+        "26.707.*",
+        "26.715.*"
       ]
     },
     "mode": "dark",
     "palette": {
-      "background": "#15130E",
-      "scrim": "#15130ED9",
-      "surface": "#292419D9",
-      "surfaceElevated": "#292419F2",
-      "surfaceOverlay": "#15130EF2",
-      "input": "#292419D9",
-      "text": "#FFF4D6",
-      "textSecondary": "#FFF4D6BF",
-      "textMuted": "#FFF4D68F",
-      "textDisabled": "#FFF4D666",
-      "icon": "#FFF4D6",
-      "iconSecondary": "#FFF4D6BF",
-      "iconMuted": "#FFF4D68F",
-      "border": "#F5B94238",
-      "borderSubtle": "#F5B9421F",
-      "borderStrong": "#F5B94270",
-      "accent": "#F5B942",
-      "accentHover": "#F5B942",
-      "selection": "#F5B9424D",
-      "focus": "#F5B942",
-      "link": "#F5B942",
-      "hover": "#F5B9421F",
-      "active": "#F5B94238",
-      "code": "#15130EF2",
-      "terminal": "#15130EF2",
-      "diffAdded": "#2DAA6A42",
-      "diffRemoved": "#FF5F5242",
-      "success": "#40C977",
-      "warning": "#F6C85F",
-      "danger": "#FF6764",
-      "scrollbar": "#F5B94245",
-      "scrollbarHover": "#F5B94278",
-      "composer": "#292419D9"
+      "background": "#080817",
+      "scrim": "#080817E8",
+      "surface": "#101125DE",
+      "surfaceElevated": "#17182FF2",
+      "surfaceOverlay": "#17182FF7",
+      "input": "#111329F2",
+      "text": "#F5F4FF",
+      "textSecondary": "#C7C6D9",
+      "textMuted": "#8E8AA8",
+      "textDisabled": "#5D596F",
+      "icon": "#F5F4FF",
+      "iconSecondary": "#C7C6D9",
+      "iconMuted": "#8E8AA8",
+      "border": "#00DCEB3D",
+      "borderSubtle": "#00DCEB24",
+      "borderStrong": "#00DCEB78",
+      "accent": "#00DCEB",
+      "accentHover": "#52F4FF",
+      "selection": "#00DCEB38",
+      "focus": "#B864FF",
+      "link": "#45E7F3",
+      "hover": "#00DCEB1A",
+      "active": "#B864FF2B",
+      "code": "#080913FA",
+      "terminal": "#05060DFA",
+      "diffAdded": "#73E35F40",
+      "diffRemoved": "#FF416740",
+      "success": "#73E35F",
+      "warning": "#FFB83E",
+      "danger": "#FF4167",
+      "scrollbar": "#00DCEB3D",
+      "scrollbarHover": "#00DCEB75",
+      "composer": "#0E1022F2"
     },
-    "preview": "/theme-assets/solar-archive/preview.svg",
-    "command": "awesome-codex-themes start solar-archive"
+    "experience": {
+      "brand": "ZAUN WORKSHOP",
+      "eyebrow": "SHIMMER CIRCUIT",
+      "headline": "MAKE CHAOS USEFUL",
+      "tagline": "Build loud. Ship precise.",
+      "status": "REACTOR // ONLINE",
+      "signature": "WORKSHOP 02",
+      "chrome": true
+    },
+    "preview": "/theme-assets/zaun-workshop/preview.jpg",
+    "command": "./bin/awesome-codex-themes install-agent zaun-workshop"
   }
 ]

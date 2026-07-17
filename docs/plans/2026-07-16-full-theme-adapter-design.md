@@ -6,7 +6,7 @@ Awesome Codex Themes will move from background-led theme packages to a versioned
 
 ## Chosen architecture
 
-The engine owns a shared `26.707` adapter stylesheet. Theme packages remain small and declarative: each manifest supplies a semantic palette, artwork, compatibility range, and optional namespaced CSS for theme-specific composition. At apply time the engine combines the trusted adapter with the validated theme CSS into one owned style element. This avoids duplicating brittle Codex selectors across every theme and gives maintainers one compatibility surface per supported Codex release family.
+The engine owns a shared adapter stylesheet. Theme packages remain small and declarative: each manifest supplies a semantic palette, artwork, live-verified compatibility metadata, and optional namespaced CSS for theme-specific composition. At apply time the engine combines the trusted adapter with the validated theme CSS into one owned style element. This avoids duplicating brittle Codex selectors across every theme and gives maintainers one compatibility surface for both verified families and best-effort attempts.
 
 The adapter is original project code. The two MIT reference repositories are behavior and coverage references, not wholesale source. Stable Codex and VS Code design-token names observed in the supported renderer are preferred over transient utility classes. Explicit semantic selectors are used only where tokens cannot expose the artwork or glass treatment.
 
