@@ -31,7 +31,7 @@ Every theme below is a complete local package under `themes/`. The left image is
 | <img src="themes/satoru-gojo/background.jpg" alt="Satoru Gojo theme background" width="640"> | <img src="docs/gallery/satoru-gojo/marketing.jpg" alt="Satoru Gojo marketing preview" width="640"> |
 
 ```bash
-./bin/awesome-codex-themes install-agent satoru-gojo
+./bin/awesome-codex-themes install-agent satoru-gojo --takeover-at-login
 ```
 
 ### 02. Zaun Workshop
@@ -186,11 +186,13 @@ cd Awesome-codex-themes
 Install the Featured theme as the persistent selection:
 
 ```bash
-./bin/awesome-codex-themes install-agent satoru-gojo
+./bin/awesome-codex-themes install-agent satoru-gojo --takeover-at-login
 ./bin/awesome-codex-themes status
 ```
 
-If Codex is already open without this project's managed CDP endpoint, the agent reports `restart-required` and does not close it. Save your work, quit Codex yourself, and let the installed agent start the verified official app. See [Installation and recovery](docs/INSTALL.md) before enabling persistence.
+`--takeover-at-login` is the explicit opt-in that keeps the theme present after a Mac reboot even when macOS restores an ordinary Codex process first. During the first 120 seconds after boot, the agent may request one normal quit of the single verified official process, confirm that exact process is gone, then reopen it through LaunchServices with the saved profile and managed local endpoint. Outside that window, without the flag, with multiple instances, or if identity/exit verification fails, the agent leaves Codex running and reports `restart-required`.
+
+If Codex is already open during normal work, save your work and quit it yourself before the first managed launch. See [Installation and recovery](docs/INSTALL.md) before enabling persistence.
 
 **Best-effort injection is attempted on every numeric Codex Desktop version. Highly compatible and live-verified: `26.707.*` and `26.715.*`.** Other versions are attempted, but their component layout is not guaranteed.
 
@@ -222,7 +224,7 @@ After an official Codex update, the agent attempts the shared adapter again. If 
 
 ## Current status
 
-Version `0.4.2` includes the engine, twelve complete local theme packages, self-contained user installation, LaunchAgent persistence, conflict diagnostics, safe restore, and a static Gallery.
+Version `0.4.3` includes the engine, twelve complete local theme packages, self-contained user installation, opt-in bounded login takeover, LaunchAgent persistence, conflict diagnostics, safe restore, and a static Gallery.
 
 | Capability | State |
 | --- | --- |
@@ -232,7 +234,7 @@ Version `0.4.2` includes the engine, twelve complete local theme packages, self-
 | Loopback-only apply, idempotent reapply, and owned-state removal | Implemented and prototype verified |
 | Install, upgrade, switch, pause, resume, status, and uninstall | Integration verified on `26.715.21425` |
 | Renderer reload and full app relaunch recovery | Integration verified on `26.715.21425` |
-| Physical macOS reboot | Pending direct exercise |
+| Opt-in macOS login takeover | Implemented and automated; physical reboot still pending direct exercise |
 | Searchable static Gallery | Implemented; deployment is separate from the repository build |
 
 ## Commands
@@ -242,7 +244,7 @@ Version `0.4.2` includes the engine, twelve complete local theme packages, self-
 | `list` | Validate and list complete runnable themes. |
 | `doctor` | Inspect the signed app, exact running PIDs, and known injector conflicts without mutation. |
 | `start <theme>` | Start one session-scoped managed Codex launch. |
-| `install-agent <theme>` | Install the versioned runtime and enable persistent management. |
+| `install-agent <theme> [--takeover-at-login]` | Install persistence; the optional flag explicitly permits one bounded login-time handoff after reboot. |
 | `upgrade-agent` | Upgrade the installed runtime while preserving theme and enabled/paused state. |
 | `switch <theme>` | Validate and select another installed theme. |
 | `pause` | Disable persistent management and remove project-owned live styling. |
@@ -260,7 +262,7 @@ Version `0.4.2` includes the engine, twelve complete local theme packages, self-
 - Selects only the expected main `app://-/index.html` renderer.
 - Applies one namespaced style element and one optional inert, pointer-transparent decorative node.
 - Never reads conversations, account tokens, API keys, model settings, or unrelated user data.
-- Never patches `app.asar`, modifies the signed app bundle, uses `--user-data-dir`, or silently terminates an active Codex process.
+- Never patches `app.asar`, modifies the signed app bundle, or uses `--user-data-dir`. Process handoff is disabled by default and is allowed only after explicit `--takeover-at-login` consent, for one verified official PID inside the bounded startup window.
 - `pause`, `restore`, and `uninstall-agent` remove only project-owned runtime state.
 
 Read [SECURITY.md](SECURITY.md), [docs/SAFETY.md](docs/SAFETY.md), and [docs/MIGRATION.md](docs/MIGRATION.md) before replacing another injector.

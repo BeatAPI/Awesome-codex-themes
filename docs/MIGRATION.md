@@ -16,7 +16,7 @@ The read-only report recognizes known legacy LaunchAgents, legacy scripts, and C
 3. Confirm its LaunchAgent is unloaded and its owned renderer style is absent.
 4. Quit Codex yourself if it is still running with the old endpoint.
 5. Run `doctor` again.
-6. Install this project with `install-agent satoru-gojo`.
+6. Install this project with `install-agent satoru-gojo --takeover-at-login` when reboot persistence is desired.
 7. Check `status` and complete the first transition described in [INSTALL.md](INSTALL.md).
 
 Do not delete an unfamiliar plist or send signals to an unverified PID. A legacy injector can contain unrelated user configuration, and this project deliberately does not claim ownership of it.

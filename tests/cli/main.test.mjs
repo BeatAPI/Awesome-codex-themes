@@ -1,6 +1,15 @@
 import { describe, expect, test, vi } from 'vitest';
 
-import { CliError, runCli, terminateProcess, waitForRenderer } from '../../src/cli/main.mjs';
+import {
+  CliError,
+  createStartupTakeoverGate,
+  launchOfficialApp,
+  requestOfficialAppQuit,
+  runCli,
+  terminateProcess,
+  waitForOfficialAppExit,
+  waitForRenderer,
+} from '../../src/cli/main.mjs';
 
 function createIo() {
   const stdout = [];
@@ -41,7 +50,7 @@ describe('runCli', () => {
 
     await expect(runCli(['help'], dependencies(), io)).resolves.toBe(0);
     expect(stdout.join('\n')).toContain('start <theme>');
-    expect(stdout.join('\n')).toContain('install-agent <theme>');
+    expect(stdout.join('\n')).toContain('install-agent <theme> [--takeover-at-login]');
     expect(stdout.join('\n')).toContain('upgrade-agent');
     expect(stdout.join('\n')).toContain('switch <theme>');
     expect(stdout.join('\n')).toContain('uninstall-agent');
@@ -156,9 +165,31 @@ describe('runCli', () => {
 
     await expect(runCli(['install-agent', 'satoru-gojo'], dependencies({ installAgent }), io)).resolves.toBe(0);
 
-    expect(installAgent).toHaveBeenCalledWith('satoru-gojo');
+    expect(installAgent).toHaveBeenCalledWith('satoru-gojo', { takeoverAtLogin: false });
     expect(stdout.join('\n')).toContain('installed persistent theme satoru-gojo');
     expect(stdout.join('\n')).toContain('/support');
+  });
+
+  test('requires explicit opt-in before enabling bounded login takeover', async () => {
+    const { io, stdout } = createIo();
+    const installAgent = vi.fn(dependencies().installAgent);
+
+    await expect(
+      runCli(['install-agent', 'satoru-gojo', '--takeover-at-login'], dependencies({ installAgent }), io),
+    ).resolves.toBe(0);
+
+    expect(installAgent).toHaveBeenCalledWith('satoru-gojo', { takeoverAtLogin: true });
+    expect(stdout.join('\n')).toContain('login takeover enabled');
+  });
+
+  test('rejects unknown install-agent flags', async () => {
+    const { io, stderr } = createIo();
+
+    await expect(
+      runCli(['install-agent', 'satoru-gojo', '--force'], dependencies(), io),
+    ).resolves.toBe(1);
+
+    expect(stderr.join('\n')).toContain('[CLI_ARGUMENT_INVALID]');
   });
 
   test('switches the saved persistent theme without accepting extra arguments', async () => {
@@ -319,5 +350,92 @@ describe('managed renderer readiness', () => {
     });
 
     expect(events).toEqual(['owner', 'owner', 'renderer']);
+  });
+});
+
+describe('official app launch', () => {
+  test('uses LaunchServices and resolves the exact real official app PID', async () => {
+    const runOpen = vi.fn(async () => ({ stdout: '', stderr: '' }));
+    const listPids = vi
+      .fn()
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([123]);
+
+    await expect(launchOfficialApp(
+      { appPath: '/Applications/ChatGPT.app' },
+      9341,
+      { runOpen, listPids, delay: async () => {}, attempts: 2 },
+    )).resolves.toEqual({ pid: 123 });
+
+    expect(runOpen).toHaveBeenCalledWith('/usr/bin/open', [
+      '-na',
+      '/Applications/ChatGPT.app',
+      '--args',
+      '--remote-debugging-address=127.0.0.1',
+      '--remote-debugging-port=9341',
+    ]);
+  });
+
+  test('fails closed if LaunchServices creates ambiguous official app processes', async () => {
+    await expect(launchOfficialApp(
+      { appPath: '/Applications/ChatGPT.app' },
+      9341,
+      {
+        runOpen: async () => ({ stdout: '', stderr: '' }),
+        listPids: async () => [123, 124],
+        delay: async () => {},
+        attempts: 1,
+      },
+    )).resolves.toEqual({ pid: null });
+  });
+
+  test('requests a normal app quit only while the exact single official PID is unchanged', async () => {
+    const runCommand = vi.fn(async () => ({ stdout: '', stderr: '' }));
+    const app = { bundleId: 'com.openai.codex' };
+
+    await expect(requestOfficialAppQuit(app, 123, {
+      listPids: async () => [123],
+      runCommand,
+    })).resolves.toBeUndefined();
+
+    expect(runCommand).toHaveBeenCalledWith('/usr/bin/osascript', [
+      '-e',
+      'tell application id "com.openai.codex" to quit',
+    ], { encoding: 'utf8' });
+
+    await expect(requestOfficialAppQuit(app, 123, {
+      listPids: async () => [124],
+      runCommand,
+    })).rejects.toEqual(expect.objectContaining({ code: 'APP_PROCESS_CHANGED' }));
+    expect(runCommand).toHaveBeenCalledTimes(1);
+  });
+
+  test('confirms complete app exit and rejects PID replacement during takeover', async () => {
+    await expect(waitForOfficialAppExit({}, 123, {
+      listPids: vi.fn().mockResolvedValueOnce([123]).mockResolvedValueOnce([]),
+      delay: async () => {},
+      attempts: 2,
+    })).resolves.toBe(true);
+
+    await expect(waitForOfficialAppExit({}, 123, {
+      listPids: async () => [124],
+      delay: async () => {},
+      attempts: 1,
+    })).resolves.toBe(false);
+  });
+});
+
+describe('startup takeover gate', () => {
+  test('allows exactly one attempt inside the configured boot window', () => {
+    const gate = createStartupTakeoverGate({ uptime: () => 30 });
+
+    expect(gate(120)).toBe(true);
+    expect(gate(120)).toBe(false);
+  });
+
+  test('rejects attempts outside the boot window and malformed windows', () => {
+    expect(createStartupTakeoverGate({ uptime: () => 121 })(120)).toBe(false);
+    expect(createStartupTakeoverGate({ uptime: () => 1 })(0)).toBe(false);
+    expect(createStartupTakeoverGate({ uptime: () => 1 })(301)).toBe(false);
   });
 });

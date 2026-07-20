@@ -79,7 +79,7 @@
       "chrome": true
     },
     "preview": "/theme-assets/castle-archive/preview.jpg",
-    "command": "./bin/awesome-codex-themes install-agent castle-archive"
+    "command": "./bin/awesome-codex-themes install-agent castle-archive --takeover-at-login"
   },
   {
     "slug": "foundling-garden",
@@ -161,7 +161,7 @@
       "chrome": true
     },
     "preview": "/theme-assets/foundling-garden/preview.jpg",
-    "command": "./bin/awesome-codex-themes install-agent foundling-garden"
+    "command": "./bin/awesome-codex-themes install-agent foundling-garden --takeover-at-login"
   },
   {
     "slug": "grand-line",
@@ -243,7 +243,7 @@
       "chrome": true
     },
     "preview": "/theme-assets/grand-line/preview.jpg",
-    "command": "./bin/awesome-codex-themes install-agent grand-line"
+    "command": "./bin/awesome-codex-themes install-agent grand-line --takeover-at-login"
   },
   {
     "slug": "mordor-runtime",
@@ -325,7 +325,7 @@
       "chrome": true
     },
     "preview": "/theme-assets/mordor-runtime/preview.jpg",
-    "command": "./bin/awesome-codex-themes install-agent mordor-runtime"
+    "command": "./bin/awesome-codex-themes install-agent mordor-runtime --takeover-at-login"
   },
   {
     "slug": "new-world-studio",
@@ -407,7 +407,7 @@
       "chrome": true
     },
     "preview": "/theme-assets/new-world-studio/preview.jpg",
-    "command": "./bin/awesome-codex-themes install-agent new-world-studio"
+    "command": "./bin/awesome-codex-themes install-agent new-world-studio --takeover-at-login"
   },
   {
     "slug": "night-city",
@@ -489,7 +489,7 @@
       "chrome": true
     },
     "preview": "/theme-assets/night-city/preview.jpg",
-    "command": "./bin/awesome-codex-themes install-agent night-city"
+    "command": "./bin/awesome-codex-themes install-agent night-city --takeover-at-login"
   },
   {
     "slug": "overworld-realms",
@@ -571,7 +571,7 @@
       "chrome": true
     },
     "preview": "/theme-assets/overworld-realms/preview.jpg",
-    "command": "./bin/awesome-codex-themes install-agent overworld-realms"
+    "command": "./bin/awesome-codex-themes install-agent overworld-realms --takeover-at-login"
   },
   {
     "slug": "saiyan-ukiyoe",
@@ -653,7 +653,7 @@
       "chrome": true
     },
     "preview": "/theme-assets/saiyan-ukiyoe/preview.jpg",
-    "command": "./bin/awesome-codex-themes install-agent saiyan-ukiyoe"
+    "command": "./bin/awesome-codex-themes install-agent saiyan-ukiyoe --takeover-at-login"
   },
   {
     "slug": "satoru-gojo",
@@ -740,7 +740,7 @@
       "chrome": true
     },
     "preview": "/theme-assets/satoru-gojo/preview.png",
-    "command": "./bin/awesome-codex-themes install-agent satoru-gojo"
+    "command": "./bin/awesome-codex-themes install-agent satoru-gojo --takeover-at-login"
   },
   {
     "slug": "slingshot-lab",
@@ -822,7 +822,7 @@
       "chrome": true
     },
     "preview": "/theme-assets/slingshot-lab/preview.jpg",
-    "command": "./bin/awesome-codex-themes install-agent slingshot-lab"
+    "command": "./bin/awesome-codex-themes install-agent slingshot-lab --takeover-at-login"
   },
   {
     "slug": "symbiote-sumi-e",
@@ -904,7 +904,7 @@
       "chrome": true
     },
     "preview": "/theme-assets/symbiote-sumi-e/preview.jpg",
-    "command": "./bin/awesome-codex-themes install-agent symbiote-sumi-e"
+    "command": "./bin/awesome-codex-themes install-agent symbiote-sumi-e --takeover-at-login"
   },
   {
     "slug": "zaun-workshop",
@@ -986,6 +986,6 @@
       "chrome": true
     },
     "preview": "/theme-assets/zaun-workshop/preview.jpg",
-    "command": "./bin/awesome-codex-themes install-agent zaun-workshop"
+    "command": "./bin/awesome-codex-themes install-agent zaun-workshop --takeover-at-login"
   }
 ]

@@ -25,14 +25,14 @@ The portable gate runs the full test/theme/type/build suite, the production depe
 Use an explicitly approved test session on a live-verified official Codex version. Never terminate an active user session to satisfy this checklist.
 
 1. Record `doctor` output and resolve any legacy injector conflict through that injector's documented restore path.
-2. Install with `install-agent satoru-gojo` while Codex is already open and confirm `restart-required` without automatic termination.
+2. Install without the takeover flag while Codex is already open and confirm `restart-required` without automatic termination.
 3. Quit Codex explicitly and confirm the agent starts the verified official app on a dynamic literal-loopback port.
 4. Confirm `active`, the existing Codex profile, and the Satoru Gojo presentation.
 5. Reload the renderer and confirm idempotent reapply without duplicate owned nodes or styles.
 6. Exercise keyboard focus, menus, Composer, code/diff surfaces, reduced motion, and owned-state restore.
 7. Run `pause`, confirm owned styling is removed, and confirm Codex can remain closed.
 8. Run `resume`, close the managed app, and confirm the agent starts a new managed process with the saved theme.
-9. Log out/in or reboot the approved test Mac and confirm LaunchAgent startup.
+9. Reinstall with `install-agent satoru-gojo --takeover-at-login`, reboot the approved test Mac, and confirm the bounded handoff or direct managed startup restores the theme.
 10. Confirm an unverified numeric-version fixture attempts `codex-best-effort`; if verification fails, confirm `pause` or `restore` returns the official UI.
 11. Run `uninstall-agent`, then verify the plist, installed support directory, owned renderer state, and service are gone while the official Codex profile remains intact.
 12. Exercise the manual `launchctl bootout` recovery from [INSTALL.md](INSTALL.md).
@@ -52,15 +52,15 @@ Before approval is executed, verify:
 - the repository description, topics, default branch, and security-advisory link are correct;
 - the owner understands that forks, caches, and downloaded release assets cannot be recalled reliably after publication.
 
-## 5. Main and `v0.4.2`
+## 5. Main and `v0.4.3`
 
 After the source, lifecycle, and visibility gates pass:
 
 1. Land the reviewed release commit on `main` without overwriting unrelated local work.
 2. Rerun `pnpm check` from the exact `main` commit.
 3. Push `main` and confirm GitHub Actions succeeds on that SHA.
-4. Create the annotated `v0.4.2` tag from the verified commit.
+4. Create the annotated `v0.4.3` tag from the verified commit.
 5. Publish a GitHub Release that links to [INSTALL.md](INSTALL.md), [MIGRATION.md](MIGRATION.md), [SAFETY.md](SAFETY.md), and the exact live-verified Codex ranges while explaining the best-effort fallback.
-6. Confirm a fresh public clone can run `doctor`, `list`, an isolated `install-agent satoru-gojo` flow, and an `upgrade-agent` flow that preserves a paused configuration.
+6. Confirm a fresh public clone can run `doctor`, `list`, an isolated `install-agent satoru-gojo --takeover-at-login` flow, and an `upgrade-agent` flow that preserves paused and takeover configuration.
 
 Do not describe login/reboot persistence as publicly verified until both the local lifecycle record and the CI/release SHA are available.

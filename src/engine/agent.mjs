@@ -34,10 +34,28 @@ export async function agentStep({ config, runtime }, dependencies) {
     assertPortOwner,
     applyTheme,
     removeTheme,
+    startupTakeoverAllowed,
+    requestAppQuit,
+    waitForAppExit,
     now = () => new Date().toISOString(),
   } = dependencies;
 
-  const app = await discoverApp();
+  let app;
+  try {
+    app = await discoverApp();
+  } catch (error) {
+    return {
+      runtime,
+      state: observedState(
+        {
+          status: 'error',
+          themeSlug: config.themeSlug,
+          errorCode: error?.code ?? 'APP_DISCOVERY_FAILED',
+        },
+        now,
+      ),
+    };
+  }
   const runningPids = await listPids(app);
 
   if (!config.enabled) {
@@ -68,6 +86,44 @@ export async function agentStep({ config, runtime }, dependencies) {
 
   let managed = runtime && runningPids.includes(runtime.appPid) ? runtime : null;
   if (!managed && runningPids.length > 0) {
+    if (
+      config.launchAtLogin &&
+      config.takeoverAtLogin &&
+      runningPids.length === 1 &&
+      typeof startupTakeoverAllowed === 'function' &&
+      typeof requestAppQuit === 'function' &&
+      typeof waitForAppExit === 'function' &&
+      startupTakeoverAllowed(config.startupTakeoverWindowSeconds)
+    ) {
+      try {
+        const appPid = runningPids[0];
+        await requestAppQuit(app, appPid);
+        if (await waitForAppExit(app, appPid)) {
+          return {
+            runtime: null,
+            state: observedState(
+              { status: 'starting', themeSlug: config.themeSlug, appVersion: app.version },
+              now,
+            ),
+          };
+        }
+      } catch {
+        // The opt-in takeover is one-shot and fails closed to restart-required.
+      }
+      return {
+        runtime: null,
+        state: observedState(
+          {
+            status: 'restart-required',
+            themeSlug: config.themeSlug,
+            appPid: runningPids[0],
+            appVersion: app.version,
+            errorCode: 'APP_STARTUP_TAKEOVER_FAILED',
+          },
+          now,
+        ),
+      };
+    }
     return {
       runtime: null,
       state: observedState(
@@ -76,7 +132,9 @@ export async function agentStep({ config, runtime }, dependencies) {
           themeSlug: config.themeSlug,
           appPid: runningPids[0],
           appVersion: app.version,
-          errorCode: 'APP_RUNNING_WITHOUT_MANAGED_CDP',
+          errorCode: runningPids.length > 1
+            ? 'APP_MULTIPLE_INSTANCES'
+            : 'APP_RUNNING_WITHOUT_MANAGED_CDP',
         },
         now,
       ),

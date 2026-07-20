@@ -22,6 +22,20 @@ export function validateAgentConfig(input) {
   if (typeof input.enabled !== 'boolean' || typeof input.launchAtLogin !== 'boolean') {
     fail('CONFIG_FIELD_INVALID', 'enabled and launchAtLogin must be booleans.');
   }
+  if (input.takeoverAtLogin !== undefined && typeof input.takeoverAtLogin !== 'boolean') {
+    fail('CONFIG_FIELD_INVALID', 'takeoverAtLogin must be a boolean.');
+  }
+  if (input.takeoverAtLogin === true && input.launchAtLogin !== true) {
+    fail('CONFIG_FIELD_INVALID', 'takeoverAtLogin requires launchAtLogin.');
+  }
+  const startupTakeoverWindowSeconds = input.startupTakeoverWindowSeconds ?? 120;
+  if (
+    !Number.isInteger(startupTakeoverWindowSeconds) ||
+    startupTakeoverWindowSeconds < 30 ||
+    startupTakeoverWindowSeconds > 300
+  ) {
+    fail('CONFIG_FIELD_INVALID', 'startupTakeoverWindowSeconds must be an integer from 30 to 300.');
+  }
   if (typeof input.themeSlug !== 'string' || !SLUG_PATTERN.test(input.themeSlug)) {
     fail('CONFIG_THEME_INVALID', 'themeSlug must use lowercase kebab-case.');
   }
@@ -30,6 +44,8 @@ export function validateAgentConfig(input) {
     enabled: input.enabled,
     themeSlug: input.themeSlug,
     launchAtLogin: input.launchAtLogin,
+    takeoverAtLogin: input.takeoverAtLogin ?? false,
+    startupTakeoverWindowSeconds,
   };
 }
 

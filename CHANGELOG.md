@@ -6,6 +6,9 @@ All notable changes are documented here. The project follows semantic versioning
 
 ### Added
 
+- Explicit `--takeover-at-login` installation mode for automatic theme recovery when macOS restores Codex during boot.
+- A one-shot 120-second startup handoff that revalidates one official PID, uses normal app quit, confirms complete exit, and fails closed without signals or force quit.
+- LaunchServices-based managed startup with real official PID discovery and transient app-discovery retry behavior.
 - Self-contained per-user runtime installation with an atomic versioned `current` release.
 - User LaunchAgent commands: `install-agent`, `upgrade-agent`, `switch`, `pause`, `resume`, and `uninstall-agent`.
 - Portable `release:check` command and CI gate for tests, themes, types, build, production dependency audit, public-file hygiene, and diff whitespace.

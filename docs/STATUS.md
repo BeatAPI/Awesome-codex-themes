@@ -1,6 +1,6 @@
 # Implementation status
 
-Last verified: 2026-07-17 (Asia/Shanghai)
+Last verified: 2026-07-20 (Asia/Shanghai)
 
 ## State definitions
 
@@ -21,7 +21,7 @@ Last verified: 2026-07-17 (Asia/Shanghai)
 | Self-contained versioned installer | Implemented | Isolated filesystem tests cover staging, atomic activation, configuration, permissions, replacement, and cleanup. |
 | User LaunchAgent | Integration verified | The legacy plist was backed up and replaced; install, bootout/bootstrap, kickstart, pause/resume, upgrade, and uninstall ran through the real user service boundary. `status` also requires the service to be loaded before it reports `active`. |
 | Full app exit/relaunch recovery | Integration verified | An unmanaged process transitioned through `restart-required` and was replaced by a verified CDP-managed official process without a second profile. |
-| Login service bootstrap | Integration verified; physical reboot pending | `RunAtLoad`/`KeepAlive` plus a real bootout/bootstrap cycle were verified. A physical logout or reboot was not directly observed. |
+| Login service bootstrap | Implemented and integration verified; physical reboot pending | `RunAtLoad`/`KeepAlive`, LaunchServices PID acquisition, and an opt-in one-shot 120-second login handoff have automated coverage. A real bootout/bootstrap and managed app restart were verified; a full physical reboot after this implementation is still pending. |
 | Best-effort version fallback | Implemented | Automated coverage confirms every valid numeric app version selects the shared `codex-best-effort` adapter instead of being rejected. Live visual verification on an unverified future build remains pending. |
 | Satoru Gojo (native Japanese name: 五条 悟) | Featured complete package, experimental compatibility | Version `1.2.0` is live-verified on 26.707/26.715 with current assets, owned-state behavior, and persistent lifecycle recovery. |
 | Twelve-theme collection | Implemented and current-version verified | Satoru Gojo is Featured. Eleven additional Schema 2 packages include complete local backgrounds, previews, CSS, metadata, and component assets; all eleven passed the recorded 26.715 workspace, right-panel, home, plugins, scheduled, sites, pull-request, and narrow-window matrix. Compatibility remains experimental outside the recorded builds. |
@@ -42,7 +42,7 @@ Last verified: 2026-07-17 (Asia/Shanghai)
 
 The active renderer was checked for owned style/chrome markers, theme variables, workspace classification, idempotent apply, renderer reload reapply, pointer-transparent decoration, and complete owned-state removal. Private screenshots with active workspace content and internal visual iteration labels remain local development evidence and are not public release assets. See the sanitized [26.715 lifecycle audit](audits/2026-07-17-satoru-gojo-26.715-lifecycle-audit.md).
 
-The tested release candidate is installed in the immutable local `0.4.2` runtime. The active service reports `active`; `new-world-studio` was verified with one owned style node, an open right-panel marker, and a dedicated panel background layer. The final handoff restores Satoru Gojo as the selected theme.
+The public source candidate is `0.4.3`. The current local service is separately verified as `active` on Codex `26.715.31925` with a literal-loopback endpoint and one owned `nocturne-lite` style; installing the final `0.4.3` local derivative and exercising a physical reboot remain separate gates.
 
 The legacy injector plist and script were backed up outside the repository before migration. The old plist is no longer present in `~/Library/LaunchAgents`; its source script was not deleted.
 

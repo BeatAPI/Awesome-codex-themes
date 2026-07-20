@@ -3,7 +3,15 @@ import { describe, expect, test, vi } from 'vitest';
 import { agentStep, runPersistentAgent } from '../../src/engine/agent.mjs';
 
 function config(overrides = {}) {
-  return { schemaVersion: 1, enabled: true, themeSlug: 'satoru-gojo', launchAtLogin: true, ...overrides };
+  return {
+    schemaVersion: 1,
+    enabled: true,
+    themeSlug: 'satoru-gojo',
+    launchAtLogin: true,
+    takeoverAtLogin: false,
+    startupTakeoverWindowSeconds: 120,
+    ...overrides,
+  };
 }
 
 function app() {
@@ -20,6 +28,9 @@ function dependencies(overrides = {}) {
     assertPortOwner: vi.fn(async () => {}),
     applyTheme: vi.fn(async ({ themeSlug }) => ({ theme: themeSlug, renderers: 1 })),
     removeTheme: vi.fn(async () => ({ restored: true })),
+    startupTakeoverAllowed: vi.fn(() => false),
+    requestAppQuit: vi.fn(async () => {}),
+    waitForAppExit: vi.fn(async () => true),
     now: () => '2026-07-17T00:00:00.000Z',
     ...overrides,
   };
@@ -78,6 +89,94 @@ describe('persistent agent state machine', () => {
     expect(result.runtime).toBeNull();
     expect(deps.launchApp).not.toHaveBeenCalled();
     expect(terminate).not.toHaveBeenCalled();
+  });
+
+  test('takes over one macOS-restored official app once during an explicitly enabled login window', async () => {
+    const deps = dependencies({
+      listPids: vi.fn(async () => [777]),
+      startupTakeoverAllowed: vi.fn(() => true),
+    });
+
+    const result = await agentStep({
+      config: config({ takeoverAtLogin: true }),
+      runtime: null,
+    }, deps);
+
+    expect(deps.startupTakeoverAllowed).toHaveBeenCalledWith(120);
+    expect(deps.requestAppQuit).toHaveBeenCalledWith(app(), 777);
+    expect(deps.waitForAppExit).toHaveBeenCalledWith(app(), 777);
+    expect(deps.launchApp).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      runtime: null,
+      state: expect.objectContaining({ status: 'starting', appPid: null, errorCode: null }),
+    });
+  });
+
+  test('does not take over outside the bounded startup window', async () => {
+    const deps = dependencies({
+      listPids: vi.fn(async () => [777]),
+      startupTakeoverAllowed: vi.fn(() => false),
+    });
+
+    const result = await agentStep({
+      config: config({ takeoverAtLogin: true }),
+      runtime: null,
+    }, deps);
+
+    expect(deps.requestAppQuit).not.toHaveBeenCalled();
+    expect(result.state).toEqual(expect.objectContaining({
+      status: 'restart-required',
+      errorCode: 'APP_RUNNING_WITHOUT_MANAGED_CDP',
+    }));
+  });
+
+  test('fails closed when startup takeover cannot confirm the exact official PID exited', async () => {
+    const deps = dependencies({
+      listPids: vi.fn(async () => [777]),
+      startupTakeoverAllowed: vi.fn(() => true),
+      waitForAppExit: vi.fn(async () => false),
+    });
+
+    const result = await agentStep({
+      config: config({ takeoverAtLogin: true }),
+      runtime: null,
+    }, deps);
+
+    expect(deps.launchApp).not.toHaveBeenCalled();
+    expect(result.state).toEqual(expect.objectContaining({
+      status: 'restart-required',
+      appPid: 777,
+      errorCode: 'APP_STARTUP_TAKEOVER_FAILED',
+    }));
+  });
+
+  test('never takes over when more than one official app process is observed', async () => {
+    const deps = dependencies({
+      listPids: vi.fn(async () => [777, 778]),
+      startupTakeoverAllowed: vi.fn(() => true),
+    });
+
+    const result = await agentStep({
+      config: config({ takeoverAtLogin: true }),
+      runtime: null,
+    }, deps);
+
+    expect(deps.startupTakeoverAllowed).not.toHaveBeenCalled();
+    expect(deps.requestAppQuit).not.toHaveBeenCalled();
+    expect(result.state).toEqual(expect.objectContaining({
+      status: 'restart-required',
+      errorCode: 'APP_MULTIPLE_INSTANCES',
+    }));
+  });
+
+  test('keeps retrying after official app discovery is temporarily unavailable at login', async () => {
+    const missing = Object.assign(new Error('updating'), { code: 'APP_NOT_FOUND' });
+    const deps = dependencies({ discoverApp: vi.fn(async () => { throw missing; }) });
+
+    const result = await agentStep({ config: config(), runtime: null }, deps);
+
+    expect(result.runtime).toBeNull();
+    expect(result.state).toEqual(expect.objectContaining({ status: 'error', errorCode: 'APP_NOT_FOUND' }));
   });
 
   test('pauses without launching, removes owned styling, and retains a reachable managed endpoint for resume', async () => {

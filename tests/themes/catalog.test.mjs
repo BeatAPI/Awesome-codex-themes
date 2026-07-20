@@ -34,7 +34,7 @@ describe('theme catalog', () => {
     ]);
     expect(catalog).toHaveLength(12);
     expect(catalog.every((theme) => theme.compatibility.status === 'experimental')).toBe(true);
-    expect(catalog.every((theme) => theme.command.startsWith('./bin/awesome-codex-themes install-agent '))).toBe(true);
+    expect(catalog.every((theme) => theme.command.endsWith(' --takeover-at-login'))).toBe(true);
     expect(catalog.every((theme) => theme.preview.startsWith('/theme-assets/'))).toBe(true);
   });
 

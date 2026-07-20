@@ -30,7 +30,7 @@ export async function buildThemeCatalog(themesRoot) {
       palette: manifest.palette,
       ...(manifest.experience ? { experience: manifest.experience } : {}),
       preview: `/theme-assets/${manifest.slug}/${basename(manifest.files.preview)}`,
-      command: `./bin/awesome-codex-themes install-agent ${manifest.slug}`,
+      command: `./bin/awesome-codex-themes install-agent ${manifest.slug} --takeover-at-login`,
     });
   }
 
