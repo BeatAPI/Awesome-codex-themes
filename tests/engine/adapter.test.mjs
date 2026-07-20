@@ -56,6 +56,15 @@ describe('loadCodexAdapter', () => {
     );
   });
 
+  test('styles the semantic primary composer control with contrasting foreground and background', async () => {
+    const { css } = await loadCodexAdapter('26.715.31925');
+
+    expect(css).toContain('button[data-awesome-codex-composer-control="primary"]');
+    expect(css).toMatch(
+      /button\[data-awesome-codex-composer-control="primary"\][^}]*\{[^}]*color:\s*var\(--act-background\)\s*!important;[^}]*background:\s*var\(--act-accent\)\s*!important;/s,
+    );
+  });
+
   test('uses the shared mapping as a best-effort adapter for every numeric version', async () => {
     await expect(loadCodexAdapter('26.716.1')).resolves.toEqual(
       expect.objectContaining({
