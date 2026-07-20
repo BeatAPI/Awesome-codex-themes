@@ -264,13 +264,21 @@ html.awesome-codex-theme :is(.composer-root, .composer-surface-chrome) {
   backdrop-filter: blur(24px) saturate(120%);
 }
 
-html.awesome-codex-theme :is(button[data-testid="composer-send-button"], .composer-send-button) {
+html.awesome-codex-theme :is(
+  button[data-testid="composer-send-button"],
+  .composer-send-button,
+  button[data-awesome-codex-composer-control="primary"]
+) {
   color: var(--act-background) !important;
   background: var(--act-accent) !important;
   border-color: var(--act-accent-hover) !important;
 }
 
-html.awesome-codex-theme :is(button[data-testid="composer-send-button"], .composer-send-button):not(:disabled):hover {
+html.awesome-codex-theme :is(
+  button[data-testid="composer-send-button"],
+  .composer-send-button,
+  button[data-awesome-codex-composer-control="primary"]
+):not(:disabled):hover {
   background: var(--act-accent-hover) !important;
 }
 
