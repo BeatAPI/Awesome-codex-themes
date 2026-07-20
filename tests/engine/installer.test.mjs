@@ -25,7 +25,13 @@ describe('self-contained persistent installation', () => {
     const bootout = vi.fn(async () => {});
 
     const result = await installPersistentAgent(
-      { sourceRoot: repoRoot, home, version: '0.3.0', themeSlug: 'satoru-gojo' },
+      {
+        sourceRoot: repoRoot,
+        home,
+        version: '0.3.0',
+        themeSlug: 'satoru-gojo',
+        takeoverAtLogin: true,
+      },
       { bootout, bootstrap, kickstart },
     );
     const paths = installationPaths({ home, version: '0.3.0' });
@@ -40,7 +46,14 @@ describe('self-contained persistent installation', () => {
     expect(await readlink(paths.currentPath)).toBe(paths.releaseDir);
 
     const config = JSON.parse(await readFile(paths.configPath, 'utf8'));
-    expect(config).toEqual({ schemaVersion: 1, enabled: true, themeSlug: 'satoru-gojo', launchAtLogin: true });
+    expect(config).toEqual({
+      schemaVersion: 1,
+      enabled: true,
+      themeSlug: 'satoru-gojo',
+      launchAtLogin: true,
+      takeoverAtLogin: true,
+      startupTakeoverWindowSeconds: 120,
+    });
     expect((await stat(paths.configPath)).mode & 0o777).toBe(0o600);
     expect(await readFile(paths.plistPath, 'utf8')).toContain(join(paths.currentPath, 'bin/awesome-codex-themes'));
     expect(bootout).toHaveBeenCalledWith({ ignoreMissing: true });

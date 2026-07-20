@@ -27,15 +27,23 @@ It does not edit `ChatGPT.app`, `Codex.app`, Codex conversations, settings, cred
 ## Install Satoru Gojo
 
 ```bash
-./bin/awesome-codex-themes install-agent satoru-gojo
+./bin/awesome-codex-themes install-agent satoru-gojo --takeover-at-login
 ./bin/awesome-codex-themes status
 ```
 
 The installed configuration selects `satoru-gojo`, enables persistence, and starts the user LaunchAgent. The agent uses a dynamic literal-loopback CDP port and does not pass `--user-data-dir`.
 
+The optional `--takeover-at-login` flag is explicit consent for a single bounded handoff when macOS restores Codex before the agent can open its managed endpoint. It is the mode to use when the theme should return automatically after reboot. Without the flag, unmanaged Codex processes are always left untouched.
+
+## Reboot and login handoff
+
+The handoff is permitted only inside a 120-second startup window and only when exactly one official Codex process is present. The agent revalidates the signed application and exact PID, sends the normal macOS quit request, waits until that PID is gone with no replacement process, then opens the same official app through LaunchServices with a dynamic `127.0.0.1` endpoint. It does not use another `--user-data-dir`, so the existing Codex profile remains in place.
+
+If the startup window has expired, more than one official process exists, the PID changes, or normal quit cannot be confirmed, the agent fails closed to `restart-required`. It does not escalate to `kill`, `kill -9`, or broad process matching.
+
 ## First transition
 
-If Codex is already running without a trusted endpoint, status becomes `restart-required`. This is deliberate: the agent never terminates an active session.
+If Codex is already running without a trusted endpoint outside the explicitly approved startup handoff, status becomes `restart-required`. This protects an active work session.
 
 1. Save any active work.
 2. Quit the official Codex app yourself.
@@ -110,6 +118,6 @@ If `launchctl bootout` reports that the service is not loaded, continue with the
 | `idle` | Agent is installed but has not completed a managed launch. | Wait briefly, then run `status`. |
 | `starting` | A verified managed app launch is in progress. | Wait; do not start another app copy. |
 | `active` | The selected theme is verified on the managed renderer. | None. |
-| `restart-required` | Codex is running without the managed endpoint. | Save work and quit it yourself. |
+| `restart-required` | Codex is running without the managed endpoint, or a safe login handoff was not allowed/confirmed. | Save work and quit it yourself. |
 | `paused` | Persistence is disabled and owned live styling has been removed when reachable. | Run `resume` when desired. |
 | `error` | A stable error code was recorded. | Run `doctor`, inspect logs, and use manual recovery if necessary. |

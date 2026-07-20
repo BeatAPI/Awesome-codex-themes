@@ -2,7 +2,7 @@ import { execFile } from 'node:child_process';
 import { realpathSync } from 'node:fs';
 import { readFile, readdir, rm } from 'node:fs/promises';
 import { createServer } from 'node:net';
-import { homedir } from 'node:os';
+import { homedir, uptime as systemUptime } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
@@ -57,7 +57,7 @@ Usage:
   awesome-codex-themes list
   awesome-codex-themes doctor
   awesome-codex-themes start <theme>
-  awesome-codex-themes install-agent <theme>
+  awesome-codex-themes install-agent <theme> [--takeover-at-login]
   awesome-codex-themes upgrade-agent
   awesome-codex-themes switch <theme>
   awesome-codex-themes pause
@@ -67,7 +67,7 @@ Usage:
   awesome-codex-themes restore [--port <port>]
   awesome-codex-themes uninstall-agent
 
-The engine only connects to CDP on 127.0.0.1 and never terminates the official app.`;
+The engine only connects to CDP on 127.0.0.1. Login takeover is bounded and requires explicit opt-in.`;
 
 export class CliError extends Error {
   constructor(code, message, options = {}) {
@@ -165,9 +165,15 @@ export async function runCli(argv, dependencies, io = { out: console.log, error:
 
     if (command === 'install-agent') {
       const theme = requireTheme(args);
-      rejectExtraArgs(args, 1, 'install-agent');
-      const result = await dependencies.installAgent(theme);
-      io.out(`installed persistent theme ${result.theme} at ${result.supportRoot}`);
+      const takeoverAtLogin = args.length === 2 && args[1] === '--takeover-at-login';
+      if (args.length > 2 || (args.length === 2 && !takeoverAtLogin)) {
+        cliFail('CLI_ARGUMENT_INVALID', 'install-agent accepts only the optional --takeover-at-login flag.');
+      }
+      const result = await dependencies.installAgent(theme, { takeoverAtLogin });
+      io.out(
+        `installed persistent theme ${result.theme} at ${result.supportRoot}` +
+        (takeoverAtLogin ? '; login takeover enabled for the bounded startup window' : ''),
+      );
       return 0;
     }
 
@@ -323,14 +329,69 @@ async function observeInjector(pid, expected) {
   }
 }
 
-function launchOfficialApp(app, port) {
-  const child = spawn(
-    app.executable,
-    [`--remote-debugging-address=127.0.0.1`, `--remote-debugging-port=${port}`],
-    { detached: true, stdio: 'ignore' },
+export async function launchOfficialApp(
+  app,
+  port,
+  {
+    runOpen = (command, args) => execFileAsync(command, args, { encoding: 'utf8' }),
+    listPids = listOfficialAppPids,
+    delay = (milliseconds) => new Promise((resolveDelay) => setTimeout(resolveDelay, milliseconds)),
+    attempts = 40,
+  } = {},
+) {
+  try {
+    await runOpen('/usr/bin/open', [
+      '-na',
+      app.appPath,
+      '--args',
+      '--remote-debugging-address=127.0.0.1',
+      `--remote-debugging-port=${port}`,
+    ]);
+  } catch {
+    return { pid: null };
+  }
+
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    const pids = await listPids(app);
+    if (pids.length === 1) return { pid: pids[0] };
+    if (pids.length > 1) return { pid: null };
+    await delay(100);
+  }
+  return { pid: null };
+}
+
+export async function requestOfficialAppQuit(
+  app,
+  expectedPid,
+  { listPids = listOfficialAppPids, runCommand = execFileAsync } = {},
+) {
+  const pids = await listPids(app);
+  if (pids.length !== 1 || pids[0] !== expectedPid) {
+    cliFail('APP_PROCESS_CHANGED', 'The official app process changed before login takeover; it was left running.');
+  }
+  await runCommand(
+    '/usr/bin/osascript',
+    ['-e', `tell application id "${app.bundleId}" to quit`],
+    { encoding: 'utf8' },
   );
-  child.unref();
-  return child;
+}
+
+export async function waitForOfficialAppExit(
+  app,
+  expectedPid,
+  {
+    listPids = listOfficialAppPids,
+    delay = (milliseconds) => new Promise((resolveDelay) => setTimeout(resolveDelay, milliseconds)),
+    attempts = 100,
+  } = {},
+) {
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    const pids = await listPids(app);
+    if (pids.length === 0) return true;
+    if (!pids.includes(expectedPid)) return false;
+    await delay(100);
+  }
+  return false;
 }
 
 function spawnWatcher({ themeSlug, port, appPid, app }) {
@@ -371,7 +432,20 @@ export async function terminateProcess(
   cliFail('INJECTOR_STOP_TIMEOUT', `Watcher ${pid} did not exit after SIGTERM; live theme removal was not claimed.`);
 }
 
+export function createStartupTakeoverGate({ uptime = systemUptime } = {}) {
+  let startupTakeoverAttempted = false;
+
+  return function startupTakeoverAllowed(windowSeconds) {
+    if (!Number.isInteger(windowSeconds) || windowSeconds < 30 || windowSeconds > 300) return false;
+    if (startupTakeoverAttempted || uptime() > windowSeconds) return false;
+    startupTakeoverAttempted = true;
+    return true;
+  };
+}
+
 export function createDefaultDependencies() {
+  const startupTakeoverAllowed = createStartupTakeoverGate();
+
   async function pauseInstalledTheme() {
     const paths = await persistentPaths();
     return pausePersistentInstallation(
@@ -447,13 +521,14 @@ export function createDefaultDependencies() {
       );
     },
 
-    async installAgent(themeSlug) {
+    async installAgent(themeSlug, { takeoverAtLogin = false } = {}) {
       await discoverOfficialApp();
       return installPersistentAgent({
         sourceRoot: projectRoot,
         home: homedir(),
         version: await projectVersion(),
         themeSlug,
+        takeoverAtLogin,
       });
     },
 
@@ -468,6 +543,8 @@ export function createDefaultDependencies() {
         version,
         themeSlug: config.themeSlug,
         enabled: config.enabled,
+        takeoverAtLogin: config.takeoverAtLogin,
+        startupTakeoverWindowSeconds: config.startupTakeoverWindowSeconds,
       });
       return { ...result, upgraded: true, enabled: config.enabled };
     },
@@ -667,6 +744,9 @@ export function createDefaultDependencies() {
               launchApp: launchOfficialApp,
               waitForRenderer,
               assertPortOwner: assertOfficialPortOwner,
+              startupTakeoverAllowed,
+              requestAppQuit: requestOfficialAppQuit,
+              waitForAppExit: waitForOfficialAppExit,
               applyTheme: ({ themeSlug, port, app }) =>
                 applyThemeAtPort({ themesRoot, themeSlug, port, appVersion: app.version }),
               removeTheme: ({ port }) => removeThemeAtPort({ port }),

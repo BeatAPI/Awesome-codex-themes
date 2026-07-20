@@ -64,7 +64,9 @@ describe('theme gallery', () => {
     expect(dialog).toHaveTextContent(/pause.*restore.*GitHub Issue/i);
     await user.click(screen.getByRole('button', { name: /copy install command/i }));
 
-    expect(writeText).toHaveBeenCalledWith('./bin/awesome-codex-themes install-agent satoru-gojo');
+    expect(writeText).toHaveBeenCalledWith(
+      './bin/awesome-codex-themes install-agent satoru-gojo --takeover-at-login',
+    );
     expect(screen.getByRole('button', { name: /command copied/i })).toBeInTheDocument();
   });
 

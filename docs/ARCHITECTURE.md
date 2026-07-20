@@ -39,7 +39,7 @@ The public CLI keeps `_watch` and `_agent` internal. The shell entrypoint finds 
 ```text
 Git clone (mutable source)
   → validated staging copy
-  → ~/Library/Application Support/AwesomeCodexThemes/releases/0.4.2/
+  → ~/Library/Application Support/AwesomeCodexThemes/releases/0.4.3/
   → atomic current symlink
   → ~/Library/LaunchAgents/io.github.awesome-codex-themes.agent.plist
   → current/bin/awesome-codex-themes _agent
@@ -47,7 +47,7 @@ Git clone (mutable source)
 
 The service never points at the clone. Configuration and state remain outside immutable release directories, use owner-only permissions, and are written atomically. Reinstallation boots out only this project's label, updates the installed plist/current release, bootstraps, and kickstarts it. Uninstall removes only project-owned paths.
 
-An enabled agent owns the CDP-enabled launch lifecycle. If an ordinary Dock launch is already running, it reports `restart-required` rather than terminating or relaunching it. This is the unavoidable open-source CDP boundary: the project can persistently inject only into an official process that was started with its verified loopback debugging endpoint.
+An enabled agent owns the CDP-enabled launch lifecycle. If an ordinary Dock launch is already running, it normally reports `restart-required` rather than touching it. Users who explicitly install with `--takeover-at-login` permit one narrowly bounded exception: during the first 120 seconds after boot, a single revalidated official PID may receive a normal macOS quit request, and only a confirmed complete exit is followed by a LaunchServices reopen. Multiple processes, changed identity, timeout, or any later session fail closed without force termination. This handles the macOS restore race while preserving the open-source CDP boundary.
 
 ## Theme catalog and static gallery
 

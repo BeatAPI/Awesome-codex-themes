@@ -71,7 +71,15 @@ async function validateRunnableThemes(sourceRoot, selectedTheme) {
 }
 
 export async function installPersistentAgent(
-  { sourceRoot, home, version, themeSlug, enabled = true },
+  {
+    sourceRoot,
+    home,
+    version,
+    themeSlug,
+    enabled = true,
+    takeoverAtLogin = false,
+    startupTakeoverWindowSeconds = 120,
+  },
   {
     copy = (source, destination) => cp(source, destination, { recursive: true, force: true }),
     bootout = bootoutLaunchAgent,
@@ -108,6 +116,8 @@ export async function installPersistentAgent(
     enabled,
     themeSlug,
     launchAtLogin: true,
+    takeoverAtLogin,
+    startupTakeoverWindowSeconds,
   });
 
   const plist = buildLaunchAgentPlist({

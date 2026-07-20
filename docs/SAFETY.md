@@ -22,7 +22,7 @@ It does not trust:
 1. Discover the official `ChatGPT.app` or legacy `Codex.app` bundle.
 2. Verify code signature integrity, bundle ID `com.openai.codex`, Team ID `2DC432GLL2`, architecture, and bundled Node version.
 3. Refuse a managed launch if an exact official app process is already running without this project's trusted endpoint.
-4. Select an unused non-privileged port and launch the inspected executable with `--remote-debugging-address=127.0.0.1`.
+4. Select an unused non-privileged port and launch the inspected app through macOS LaunchServices with `--remote-debugging-address=127.0.0.1`.
 5. Verify the listener address and confirm its PID belongs to the inspected official app.
 6. Query `/json/list` only on literal loopback and accept only the expected main `app://-/index.html` renderer.
 7. Load a local theme and validate its manifest, paths, sizes, CSS, and live-verified Codex version metadata.
@@ -38,9 +38,11 @@ It does not trust:
 3. Generate a user LaunchAgent that calls only the stable installed launcher.
 4. Boot out only this project's existing label, then bootstrap and kickstart the replacement.
 5. If Codex is absent, launch the verified official executable with a dynamic `127.0.0.1` CDP port and no alternate data directory.
-6. If Codex is already running unmanaged, record `restart-required` and leave it untouched.
-7. Reapply idempotently while the verified managed process and endpoint remain valid.
-8. After a Codex version change, attempt the verified or best-effort adapter and report a normal typed error if renderer verification fails.
+6. If Codex is already running unmanaged, record `restart-required` and leave it untouched by default.
+7. Only after explicit `--takeover-at-login` consent, within 120 seconds of boot, and with exactly one revalidated official PID, request one normal macOS quit and confirm complete exit before a managed relaunch.
+8. Never escalate a login handoff to a signal, force quit, wildcard process match, or second attempt; any ambiguity fails closed to `restart-required`.
+9. Reapply idempotently while the verified managed process and endpoint remain valid.
+10. After a Codex version change, attempt the verified or best-effort adapter and report a normal typed error if renderer verification fails.
 
 ## Restore sequence
 
@@ -65,8 +67,9 @@ For an installed persistent agent, `pause` and no-port `restore` first set `enab
 - An enabled persistent agent may relaunch Codex after it exits; use `pause` before intentionally keeping the app closed.
 - An official app update may receive a best-effort theme immediately; no claim of visual compatibility is made until that version is recorded as verified.
 - Malformed state is reported and not silently discarded.
+- Temporary app-discovery failures during login are recorded and retried by the persistent loop instead of disabling the service.
 - Concurrent third-party theme injectors are unsupported because their high-specificity rules can override either theme. Restore or disable the other theme before evaluating Awesome Codex Themes; this engine never deletes unrelated style elements.
 
 ## Non-goals
 
-The engine does not provide a security boundary against a malicious local administrator or a compromised official application. It does not secure CDP for unrelated software, sign a desktop distribution, intercept an ordinary Dock launch, or guarantee visual compatibility on unverified Codex versions.
+The engine does not provide a security boundary against a malicious local administrator or a compromised official application. It does not secure CDP for unrelated software, sign a desktop distribution, permanently intercept every ordinary Dock launch, or guarantee visual compatibility on unverified Codex versions.

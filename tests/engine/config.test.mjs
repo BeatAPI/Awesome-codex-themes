@@ -18,6 +18,8 @@ function validConfig(overrides = {}) {
     enabled: true,
     themeSlug: 'satoru-gojo',
     launchAtLogin: true,
+    takeoverAtLogin: true,
+    startupTakeoverWindowSeconds: 120,
     ...overrides,
   };
 }
@@ -31,10 +33,30 @@ describe('agent configuration', () => {
     expect(validateAgentConfig(validConfig())).toEqual(validConfig());
   });
 
+  test('keeps legacy schema-1 configurations safe by default', () => {
+    expect(validateAgentConfig({
+      schemaVersion: 1,
+      enabled: true,
+      themeSlug: 'satoru-gojo',
+      launchAtLogin: true,
+    })).toEqual({
+      schemaVersion: 1,
+      enabled: true,
+      themeSlug: 'satoru-gojo',
+      launchAtLogin: true,
+      takeoverAtLogin: false,
+      startupTakeoverWindowSeconds: 120,
+    });
+  });
+
   test.each([
     [{ schemaVersion: 2 }, 'CONFIG_SCHEMA_INVALID'],
     [{ enabled: 'yes' }, 'CONFIG_FIELD_INVALID'],
     [{ launchAtLogin: 'yes' }, 'CONFIG_FIELD_INVALID'],
+    [{ takeoverAtLogin: 'yes' }, 'CONFIG_FIELD_INVALID'],
+    [{ takeoverAtLogin: true, launchAtLogin: false }, 'CONFIG_FIELD_INVALID'],
+    [{ startupTakeoverWindowSeconds: 0 }, 'CONFIG_FIELD_INVALID'],
+    [{ startupTakeoverWindowSeconds: 301 }, 'CONFIG_FIELD_INVALID'],
     [{ themeSlug: '../escape' }, 'CONFIG_THEME_INVALID'],
   ])('rejects malformed desired configuration', (overrides, code) => {
     expect(() => validateAgentConfig(validConfig(overrides))).toThrowError(expect.objectContaining({ code }));
