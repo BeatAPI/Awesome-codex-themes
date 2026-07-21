@@ -27,7 +27,10 @@ All notable changes are documented here. The project follows semantic versioning
 
 ### Changed
 
-- **Satoru Gojo (五条 悟)** `1.2.0` remains the Featured package under the stable `satoru-gojo` slug. It is attempted on every numeric Codex Desktop version and marks `26.707.*` and `26.715.*` as live-verified.
+- **Satoru Gojo (五条 悟)** `1.2.1` keeps the Featured `satoru-gojo` slug, moves decorative status chrome away from profile actions, and gives keyboard focus the sole strong rail when Codex exposes combined skill filters as simultaneously pressed.
+- Skills reuse the plugin collection treatment in Chinese and English Codex interfaces.
+- Renderer maintenance now verifies the active theme before reapplying, while component-role reconciliation avoids redundant DOM writes and keeps the home/Composer layout stable through transient typing rerenders.
+- The theme remains attempted on every numeric Codex Desktop version and marks `26.707.*` and `26.715.*` as live-verified.
 - Four early engineering study themes and the temporary intake-slot scaffolding were removed from the release candidate.
 - Theme submissions use an explicit provenance and necessary-rights declaration.
 

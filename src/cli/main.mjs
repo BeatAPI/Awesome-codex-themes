@@ -24,6 +24,7 @@ import {
 } from '../engine/macos.mjs';
 import {
   applyThemeAtPort,
+  maintainThemeAtPort,
   removeThemeAtPort,
   restoreThemeSession,
   startThemeSession,
@@ -701,7 +702,7 @@ export function createDefaultDependencies() {
       while (!stopping && processExists(appPid)) {
         try {
           await assertOfficialPortOwner(app, port);
-          await applyThemeAtPort({ themesRoot, themeSlug, port, appVersion: app.version });
+          await maintainThemeAtPort({ themesRoot, themeSlug, port, appVersion: app.version });
         } catch (error) {
           if (!RETRYABLE_CDP_ERRORS.has(error?.code)) throw error;
         }
@@ -748,7 +749,7 @@ export function createDefaultDependencies() {
               requestAppQuit: requestOfficialAppQuit,
               waitForAppExit: waitForOfficialAppExit,
               applyTheme: ({ themeSlug, port, app }) =>
-                applyThemeAtPort({ themesRoot, themeSlug, port, appVersion: app.version }),
+                maintainThemeAtPort({ themesRoot, themeSlug, port, appVersion: app.version }),
               removeTheme: ({ port }) => removeThemeAtPort({ port }),
             },
             shouldStop: () => stopping,

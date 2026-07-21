@@ -6,6 +6,7 @@ import { afterEach, describe, expect, test, vi } from 'vitest';
 import {
   SessionError,
   applyThemeAtPort,
+  maintainThemeAtPort,
   restoreThemeSession,
   startThemeSession,
 } from '../../src/engine/session.mjs';
@@ -125,6 +126,40 @@ describe('applyThemeAtPort', () => {
         evaluate,
       }),
     ).resolves.toEqual({ theme: 'test-theme', adapter: 'codex-best-effort', renderers: 1 });
+  });
+});
+
+describe('maintainThemeAtPort', () => {
+  test('does not reapply while the requested theme is already active', async () => {
+    const isActive = vi.fn(async () => true);
+    const apply = vi.fn();
+
+    await expect(
+      maintainThemeAtPort(
+        { themeSlug: 'test-theme', port: 9341, appVersion: '26.707.72221' },
+        { isActive, apply },
+      ),
+    ).resolves.toEqual({ theme: 'test-theme', active: true, reapplied: false });
+
+    expect(apply).not.toHaveBeenCalled();
+  });
+
+  test('reapplies once after the renderer loses the requested theme', async () => {
+    const options = { themeSlug: 'test-theme', port: 9341, appVersion: '26.707.72221' };
+    const apply = vi.fn(async () => ({ theme: 'test-theme', adapter: 'codex-26.707', renderers: 1 }));
+
+    await expect(
+      maintainThemeAtPort(options, { isActive: async () => false, apply }),
+    ).resolves.toEqual({
+      theme: 'test-theme',
+      adapter: 'codex-26.707',
+      renderers: 1,
+      active: true,
+      reapplied: true,
+    });
+
+    expect(apply).toHaveBeenCalledTimes(1);
+    expect(apply).toHaveBeenCalledWith(options);
   });
 });
 

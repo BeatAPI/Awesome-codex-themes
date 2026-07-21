@@ -12,7 +12,7 @@ describe('Satoru Gojo flagship theme', () => {
     const loaded = await loadThemePackage(themeRoot);
 
     expect(loaded.manifest.slug).toBe('satoru-gojo');
-    expect(loaded.manifest.version).toBe('1.2.0');
+    expect(loaded.manifest.version).toBe('1.2.1');
     expect(loaded.manifest.name).toBe('Satoru Gojo');
     expect(loaded.manifest.nativeName).toBe('五条 悟');
     expect(loaded.manifest.nativeLocale).toBe('ja-JP');
@@ -151,10 +151,19 @@ describe('Satoru Gojo flagship theme', () => {
       /\[data-awesome-codex-plugin-card="true"\][^{]*\{[^}]*border:\s*0\s*!important/s,
     );
     expect(css).toMatch(
+      /\[data-awesome-codex-plugin-tab="true"\]\[aria-pressed="true"\]:not\(:focus\)\s*\{[^}]*box-shadow:\s*none\s*!important/s,
+    );
+    expect(css).toMatch(
+      /\[data-awesome-codex-plugin-tab="true"\]\[aria-pressed="true"\]:focus\s*\{[^}]*inset\s+2px\s+0\s+#5e7fe0/s,
+    );
+    expect(css).toMatch(
       /\[data-awesome-codex-composer-control="access"\]::before\s*\{[^}]*border:\s*0\s*!important/s,
     );
     expect(css).toMatch(
       /\.act-experience__status\s*\{[^}]*border-radius:\s*0\s*;/s,
+    );
+    expect(css).toMatch(
+      /\.act-experience__status\s*\{[^}]*right:\s*max\(14rem,\s*env\(safe-area-inset-right\)\)\s*;/s,
     );
     expect(css).toMatch(
       /\[data-awesome-codex-artifact-panel="true"\]\s*\{[^}]*border:\s*0\s*!important/s,
