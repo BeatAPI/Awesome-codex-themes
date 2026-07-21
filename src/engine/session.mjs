@@ -5,6 +5,7 @@ import { evaluateOnRendererTargets } from './cdp.mjs';
 import {
   buildApplyExpression,
   buildRemoveExpression,
+  buildVerificationExpression,
 } from './injection.mjs';
 import { matchesProcessIdentity } from './state.mjs';
 import { assertThemeCompatibility, loadThemePackage } from './theme.mjs';
@@ -45,6 +46,38 @@ export async function applyThemeAtPort({
     sessionFail('THEME_APPLY_UNVERIFIED', 'The renderer did not confirm the requested theme marker.');
   }
   return { theme: themeSlug, adapter: adapter.id, renderers: results.length };
+}
+
+export async function isThemeActiveAtPort({
+  themeSlug,
+  port,
+  appVersion,
+  evaluate = evaluateOnRendererTargets,
+}) {
+  const adapter = await loadCodexAdapter(appVersion);
+  const results = await evaluate({
+    port,
+    expression: buildVerificationExpression(themeSlug, adapter.id),
+  });
+  return Boolean(
+    Array.isArray(results) &&
+      results.length > 0 &&
+      results.every(
+        (result) =>
+          result?.pass && result.theme === themeSlug && result.adapter === adapter.id,
+      ),
+  );
+}
+
+export async function maintainThemeAtPort(
+  options,
+  { isActive = isThemeActiveAtPort, apply = applyThemeAtPort } = {},
+) {
+  if (await isActive(options)) {
+    return { theme: options.themeSlug, active: true, reapplied: false };
+  }
+  const result = await apply(options);
+  return { ...result, active: true, reapplied: true };
 }
 
 export async function removeThemeAtPort({ port, evaluate = evaluateOnRendererTargets }) {

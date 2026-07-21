@@ -53,7 +53,7 @@ describe('public English-first documentation', () => {
     expect(releasing).toContain('Public visibility gate');
     expect(releasing).toContain('pnpm check');
     expect(releasing).toContain('macOS lifecycle evidence');
-    expect(releasing).toContain('v0.4.3');
+    expect(releasing).toContain('v0.4.4');
   });
 
   test('publishes only complete runnable theme previews', async () => {
@@ -100,6 +100,6 @@ describe('public English-first documentation', () => {
 
   test('bumps the platform for the persistent-agent release line', async () => {
     const packageJson = JSON.parse(await text('package.json'));
-    expect(packageJson.version).toBe('0.4.3');
+    expect(packageJson.version).toBe('0.4.4');
   });
 });

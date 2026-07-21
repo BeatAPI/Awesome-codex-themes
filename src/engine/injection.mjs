@@ -217,7 +217,7 @@ export function buildApplyExpression(theme, adapter) {
     const findPluginSearchInput = () => {
       for (const candidate of document.querySelectorAll('input[placeholder]')) {
         const placeholder = candidate.getAttribute('placeholder') || '';
-        if (/search plugins|搜索插件/i.test(placeholder)) return candidate;
+        if (/search (?:plugins|skills)|搜索(?:插件|技能)/i.test(placeholder)) return candidate;
       }
       return null;
     };
@@ -302,23 +302,23 @@ export function buildApplyExpression(theme, adapter) {
         'awesomeCodexCollectionStatus',
         'awesomeCodexCollectionAction',
       ];
-      for (const roleKey of roleKeys) {
-        const attribute = 'data-' + roleKey.replace(/[A-Z]/g, (letter) => '-' + letter.toLowerCase());
-        for (const candidate of document.querySelectorAll('[' + attribute + ']')) {
-          delete candidate.dataset[roleKey];
+      const desiredRoles = new Map(roleKeys.map((roleKey) => [roleKey, new Map()]));
+      const markRole = (candidate, roleKey, value = 'true') => {
+        if (candidate && desiredRoles.has(roleKey)) {
+          desiredRoles.get(roleKey).set(candidate, String(value));
         }
-      }
+      };
 
       for (const candidate of document.querySelectorAll('.bg-token-dropdown-background:not(header)')) {
         const headers = candidate.querySelectorAll('section > header.bg-token-dropdown-background');
         if (headers.length === 0) continue;
-        candidate.dataset.awesomeCodexArtifactPanel = 'true';
+        markRole(candidate, 'awesomeCodexArtifactPanel');
         const panelHost =
           candidate.closest('[data-pip-obstacle="thread-summary-panel"]') || candidate.parentElement;
-        if (panelHost) panelHost.dataset.awesomeCodexArtifactPanelHost = 'true';
-        for (const header of headers) header.dataset.awesomeCodexArtifactHeader = 'true';
+        markRole(panelHost, 'awesomeCodexArtifactPanelHost');
+        for (const header of headers) markRole(header, 'awesomeCodexArtifactHeader');
         for (const panelMore of candidate.querySelectorAll('.text-token-conversation-summary-trailing')) {
-          panelMore.dataset.awesomeCodexPanelMore = 'true';
+          markRole(panelMore, 'awesomeCodexPanelMore');
         }
       }
 
@@ -328,50 +328,50 @@ export function buildApplyExpression(theme, adapter) {
           candidate.querySelector('.text-token-conversation-body'),
         );
         if (isCompletedSummary) {
-          candidate.dataset.awesomeCodexCompletedSummary = 'true';
+          markRole(candidate, 'awesomeCodexCompletedSummary');
         } else if (candidate.classList.contains('group/activity-header')) {
-          candidate.dataset.awesomeCodexActivityItem = 'true';
+          markRole(candidate, 'awesomeCodexActivityItem');
         }
       }
 
       for (const candidate of document.querySelectorAll('.app-header-tint :is(button, [role="button"])')) {
-        candidate.dataset.awesomeCodexHeaderControl = 'true';
+        markRole(candidate, 'awesomeCodexHeaderControl');
       }
 
       for (const candidate of document.querySelectorAll('[class~="group/folder-row"]')) {
-        candidate.dataset.awesomeCodexProjectRow = 'true';
+        markRole(candidate, 'awesomeCodexProjectRow');
       }
       for (const [index, candidate] of [
-        ...document.querySelectorAll('[data-awesome-codex-project-row="true"]'),
+        ...document.querySelectorAll('[class~="group/folder-row"]'),
       ].entries()) {
-        candidate.dataset.awesomeCodexDomainId = 'D-' + String(index + 1).padStart(2, '0');
+        markRole(candidate, 'awesomeCodexDomainId', 'D-' + String(index + 1).padStart(2, '0'));
       }
       for (const dragHandle of document.querySelectorAll('[class~="cursor-grab"]')) {
         const taskRow = dragHandle.closest('div.group.relative') || dragHandle.parentElement;
-        if (taskRow) taskRow.dataset.awesomeCodexTaskRow = 'true';
+        markRole(taskRow, 'awesomeCodexTaskRow');
       }
 
       for (const sidebar of document.querySelectorAll('.app-shell-left-panel')) {
         const domainHeaders = [...sidebar.querySelectorAll('[class~="group/section-toggle"]')];
         for (const candidate of domainHeaders) {
-          candidate.dataset.awesomeCodexDomainHeader = 'true';
+          markRole(candidate, 'awesomeCodexDomainHeader');
         }
         const firstDomainHeader = domainHeaders[0] ?? null;
         for (const candidate of sidebar.querySelectorAll('button')) {
           const label = (candidate.getAttribute('aria-label') || '').toLocaleLowerCase();
           if (/switch mode|切换模式/.test(label)) {
-            candidate.dataset.awesomeCodexSidebarBrand = 'true';
+            markRole(candidate, 'awesomeCodexSidebarBrand');
           }
           if (candidate.querySelector('img.rounded-full')) {
-            candidate.dataset.awesomeCodexAccountIdentity = 'true';
-            candidate.dataset.awesomeCodexAccountTrigger = 'true';
+            markRole(candidate, 'awesomeCodexAccountIdentity');
+            markRole(candidate, 'awesomeCodexAccountTrigger');
           }
         }
         for (const candidate of sidebar.querySelectorAll('button')) {
           if (candidate === firstDomainHeader) break;
           if (candidate.classList.contains('h-[var(--height-token-row)]')) {
-            const currentIndex = sidebar.querySelectorAll('[data-awesome-codex-sidebar-nav]').length + 1;
-            candidate.dataset.awesomeCodexSidebarNav = String(currentIndex).padStart(2, '0');
+            const currentIndex = desiredRoles.get('awesomeCodexSidebarNav').size + 1;
+            markRole(candidate, 'awesomeCodexSidebarNav', String(currentIndex).padStart(2, '0'));
           }
         }
         for (const candidate of sidebar.querySelectorAll('button[aria-label], [role="button"][aria-label]')) {
@@ -382,9 +382,9 @@ export function buildApplyExpression(theme, adapter) {
             label.includes('个人资料菜单') ||
             label.includes('账户菜单')
           ) {
-            candidate.dataset.awesomeCodexAccountTrigger = 'true';
+            markRole(candidate, 'awesomeCodexAccountTrigger');
           } else if (label.includes('help') || label.includes('帮助')) {
-            candidate.dataset.awesomeCodexHelpTrigger = 'true';
+            markRole(candidate, 'awesomeCodexHelpTrigger');
           }
         }
       }
@@ -393,9 +393,9 @@ export function buildApplyExpression(theme, adapter) {
         '[data-awesome-codex-home="true"] [data-feature="game-source"]',
       );
       if (homePrompt) {
-        homePrompt.dataset.awesomeCodexHomePrompt = 'true';
+        markRole(homePrompt, 'awesomeCodexHomePrompt');
         const domainMarker = homePrompt.querySelector('button');
-        if (domainMarker) domainMarker.dataset.awesomeCodexDomainMarker = 'true';
+        markRole(domainMarker, 'awesomeCodexDomainMarker');
       }
 
       for (const composer of document.querySelectorAll('.composer-surface-chrome')) {
@@ -423,7 +423,7 @@ export function buildApplyExpression(theme, adapter) {
           } else if (candidate.classList.contains('h-token-button-composer') && !isSquare) {
             control = 'model';
           }
-          if (control) candidate.dataset.awesomeCodexComposerControl = control;
+          if (control) markRole(candidate, 'awesomeCodexComposerControl', control);
         }
       }
 
@@ -432,23 +432,23 @@ export function buildApplyExpression(theme, adapter) {
         const pluginRoot = closestMainSurface(pluginSearchInput);
         const searchSurface = pluginSearchInput.parentElement;
         if (searchSurface) {
-          searchSurface.dataset.awesomeCodexPluginSearch = 'true';
-          searchSurface.dataset.awesomeCodexCollectionSearch = 'true';
+          markRole(searchSurface, 'awesomeCodexPluginSearch');
+          markRole(searchSurface, 'awesomeCodexCollectionSearch');
         }
 
         for (const heading of pluginRoot.querySelectorAll('h2')) {
           if (heading.parentElement) {
-            heading.parentElement.dataset.awesomeCodexPluginSectionHeader = 'true';
-            heading.parentElement.dataset.awesomeCodexCollectionSectionHeader = 'true';
+            markRole(heading.parentElement, 'awesomeCodexPluginSectionHeader');
+            markRole(heading.parentElement, 'awesomeCodexCollectionSectionHeader');
           }
         }
 
         for (const installedRow of pluginRoot.querySelectorAll('[class~="group/plugin-row"]')) {
           for (const button of installedRow.querySelectorAll(':scope > button')) {
-            button.dataset.awesomeCodexPluginInstalled = 'true';
-            button.dataset.awesomeCodexCollectionRow = 'true';
+            markRole(button, 'awesomeCodexPluginInstalled');
+            markRole(button, 'awesomeCodexCollectionRow');
             const icon = button.querySelector('img')?.parentElement;
-            if (icon) icon.dataset.awesomeCodexPluginIcon = 'true';
+            markRole(icon, 'awesomeCodexPluginIcon');
           }
         }
 
@@ -458,8 +458,8 @@ export function buildApplyExpression(theme, adapter) {
             !candidate.closest('[data-awesome-codex-plugin-card="true"]') &&
             !candidate.closest('[class~="group/plugin-row"]')
           ) {
-            candidate.dataset.awesomeCodexPluginTab = 'true';
-            candidate.dataset.awesomeCodexCollectionTab = 'true';
+            markRole(candidate, 'awesomeCodexPluginTab');
+            markRole(candidate, 'awesomeCodexCollectionTab');
           }
         }
 
@@ -467,14 +467,16 @@ export function buildApplyExpression(theme, adapter) {
           const iconImage = candidate.querySelector('img');
           const contentRow = candidate.querySelector(':scope > .flex.items-center.gap-3');
           if (!iconImage || !contentRow) continue;
-          candidate.dataset.awesomeCodexPluginCard = 'true';
-          candidate.dataset.awesomeCodexCollectionRow = 'true';
+          markRole(candidate, 'awesomeCodexPluginCard');
+          markRole(candidate, 'awesomeCodexCollectionRow');
           const icon = iconImage.parentElement;
-          if (icon) icon.dataset.awesomeCodexPluginIcon = 'true';
+          markRole(icon, 'awesomeCodexPluginIcon');
           for (const action of candidate.querySelectorAll('button')) {
-            action.dataset.awesomeCodexPluginAction = action.classList.contains('aspect-square')
-              ? 'menu'
-              : 'install';
+            markRole(
+              action,
+              'awesomeCodexPluginAction',
+              action.classList.contains('aspect-square') ? 'menu' : 'install',
+            );
           }
         }
       }
@@ -482,33 +484,27 @@ export function buildApplyExpression(theme, adapter) {
       const scheduledSearchInput = findScheduledSearchInput();
       if (scheduledSearchInput) {
         const scheduledRoot = closestMainSurface(scheduledSearchInput);
-        if (scheduledSearchInput.parentElement) {
-          scheduledSearchInput.parentElement.dataset.awesomeCodexCollectionSearch = 'true';
-        }
+        markRole(scheduledSearchInput.parentElement, 'awesomeCodexCollectionSearch');
         for (const candidate of scheduledRoot.querySelectorAll('button.shrink-0.h-token-button-composer')) {
-          candidate.dataset.awesomeCodexCollectionTab = 'true';
+          markRole(candidate, 'awesomeCodexCollectionTab');
         }
         for (const candidate of scheduledRoot.querySelectorAll('.automation-row')) {
-          candidate.dataset.awesomeCodexCollectionRow = 'true';
+          markRole(candidate, 'awesomeCodexCollectionRow');
         }
         for (const heading of scheduledRoot.querySelectorAll('h2')) {
-          if (heading.parentElement) {
-            heading.parentElement.dataset.awesomeCodexCollectionSectionHeader = 'true';
-          }
+          markRole(heading.parentElement, 'awesomeCodexCollectionSectionHeader');
         }
       }
 
       const sitesSearchInput = findSitesSearchInput();
       if (sitesSearchInput) {
         const sitesRoot = closestMainSurface(sitesSearchInput);
-        if (sitesSearchInput.parentElement) {
-          sitesSearchInput.parentElement.dataset.awesomeCodexCollectionSearch = 'true';
-        }
+        markRole(sitesSearchInput.parentElement, 'awesomeCodexCollectionSearch');
         const emptyState = sitesRoot.querySelector('.max-w-xl.flex-col.items-center');
         if (emptyState) {
-          emptyState.dataset.awesomeCodexCollectionEmpty = 'true';
+          markRole(emptyState, 'awesomeCodexCollectionEmpty');
           const action = emptyState.querySelector('button');
-          if (action) action.dataset.awesomeCodexCollectionAction = 'primary';
+          markRole(action, 'awesomeCodexCollectionAction', 'primary');
         }
       }
 
@@ -516,16 +512,25 @@ export function buildApplyExpression(theme, adapter) {
       const pullRequestsRoot =
         closestMainSurface(pullRequestsSearchInput) || findPullRequestsRoot();
       if (pullRequestsRoot) {
-        if (pullRequestsSearchInput?.parentElement) {
-          pullRequestsSearchInput.parentElement.dataset.awesomeCodexCollectionSearch = 'true';
-        }
+        markRole(pullRequestsSearchInput?.parentElement, 'awesomeCodexCollectionSearch');
         for (const candidate of pullRequestsRoot.querySelectorAll('button.shrink-0.h-token-button-composer')) {
-          candidate.dataset.awesomeCodexCollectionTab = 'true';
+          markRole(candidate, 'awesomeCodexCollectionTab');
         }
         const status = pullRequestsRoot.querySelector('[role="status"]');
-        if (status) status.dataset.awesomeCodexCollectionStatus = 'true';
+        markRole(status, 'awesomeCodexCollectionStatus');
         const emptyState = pullRequestsRoot.querySelector('.max-w-xl.flex-col.items-center');
-        if (emptyState) emptyState.dataset.awesomeCodexCollectionEmpty = 'true';
+        markRole(emptyState, 'awesomeCodexCollectionEmpty');
+      }
+
+      for (const roleKey of roleKeys) {
+        const desired = desiredRoles.get(roleKey);
+        const attribute = 'data-' + roleKey.replace(/[A-Z]/g, (letter) => '-' + letter.toLowerCase());
+        for (const candidate of document.querySelectorAll('[' + attribute + ']')) {
+          if (!desired.has(candidate)) delete candidate.dataset[roleKey];
+        }
+        for (const [candidate, value] of desired) {
+          if (candidate.dataset[roleKey] !== value) candidate.dataset[roleKey] = value;
+        }
       }
     };
     const updateSurface = () => {
@@ -534,6 +539,7 @@ export function buildApplyExpression(theme, adapter) {
       const sitesSearchInput = findSitesSearchInput();
       const pullRequestsSearchInput = findPullRequestsSearchInput();
       const pullRequestsRoot = findPullRequestsRoot();
+      const retainHomeStructure = root.dataset.awesomeCodexSurface === 'home';
       let home = null;
       if (
         !pluginSearchInput &&
@@ -548,7 +554,11 @@ export function buildApplyExpression(theme, adapter) {
           const suggestions = candidate.querySelector('[class~="group/home-suggestions"]');
           const hasIdentity = isVisible(icon) && isVisible(source);
           const hasActions = isVisible(source) && isVisible(suggestions);
-          if (isVisible(candidate) && (hasIdentity || hasActions)) {
+          const hasHomeStructure = Boolean(source && (icon || suggestions));
+          if (
+            isVisible(candidate) &&
+            (hasIdentity || hasActions || (retainHomeStructure && hasHomeStructure))
+          ) {
             home = candidate;
             break;
           }
@@ -557,8 +567,8 @@ export function buildApplyExpression(theme, adapter) {
       for (const candidate of document.querySelectorAll('[data-awesome-codex-home]')) {
         if (candidate !== home) delete candidate.dataset.awesomeCodexHome;
       }
-      if (home) home.dataset.awesomeCodexHome = 'true';
-      root.dataset.awesomeCodexSurface = pluginSearchInput
+      if (home && home.dataset.awesomeCodexHome !== 'true') home.dataset.awesomeCodexHome = 'true';
+      const nextSurface = pluginSearchInput
         ? 'plugins'
         : scheduledSearchInput
           ? 'scheduled'
@@ -569,14 +579,20 @@ export function buildApplyExpression(theme, adapter) {
               : home
                 ? 'home'
                 : 'workspace';
+      if (root.dataset.awesomeCodexSurface !== nextSurface) {
+        root.dataset.awesomeCodexSurface = nextSurface;
+      }
       updateComponentRoles();
       const artifactPanels = [...document.querySelectorAll('[data-awesome-codex-artifact-panel="true"]')];
       if (artifactPanels.length === 0) {
         delete root.dataset.awesomeCodexArtifactPanelState;
       } else {
-        root.dataset.awesomeCodexArtifactPanelState = artifactPanels.some(isEffectivelyVisible)
+        const nextPanelState = artifactPanels.some(isEffectivelyVisible)
           ? 'open'
           : 'closed';
+        if (root.dataset.awesomeCodexArtifactPanelState !== nextPanelState) {
+          root.dataset.awesomeCodexArtifactPanelState = nextPanelState;
+        }
       }
     };
     updateSurface();

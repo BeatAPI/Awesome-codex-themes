@@ -224,7 +224,7 @@ After an official Codex update, the agent attempts the shared adapter again. If 
 
 ## Current status
 
-Version `0.4.3` includes the engine, twelve complete local theme packages, self-contained user installation, opt-in bounded login takeover, LaunchAgent persistence, conflict diagnostics, safe restore, and a static Gallery.
+Version `0.4.4` includes the engine, twelve complete local theme packages, self-contained user installation, opt-in bounded login takeover, verification-first renderer maintenance, LaunchAgent persistence, conflict diagnostics, safe restore, and a static Gallery.
 
 | Capability | State |
 | --- | --- |

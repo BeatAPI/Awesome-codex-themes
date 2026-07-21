@@ -1,6 +1,6 @@
 # Implementation status
 
-Last verified: 2026-07-20 (Asia/Shanghai)
+Last verified: 2026-07-21 (Asia/Shanghai)
 
 ## State definitions
 
@@ -23,7 +23,7 @@ Last verified: 2026-07-20 (Asia/Shanghai)
 | Full app exit/relaunch recovery | Integration verified | An unmanaged process transitioned through `restart-required` and was replaced by a verified CDP-managed official process without a second profile. |
 | Login service bootstrap | Implemented and integration verified; physical reboot pending | `RunAtLoad`/`KeepAlive`, LaunchServices PID acquisition, and an opt-in one-shot 120-second login handoff have automated coverage. A real bootout/bootstrap and managed app restart were verified; a full physical reboot after this implementation is still pending. |
 | Best-effort version fallback | Implemented | Automated coverage confirms every valid numeric app version selects the shared `codex-best-effort` adapter instead of being rejected. Live visual verification on an unverified future build remains pending. |
-| Satoru Gojo (native Japanese name: 五条 悟) | Featured complete package, experimental compatibility | Version `1.2.0` is live-verified on 26.707/26.715 with current assets, owned-state behavior, and persistent lifecycle recovery. |
+| Satoru Gojo (native Japanese name: 五条 悟) | Featured complete package, experimental compatibility | Version `1.2.1` is live-verified on 26.707/26.715 with current assets, owned-state behavior, persistent lifecycle recovery, stable typing geometry, and collision-safe status chrome. |
 | Twelve-theme collection | Implemented and current-version verified | Satoru Gojo is Featured. Eleven additional Schema 2 packages include complete local backgrounds, previews, CSS, metadata, and component assets; all eleven passed the recorded 26.715 workspace, right-panel, home, plugins, scheduled, sites, pull-request, and narrow-window matrix. Compatibility remains experimental outside the recorded builds. |
 | Static Gallery | Implemented | Catalog, search, native-name discovery, detail, copy, and production-build tests are present. |
 | GitHub repository | Publicly released | The repository is public under `BeatAPI/Awesome-codex-themes`; no tagged GitHub Release has been created yet. |
@@ -42,7 +42,7 @@ Last verified: 2026-07-20 (Asia/Shanghai)
 
 The active renderer was checked for owned style/chrome markers, theme variables, workspace classification, idempotent apply, renderer reload reapply, pointer-transparent decoration, and complete owned-state removal. Private screenshots with active workspace content and internal visual iteration labels remain local development evidence and are not public release assets. See the sanitized [26.715 lifecycle audit](audits/2026-07-17-satoru-gojo-26.715-lifecycle-audit.md).
 
-The public source candidate is `0.4.3`. The current local service is separately verified as `active` on Codex `26.715.31925` with a literal-loopback endpoint and one owned `nocturne-lite` style; installing the final `0.4.3` local derivative and exercising a physical reboot remain separate gates.
+The public source candidate is `0.4.4`. The current maintainer runtime is separately verified as `active` on Codex `26.715.52143` with a literal-loopback endpoint, one owned `satoru-gojo` style/chrome pair, stable Composer geometry during real text input, and no maintenance rewrites while the theme remains active. Installing the final `0.4.4` source candidate and exercising a physical reboot remain separate gates.
 
 The legacy injector plist and script were backed up outside the repository before migration. The old plist is no longer present in `~/Library/LaunchAgents`; its source script was not deleted.
 
@@ -50,4 +50,4 @@ The legacy injector plist and script were backed up outside the repository befor
 
 The approved live session recorded the unmanaged `restart-required` transition, renderer reload reapply, pause and owned-state removal, paused-state upgrade, resume, managed relaunch, a real LaunchAgent bootout/bootstrap cycle, the former unknown-version safe mode before the policy changed, uninstall, and a successful reinstall with the original Codex profile preserved.
 
-A clean release candidate passed `release:check`: 34 test files / 248 tests, all 12 theme packages, TypeScript, production Gallery build, production dependency audit, public-file hygiene, and diff whitespace. The public repository and anonymous clone path are live. Remaining tagged-release gates are a physical logout/reboot observation, the exact-commit CI result, and an explicit version-tag decision.
+A clean release candidate passed `release:check`: 34 test files / 272 tests, all 12 theme packages, TypeScript, production Gallery build, production dependency audit, public-file hygiene, and diff whitespace. The public repository and anonymous clone path are live. Remaining tagged-release gates are a physical logout/reboot observation, the exact-commit CI result, and an explicit version-tag decision.

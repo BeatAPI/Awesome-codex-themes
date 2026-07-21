@@ -804,6 +804,18 @@ html.awesome-codex-theme[data-awesome-codex-theme="satoru-gojo"][data-awesome-co
   box-shadow: inset 2px 0 #5e7fe0 !important;
 }
 
+html.awesome-codex-theme[data-awesome-codex-theme="satoru-gojo"][data-awesome-codex-surface="plugins"] [data-awesome-codex-plugin-tab="true"][aria-pressed="true"]:not(:focus) {
+  color: #657a9c !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html.awesome-codex-theme[data-awesome-codex-theme="satoru-gojo"][data-awesome-codex-surface="plugins"] [data-awesome-codex-plugin-tab="true"][aria-pressed="true"]:focus {
+  color: #2b4e86 !important;
+  background: linear-gradient(90deg, #dceaffb8, #eef6ff69 78%, transparent) !important;
+  box-shadow: inset 2px 0 #5e7fe0 !important;
+}
+
 html.awesome-codex-theme[data-awesome-codex-theme="satoru-gojo"][data-awesome-codex-surface="plugins"] [data-awesome-codex-plugin-tab="true"]:hover {
   color: #315a97 !important;
   background: #dfeeff73 !important;
@@ -1645,7 +1657,8 @@ html.awesome-codex-theme-experience[data-awesome-codex-surface="home"] #awesome-
 #awesome-codex-theme-chrome .act-experience__status {
   position: absolute;
   top: 11px;
-  right: 118px;
+  /* Keep Codex's native profile visibility and edit actions unobstructed. */
+  right: max(14rem, env(safe-area-inset-right));
   display: flex;
   align-items: center;
   gap: 8px;

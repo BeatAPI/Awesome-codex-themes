@@ -365,6 +365,46 @@ describe('theme injection expressions', () => {
     expect(project.dataset.awesomeCodexDomainMarker).toBeUndefined();
   });
 
+  test('keeps the home surface stable while its visible children rerender during typing', async () => {
+    const dom = createDom();
+    const createHome = ({ visibleChildren }) => {
+      const home = dom.window.document.createElement('main');
+      home.setAttribute('role', 'main');
+      const icon = dom.window.document.createElement('div');
+      icon.dataset.testid = 'home-icon';
+      const source = dom.window.document.createElement('div');
+      source.dataset.feature = 'game-source';
+      const suggestions = dom.window.document.createElement('div');
+      suggestions.className = 'group/home-suggestions';
+      Object.defineProperty(home, 'getBoundingClientRect', {
+        value: () => ({ width: 600, height: 400, top: 80, left: 300, right: 900, bottom: 480 }),
+      });
+      if (visibleChildren) {
+        for (const candidate of [icon, source, suggestions]) {
+          Object.defineProperty(candidate, 'getBoundingClientRect', {
+            value: () => ({ width: 300, height: 80, top: 100, left: 350, right: 650, bottom: 180 }),
+          });
+        }
+      }
+      home.append(icon, source, suggestions);
+      return home;
+    };
+
+    const initialHome = createHome({ visibleChildren: true });
+    dom.window.document.body.appendChild(initialHome);
+    dom.window.eval(buildApplyExpression(runtimeTheme(), runtimeAdapter()));
+    await new Promise((resolve) => dom.window.setTimeout(resolve, 0));
+    expect(dom.window.document.documentElement.dataset.awesomeCodexSurface).toBe('home');
+
+    const rerenderedHome = createHome({ visibleChildren: false });
+    initialHome.replaceWith(rerenderedHome);
+    await new Promise((resolve) => dom.window.setTimeout(resolve, 0));
+    await new Promise((resolve) => dom.window.setTimeout(resolve, 0));
+
+    expect(dom.window.document.documentElement.dataset.awesomeCodexSurface).toBe('home');
+    expect(rerenderedHome.dataset.awesomeCodexHome).toBe('true');
+  });
+
   test('classifies the plugin marketplace and its interactive surfaces', async () => {
     const dom = createDom();
     const pluginMarket = dom.window.document.createElement('main');
@@ -450,6 +490,61 @@ describe('theme injection expressions', () => {
     dom.window.eval(buildRemoveExpression());
     expect(card.dataset.awesomeCodexPluginCard).toBeUndefined();
     expect(install.dataset.awesomeCodexPluginAction).toBeUndefined();
+  });
+
+  test('reuses the plugin marketplace treatment for the skills search surface', async () => {
+    const dom = createDom();
+    const skillsMarket = dom.window.document.createElement('main');
+    skillsMarket.setAttribute('role', 'main');
+    const search = dom.window.document.createElement('div');
+    const searchInput = dom.window.document.createElement('input');
+    searchInput.placeholder = '搜索技能';
+    search.appendChild(searchInput);
+    skillsMarket.appendChild(search);
+    dom.window.document.body.appendChild(skillsMarket);
+
+    dom.window.eval(buildApplyExpression(runtimeTheme(), runtimeAdapter()));
+    await new Promise((resolve) => dom.window.setTimeout(resolve, 0));
+
+    expect(dom.window.document.documentElement.dataset.awesomeCodexSurface).toBe('plugins');
+    expect(search.dataset.awesomeCodexPluginSearch).toBe('true');
+    expect(search.dataset.awesomeCodexCollectionSearch).toBe('true');
+  });
+
+  test('does not reclassify the document for transient composer typing mutations', async () => {
+    const dom = createDom();
+    const projectRow = dom.window.document.createElement('div');
+    projectRow.className = 'group/folder-row';
+    const composer = dom.window.document.createElement('div');
+    composer.className = 'composer-surface-chrome';
+    const editor = dom.window.document.createElement('div');
+    editor.className = 'ProseMirror';
+    editor.contentEditable = 'true';
+    const sendButton = dom.window.document.createElement('button');
+    sendButton.className = 'composer-send-button';
+    composer.append(editor, sendButton);
+    dom.window.document.body.append(projectRow, composer);
+
+    dom.window.eval(buildApplyExpression(runtimeTheme(), runtimeAdapter()));
+    await new Promise((resolve) => dom.window.setTimeout(resolve, 0));
+
+    let themeAttributeMutationCount = 0;
+    const observer = new dom.window.MutationObserver((records) => {
+      themeAttributeMutationCount += records.filter(
+        (record) =>
+          record.type === 'attributes' &&
+          record.attributeName?.startsWith('data-awesome-codex-'),
+      ).length;
+    });
+    observer.observe(dom.window.document.documentElement, { attributes: true, subtree: true });
+
+    editor.appendChild(dom.window.document.createTextNode('x'));
+    sendButton.classList.add('is-ready');
+    await new Promise((resolve) => dom.window.setTimeout(resolve, 0));
+    await new Promise((resolve) => dom.window.setTimeout(resolve, 0));
+    observer.disconnect();
+
+    expect(themeAttributeMutationCount).toBe(0);
   });
 
   test('classifies scheduled tasks and marks shared collection roles', async () => {
