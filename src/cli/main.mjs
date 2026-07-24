@@ -334,27 +334,53 @@ export async function launchOfficialApp(
   app,
   port,
   {
+    spawnApp = spawn,
     runOpen = (command, args) => execFileAsync(command, args, { encoding: 'utf8' }),
     listPids = listOfficialAppPids,
     delay = (milliseconds) => new Promise((resolveDelay) => setTimeout(resolveDelay, milliseconds)),
     attempts = 40,
   } = {},
 ) {
-  try {
-    await runOpen('/usr/bin/open', [
-      '-na',
-      app.appPath,
-      '--args',
-      '--remote-debugging-address=127.0.0.1',
-      `--remote-debugging-port=${port}`,
-    ]);
-  } catch {
-    return { pid: null };
+  const [majorVersion, minorVersion] = String(app.version ?? '').split('.').map(Number);
+  const requiresDirectLaunch =
+    majorVersion > 26 || (majorVersion === 26 && minorVersion >= 721);
+  let expectedPid = null;
+
+  if (requiresDirectLaunch) {
+    try {
+      const child = spawnApp(
+        app.executable,
+        [
+          '--remote-debugging-address=127.0.0.1',
+          `--remote-debugging-port=${port}`,
+        ],
+        { detached: true, stdio: 'ignore' },
+      );
+      child.unref();
+      expectedPid = child.pid;
+    } catch {
+      return { pid: null };
+    }
+  } else {
+    try {
+      await runOpen('/usr/bin/open', [
+        '-na',
+        app.appPath,
+        '--args',
+        '--remote-debugging-address=127.0.0.1',
+        `--remote-debugging-port=${port}`,
+      ]);
+    } catch {
+      return { pid: null };
+    }
   }
 
   for (let attempt = 0; attempt < attempts; attempt += 1) {
     const pids = await listPids(app);
-    if (pids.length === 1) return { pid: pids[0] };
+    if (pids.length === 1) {
+      if (expectedPid !== null && pids[0] !== expectedPid) return { pid: null };
+      return { pid: pids[0] };
+    }
     if (pids.length > 1) return { pid: null };
     await delay(100);
   }

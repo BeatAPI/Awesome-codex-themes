@@ -39,7 +39,7 @@ The public CLI keeps `_watch` and `_agent` internal. The shell entrypoint finds 
 ```text
 Git clone (mutable source)
   → validated staging copy
-  → ~/Library/Application Support/AwesomeCodexThemes/releases/0.4.4/
+  → ~/Library/Application Support/AwesomeCodexThemes/releases/0.4.5/
   → atomic current symlink
   → ~/Library/LaunchAgents/io.github.awesome-codex-themes.agent.plist
   → current/bin/awesome-codex-themes _agent

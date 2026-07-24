@@ -52,14 +52,14 @@ Before approval is executed, verify:
 - the repository description, topics, default branch, and security-advisory link are correct;
 - the owner understands that forks, caches, and downloaded release assets cannot be recalled reliably after publication.
 
-## 5. Main and `v0.4.4`
+## 5. Main and `v0.4.5`
 
 After the source, lifecycle, and visibility gates pass:
 
 1. Land the reviewed release commit on `main` without overwriting unrelated local work.
 2. Rerun `pnpm check` from the exact `main` commit.
 3. Push `main` and confirm GitHub Actions succeeds on that SHA.
-4. Create the annotated `v0.4.4` tag from the verified commit.
+4. Create the annotated `v0.4.5` tag from the verified commit.
 5. Publish a GitHub Release that links to [INSTALL.md](INSTALL.md), [MIGRATION.md](MIGRATION.md), [SAFETY.md](SAFETY.md), and the exact live-verified Codex ranges while explaining the best-effort fallback.
 6. Confirm a fresh public clone can run `doctor`, `list`, an isolated `install-agent satoru-gojo --takeover-at-login` flow, and an `upgrade-agent` flow that preserves paused and takeover configuration.
 

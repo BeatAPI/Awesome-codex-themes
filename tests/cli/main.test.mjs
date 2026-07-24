@@ -354,6 +354,41 @@ describe('managed renderer readiness', () => {
 });
 
 describe('official app launch', () => {
+  test('uses the signed app executable directly on 26.721+ so CDP flags survive launch', async () => {
+    const child = { pid: 321, unref: vi.fn() };
+    const spawnApp = vi.fn(() => child);
+    const runOpen = vi.fn(async () => {
+      throw new Error('LaunchServices must not be used for this version');
+    });
+
+    await expect(launchOfficialApp(
+      {
+        appPath: '/Applications/ChatGPT.app',
+        executable: '/Applications/ChatGPT.app/Contents/MacOS/ChatGPT',
+        version: '26.721.30844',
+      },
+      9341,
+      {
+        spawnApp,
+        runOpen,
+        listPids: async () => [321],
+        delay: async () => {},
+        attempts: 1,
+      },
+    )).resolves.toEqual({ pid: 321 });
+
+    expect(spawnApp).toHaveBeenCalledWith(
+      '/Applications/ChatGPT.app/Contents/MacOS/ChatGPT',
+      [
+        '--remote-debugging-address=127.0.0.1',
+        '--remote-debugging-port=9341',
+      ],
+      { detached: true, stdio: 'ignore' },
+    );
+    expect(child.unref).toHaveBeenCalledOnce();
+    expect(runOpen).not.toHaveBeenCalled();
+  });
+
   test('uses LaunchServices and resolves the exact real official app PID', async () => {
     const runOpen = vi.fn(async () => ({ stdout: '', stderr: '' }));
     const listPids = vi

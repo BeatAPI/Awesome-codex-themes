@@ -42,7 +42,7 @@ Last verified: 2026-07-21 (Asia/Shanghai)
 
 The active renderer was checked for owned style/chrome markers, theme variables, workspace classification, idempotent apply, renderer reload reapply, pointer-transparent decoration, and complete owned-state removal. Private screenshots with active workspace content and internal visual iteration labels remain local development evidence and are not public release assets. See the sanitized [26.715 lifecycle audit](audits/2026-07-17-satoru-gojo-26.715-lifecycle-audit.md).
 
-The public source candidate is `0.4.4`. The current maintainer runtime is separately verified as `active` on Codex `26.715.52143` with a literal-loopback endpoint, one owned `satoru-gojo` style/chrome pair, stable Composer geometry during real text input, and no maintenance rewrites while the theme remains active. Installing the final `0.4.4` source candidate and exercising a physical reboot remain separate gates.
+The current source candidate is `0.4.5`. It retains the verified `26.715.52143` renderer behavior and adds a direct signed-executable launch path for `26.721+`, where LaunchServices was observed to drop the loopback CDP flags. On `26.721.30844`, the installed agent reached `active` on `127.0.0.1:9341` and the renderer exposed one owned `satoru-gojo` style, one pointer-transparent chrome node, and the expected best-effort adapter marker. A complete visual page matrix, exact-commit CI, and a physical reboot remain separate gates.
 
 The legacy injector plist and script were backed up outside the repository before migration. The old plist is no longer present in `~/Library/LaunchAgents`; its source script was not deleted.
 
